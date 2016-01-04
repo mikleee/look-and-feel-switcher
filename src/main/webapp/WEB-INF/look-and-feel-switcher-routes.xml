@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE routes PUBLIC "-//Liferay//DTD Friendly URL Routes 6.2.0//EN" "http://www.liferay.com/dtd/liferay-friendly-url-routes_6_2_0.dtd">
+
+<routes>
+    <!--<route>-->
+    <!--todo-->
+        <!--<pattern>/</pattern>-->
+    <!--</route>-->
+    <!--<route>-->
+        <!--<pattern>/apply-binding?id={id}&amp;userId={userId}&amp;groupId={groupId}&amp;sessionId={sessionId}&amp;redirectURL={redirectURL}</pattern>-->
+        <!--<generated-parameter name="id">{id}</generated-parameter>-->
+        <!--<generated-parameter name="userId">{userId}</generated-parameter>-->
+        <!--<generated-parameter name="groupId">{groupId}</generated-parameter>-->
+        <!--<generated-parameter name="sessionId">{sessionId}</generated-parameter>-->
+        <!--<generated-parameter name="redirectURL">{redirectURL}</generated-parameter>-->
+        <!--<generated-parameter name="action">applyBinding</generated-parameter>-->
+        <!--<implicit-parameter name="p_p_lifecycle">1</implicit-parameter>-->
+    <!--</route>-->
+
+
+    <!--<portlet:actionURL var="applyBindingUrl">-->
+        <!--<portlet:param name="action" value="applyBinding"/>-->
+        <!--<portlet:param name="id" value="${currentBindModel.id}"/>-->
+        <!--<portlet:param name="userId" value="${themeDisplay.userId}"/>-->
+        <!--<portlet:param name="groupId" value="${themeDisplay.scopeGroupId}"/>-->
+        <!--<portlet:param name="sessionId" value="${themeDisplay.sessionId}"/>-->
+        <!--<portlet:param name="redirectURL" value="${startPage}"/>-->
+    <!--</portlet:actionURL>-->
+
+    <!--<route>-->
+        <!--<pattern>/orderSolution?solutionId={solutionId}&amp;pricingRequestId={pricingRequestId}</pattern>-->
+        <!--<generated-parameter name="solutionId">{solutionId}</generated-parameter>-->
+        <!--<generated-parameter name="pricingRequestId">{pricingRequestId}</generated-parameter>-->
+        <!--<generated-parameter name="render">orderPage</generated-parameter>-->
+    <!--</route>-->
+</routes>

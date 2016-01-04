@@ -1,0 +1,52 @@
+.lfs-container {
+    padding: 10px;
+}
+
+.lfs-bind-option {
+    background-color: #DDD;
+}
+
+.lfs-default-option {
+    background-color: #8add8d;
+}
+
+img.lfs-screen-shot {
+    border: 1px #DDD solid;
+    border-radius: 8px;
+    max-height: 250px;
+    max-width: 250px;
+}
+
+div.lfb-waiting-indicator {
+    background: url(../img/loading.gif) no-repeat left center;
+    background-size: contain;
+}
+
+select.lfb-select {
+    max-width: 100%;
+}
+
+.lfb-display-none {
+    display: none;
+}
+
+div.look-and-feel-map {
+    overflow-y: auto;
+}
+
+div.look-and-feel-map div.theme-row {
+    padding: 3px 6px;
+    margin: 2px 3px;
+}
+
+div.look-and-feel-map div.theme-row:hover {
+    background-color: #F6F6F6;
+    border-radius: 5px;
+}
+
+div.look-and-feel-map img {
+    border: 1px #DDDDDD solid;
+    height: 35px;
+    margin: 2px;
+    border-radius: 3px;
+}

@@ -1,0 +1,14 @@
+<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
+
+<%--@elvariable id="themes" type="java.util.List<com.liferay.portal.model.Theme>"--%>
+<%--@elvariable id="themeDisplay" type="com.liferay.portal.theme.ThemeDisplay"--%>
+<%--@elvariable id="currentBindModel" type="com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding"--%>
+<%--@elvariable id="screenShotPath" type="java.lang.String"--%>
+<%--@elvariable id="colorSchemes" type="java.util.List<com.liferay.portal.model.ColorScheme>"--%>
+
+<c:set var="ns"><portlet:namespace/></c:set>
+
+<portlet:renderURL var="startPage"/>

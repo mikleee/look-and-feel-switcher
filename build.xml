@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<project name="themes-switcher">
+
+    <property name="server-dir" value="/home/misha/Work/Liferay/6.2-ce-ga4-TS/tomcat-7.0.42"/>
+    <property name="portlet-name" value="look-and-feel-switcher-portlet"/>
+    <property name="portlet-dir" value="${server-dir}/webapps/${portlet-name}"/>
+
+    <property name="project-root-dir" value="./src/main/webapp"/>
+
+    <target name="reload-cached-resources">
+        <property name="portlet-cache-dir" value="${server-dir}/temp/8-${portlet-name}"/>
+
+        <copy todir="${portlet-cache-dir}/jsp/" overwrite="true" verbose="true">
+            <fileset dir="${project-root-dir}/jsp"/>
+        </copy>
+        <copy todir="${portlet-cache-dir}/css/" overwrite="true" verbose="true">
+            <fileset dir="${project-root-dir}/css"/>
+        </copy>
+        <copy todir="${portlet-cache-dir}/js/" overwrite="true" verbose="true">
+            <fileset dir="${project-root-dir}/js"/>
+        </copy>
+        <copy todir="${portlet-cache-dir}/img/" overwrite="true" verbose="true">
+            <fileset dir="${project-root-dir}/img"/>
+        </copy>
+    </target>
+
+    <target name="clean" depends="clear-temp">
+        <delete dir="${server-dir}/work/Catalina"/>
+        <delete dir="${portlet-dir}"/>
+    </target>
+
+    <target name="clear-temp">
+        <delete includeEmptyDirs="true">
+            <fileset dir="${server-dir}/temp" includes="**/*" defaultexcludes="false"/>
+        </delete>
+    </target>
+
+</project>

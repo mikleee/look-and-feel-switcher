@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.2.0//EN" "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
+
+<liferay-portlet-app>
+
+    <portlet>
+        <portlet-name>look-and-feel-switcher</portlet-name>
+        <icon>/icon.png</icon>
+        <friendly-url-mapper-class>com.aimprosoft.look_and_feel_switcher.hook.FriendlyUrlMapper</friendly-url-mapper-class>
+        <friendly-url-mapping>look-and-feel-binder</friendly-url-mapping>
+        <friendly-url-routes>../look-and-feel-switcher-routes.xml</friendly-url-routes>
+        <header-portlet-css>/css/look-and-feel-switcher.css</header-portlet-css>
+        <!--<header-portlet-javascript>/js/lib/jquery-2.1.1.js</header-portlet-javascript>-->
+        <header-portlet-javascript>/js/lib/angular.min.js</header-portlet-javascript>
+        <!--<header-portlet-javascript>/js/lib/jquery.blockUI.js</header-portlet-javascript>-->
+        <!--<header-portlet-javascript>/js/lib/jquery-ui.min.js</header-portlet-javascript>-->
+    </portlet>
+
+
+    <!--roles-->
+
+    <role-mapper>
+        <role-name>administrator</role-name>
+        <role-link>Administrator</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>guest</role-name>
+        <role-link>Guest</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>power-user</role-name>
+        <role-link>Power User</role-link>
+    </role-mapper>
+    <role-mapper>
+        <role-name>user</role-name>
+        <role-link>User</role-link>
+    </role-mapper>
+
+</liferay-portlet-app>
