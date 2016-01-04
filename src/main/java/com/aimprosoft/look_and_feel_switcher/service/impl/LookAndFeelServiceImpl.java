@@ -41,10 +41,6 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
         add("mobile");
     }};
 
-    private final static LookAndFeelBinding NULL_BINDING = new LookAndFeelBinding() {{
-        setLookAndFeel(new LookAndFeel());
-    }};
-
     @Autowired
     private LookAndFeelDao lookAndFeelDao;
 
@@ -132,15 +128,8 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
     }
 
     @Override
-    public JsonResponse<Map<String, Object>> getAvailableLookAndFeels(LookAndFeelBinding fromView, LookAndFeelBinding persisted, LookAndFeel portalDefault) throws ApplicationException {
-        Map<String, Object> response = new HashMap<String, Object>();
+    public List<ThemeOption> getAvailableLookAndFeels(LookAndFeelBinding fromView, LookAndFeelBinding persisted, LookAndFeel portalDefault) throws ApplicationException {
         List<ThemeOption> lookAndFeels = new ArrayList<ThemeOption>();
-
-        if (persisted == null) {
-            persisted = NULL_BINDING;
-        } else {
-            response.put("currentBinding", persisted.getId());
-        }
 
         long companyId = fromView.getLookAndFeel().getCompanyId();
         for (LookAndFeel themeLookAndFeel : findAllThemes(companyId, fromView.getUserId())) {
@@ -152,9 +141,7 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
                 themeOption.addColorScheme(colorSchemeOption);
             }
         }
-
-        response.put("lookAndFeels", lookAndFeels);
-        return JsonResponse.success(response);
+        return lookAndFeels;
     }
 
     @Override

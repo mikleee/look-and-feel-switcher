@@ -25,14 +25,6 @@
             <short-title>Look and feel switcher</short-title>
             <keywords>theme, color scheme</keywords>
         </portlet-info>
-
-        <!--<portlet-preferences>-->
-            <!--<preference>-->
-                <!--<name>displayType</name>-->
-                <!--<value>builder</value>-->
-            <!--</preference>-->
-        <!--</portlet-preferences>-->
-
         <security-role-ref>
             <role-name>administrator</role-name>
         </security-role-ref>

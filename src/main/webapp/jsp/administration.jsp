@@ -34,54 +34,47 @@
         <div id="${ns}error-message"></div>
 
         <div class="row-fluid lfs-container">
-            <div class="span6">
-                <div class="navbar navbar-inner container-fluid">
-                    <div class="row-fluid">
-                        <div>
-                            <p class="span6 navbar-text">Look and feel to show</p>
-                        </div>
-                        <div class="span2 offset4">
-                            <button type="button" class="btn btn-primary navbar-btn" ng-click="listeners.applyMap()">Apply</button>
-                        </div>
+            <div class="navbar navbar-inner container-fluid">
+                <div class="row-fluid">
+                    <div>
+                        <p class="span6 navbar-text">Look and feel to show</p>
                     </div>
-                </div>
-                <div class="look-and-feel-map" ng-cloak>
-                    <div class="theme-row" ng-repeat="theme in models.lookAndFeels">
-                        <div class="row-fluid">
-                            <div class="span6">
-                                <div class="row-fluid">
-                                    <div class="span1">
-                                        <input id="{{expressions.nsValue('theme'+theme.id)}}" type="checkbox" ng-model="theme.selected">
-                                    </div>
-                                    <div class="span7">
-                                        <label for="{{expressions.nsValue('theme'+theme.id)}}">{{theme.name}}</label>
-                                    </div>
-                                    <%--<div class="span4" ng-if="!theme['colorSchemes'] || theme['colorSchemes'].length == 0">--%>
-                                    <%--<img ng-src="{{theme['screenShotPath']}}"/>--%>
-                                    <%--</div>--%>
-                                </div>
-                            </div>
-                            <div class="span6" ng-if="theme.hasColorSchemes()">
-                                <div class="row-fluid" ng-repeat="cs in theme.colorSchemes">
-                                    <div class="span1">
-                                        <input id="{{expressions.nsValue('cs'+cs.id)}}" type="checkbox" ng-model="cs.selected">
-                                    </div>
-                                    <div class="span7">
-                                        <label for="{{expressions.nsValue('cs'+cs.id)}}">{{cs.name}}</label>
-                                    </div>
-                                    <%--<div class="span4">--%>
-                                    <%--<img ng-src="{{cs['screenShotPath']}}"/>--%>
-                                    <%--</div>--%>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="span2 offset4">
+                        <button type="button" class="btn btn-primary navbar-btn" ng-click="listeners.applyMap()">Apply</button>
                     </div>
                 </div>
             </div>
-
-            <div class="span6">
-                dfgdfgfdgdf
-                <button id="${ns}reset-all-bindings" class="btn btn-danger">Remove all bindings</button>
+            <div class="look-and-feel-map" ng-cloak>
+                <div class="theme-row" ng-repeat="theme in models.lookAndFeels">
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <div class="row-fluid">
+                                <div class="span1">
+                                    <input id="{{expressions.nsValue('theme'+theme.id)}}" type="checkbox" ng-model="theme.selected">
+                                </div>
+                                <div class="span7">
+                                    <label for="{{expressions.nsValue('theme'+theme.id)}}">{{theme.name}}</label>
+                                </div>
+                                <%--<div class="span4" ng-if="!theme['colorSchemes'] || theme['colorSchemes'].length == 0">--%>
+                                <%--<img ng-src="{{theme['screenShotPath']}}"/>--%>
+                                <%--</div>--%>
+                            </div>
+                        </div>
+                        <div class="span6" ng-if="theme.hasColorSchemes()">
+                            <div class="row-fluid" ng-repeat="cs in theme.colorSchemes">
+                                <div class="span1">
+                                    <input id="{{expressions.nsValue('cs'+cs.id)}}" type="checkbox" ng-model="cs.selected">
+                                </div>
+                                <div class="span7">
+                                    <label for="{{expressions.nsValue('cs'+cs.id)}}">{{cs.name}}</label>
+                                </div>
+                                <%--<div class="span4">--%>
+                                <%--<img ng-src="{{cs['screenShotPath']}}"/>--%>
+                                <%--</div>--%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

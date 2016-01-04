@@ -32,6 +32,7 @@ import javax.portlet.RenderRequest;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getThemeDisplay;
@@ -86,10 +87,19 @@ public class ViewController {
 
     @ResourceMapping(value = "initLookAndFeel")
     public void initLookAndFeel(ResourceRequest request, ResourceResponse response, LookAndFeelBinding fromView) throws ApplicationException, IOException {
+        Map<String, Object> body = new HashMap<String, Object>();
+
+
         LookAndFeel portalDefault = defaultLookAndFeelService.getPortalDefaultLookAndFeel(request);
         LookAndFeelBinding persisted = getLookAndFeelBindingService(request).findByUserAndGroup(fromView);
-        JsonResponse<Map<String, Object>> jsonResponse = lookAndFeelService.getAvailableLookAndFeels(fromView, persisted, portalDefault);
-        objectMapper.writeValue(response.getPortletOutputStream(), jsonResponse);
+        if (persisted == null) {
+            persisted = LookAndFeelService.NULL_BINDING;
+        } else {
+            body.put("currentBinding", persisted.getId());
+        }
+
+        body.put("lookAndFeels", lookAndFeelService.getAvailableLookAndFeels(fromView, persisted, portalDefault));
+        objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.success(body));
     }
 
     private LookAndFeelBindingService getLookAndFeelBindingService(PortletRequest request) {

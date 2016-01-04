@@ -43,7 +43,7 @@ var lookAndFeelAdministrationController = function ($scope, $http, service, init
 
                         angular.forEach(theme.colorSchemes, function (cs, k) {
                             $scope.$watch('models.lookAndFeels[' + i + '].colorSchemes[' + k + '].selected', function (newVal, oldVal) {
-                                if (newVal == true && service.areOtherSchemesSelected(theme, cs)) {
+                                if (newVal == true/* && service.areOtherSchemesSelected(theme, cs)*/) {
                                     theme.selected = true;
                                 } else if (newVal == false && service.areOtherSchemesUnselected(theme, cs)) {
                                     theme.selected = false;
