@@ -1,14 +1,28 @@
-var lookAndFeelAdministrationController = function ($scope, $http, service, initConfig) {
+function SelectLookAndFeelAdministrationController($scope, $http, lookAndFeelService, portletConfig) {
     $scope.models = {
         /**
          * @type{[Theme]}
          */
         lookAndFeels: [],
+        /**
+         * @type{Theme}
+         */
+        currentTheme: null,
+        /**
+         * @type{LookAndFeelOption}
+         */
+        currentColorScheme: null,
         message: null,
         status: 'waiting'
     };
 
     var handlers = {
+        onThemeChange: function (newVal) {
+            $scope.models.currentColorScheme = lookAndFeelService.getColorSchemeToShow(newVal);
+        },
+        onColorSchemeChange: function (newVal) {
+            $scope.models.currentColorScheme = newVal;
+        },
         showMessage: function (status, message) {
             $scope.models.status = status;
             $scope.models.message = message;
@@ -29,39 +43,24 @@ var lookAndFeelAdministrationController = function ($scope, $http, service, init
                 angular.forEach(response.data.body['lookAndFeels'], function (v, k) {
                     $scope.models.lookAndFeels.push(new Theme().fromObject(v));
                 });
-
+                $scope.models.currentTheme = lookAndFeelService.getThemeToShow($scope.models.lookAndFeels);
+                $scope.models.currentColorScheme = lookAndFeelService.getColorSchemeToShow($scope.models.currentTheme);
                 $scope.models.status = 'success';
                 handlers.hideMessage();
-
-                angular.forEach($scope.models.lookAndFeels, function (theme, i) {
-                    if (theme.hasColorSchemes()) {
-                        $scope.$watch('models.lookAndFeels[' + i + '].selected', function (newVal, oldVal) {
-                            angular.forEach(theme.colorSchemes, function (v, k) {
-                                v.selected = newVal;
-                            });
-                        });
-
-                        angular.forEach(theme.colorSchemes, function (cs, k) {
-                            $scope.$watch('models.lookAndFeels[' + i + '].colorSchemes[' + k + '].selected', function (newVal, oldVal) {
-                                if (newVal == true/* && service.areOtherSchemesSelected(theme, cs)*/) {
-                                    theme.selected = true;
-                                } else if (newVal == false && service.areOtherSchemesUnselected(theme, cs)) {
-                                    theme.selected = false;
-                                }
-                            });
-                        });
-                    }
-                });
+            }
+        },
+        onBindingApplied: function (response) {
+            if (response.data.status == 'error') {
+                handlers.showMessage('error', response.data.body);
+            } else {
+                window.location.reload();
             }
         }
     };
 
     $scope.expressions = {
         screenShotPath: function () {
-            return service.getScreenshotPath($scope.models.currentTheme, $scope.models.currentColorScheme);
-        },
-        isColorSchemePresent: function () {
-            return $scope.models.currentTheme && $scope.models.currentTheme['colorSchemes'] && $scope.models.currentTheme['colorSchemes'].length > 0;
+            return lookAndFeelService.getScreenshotPath($scope.models.currentTheme, $scope.models.currentColorScheme);
         },
         disableFormCondition: function () {
             return $scope.models.status == 'waiting' || $scope.models.lookAndFeels.length == 0;
@@ -77,30 +76,17 @@ var lookAndFeelAdministrationController = function ($scope, $http, service, init
                 default :
                     return '';
             }
-        },
-        nsValue: function (value) {
-            return initConfig.ns + value;
         }
     };
 
-    $scope.listeners = {
-        applyMap: function () {
-            var data = [];
-            angular.forEach($scope.models.lookAndFeels, function (theme) {
-                data.push(new LookAndFeel(theme.id, theme.selected));
-                if(theme.hasColorSchemes()){
-                    angular.forEach(theme.colorSchemes, function (cs) {
-                        data.push(new LookAndFeel(cs.id, cs.selected));
-                    });
-                }
-            });
-
-            $http.post(initConfig.applyLookAndFeelMapUrl, data).then(callBacks.onBindingApplied, callBacks.onRequestFailed);
-        }
-    };
+    $scope.listeners = {};
 
     {   //init
-        $http.get(initConfig.initLookAndFeelUrl).then(callBacks.onInitLookAndFeels, callBacks.onRequestFailed);
+
+        $scope.$watch('models.currentTheme', handlers.onThemeChange);
+        $scope.$watch('models.currentColorScheme', handlers.onColorSchemeChange);
+
+        $http.get(portletConfig.initLookAndFeelUrl).then(callBacks.onInitLookAndFeels, callBacks.onRequestFailed);
     }
 
-};
+}

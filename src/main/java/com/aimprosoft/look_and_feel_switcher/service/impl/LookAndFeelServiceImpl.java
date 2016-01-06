@@ -145,9 +145,8 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
     }
 
     @Override
-    public JsonResponse<Map<String, Object>> getAllLookAndFeels(Long companyId) throws ApplicationException {
+    public List<ThemeOption> getAllLookAndFeels(Long companyId) throws ApplicationException {
         synchronize(companyId);
-        Map<String, Object> response = new HashMap<String, Object>();
         List<ThemeOption> lookAndFeels = new ArrayList<ThemeOption>();
 
         for (LookAndFeel themeLookAndFeel : lookAndFeelDao.findThemes(companyId)) {
@@ -160,9 +159,7 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
 
             lookAndFeels.add(themeOption);
         }
-
-        response.put("lookAndFeels", lookAndFeels);
-        return JsonResponse.success(response);
+        return lookAndFeels;
     }
 
     private ThemeOption createThemeOption(LookAndFeel themeLookAndFeel, LookAndFeelBinding persisted, String defaultThemeId) {

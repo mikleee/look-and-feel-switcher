@@ -4,6 +4,7 @@ import com.aimprosoft.look_and_feel_switcher.exception.ApplicationException;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding;
 import com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse;
+import com.aimprosoft.look_and_feel_switcher.model.view.ThemeOption;
 import com.aimprosoft.look_and_feel_switcher.service.DefaultLookAndFeelService;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelBindingService;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelService;
@@ -13,12 +14,9 @@ import com.aimprosoft.look_and_feel_switcher.utils.Utils;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.theme.ThemeDisplay;
-import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
@@ -32,8 +30,7 @@ import javax.portlet.RenderRequest;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getThemeDisplay;
 
@@ -42,18 +39,12 @@ import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getThemeDisplay;
  */
 @Controller
 @RequestMapping(value = "VIEW")
-public class ViewController {
-
-    private final static Logger LOGGER = Logger.getLogger(ViewController.class);
+public class ViewController extends BaseController {
 
     @Autowired
     private UserLookAndFeelBindingService userThemesBindingService;
     @Autowired
     private GuestLookAndFeelBindingService guestThemeBindingService;
-    @Autowired
-    private LookAndFeelService lookAndFeelService;
-    @Autowired
-    private ObjectMapper objectMapper;
     @Autowired
     private DefaultLookAndFeelService defaultLookAndFeelService;
 
@@ -82,40 +73,26 @@ public class ViewController {
         LookAndFeelBindingService lookAndFeelBindingService = getLookAndFeelBindingService(request);
         LookAndFeelBinding model = objectMapper.readValue(request.getPortletInputStream(), LookAndFeelBinding.class);
         lookAndFeelBindingService.applyBinding(model);
-        objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.success(null));
+        objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.success());
     }
 
     @ResourceMapping(value = "initLookAndFeel")
     public void initLookAndFeel(ResourceRequest request, ResourceResponse response, LookAndFeelBinding fromView) throws ApplicationException, IOException {
-        Map<String, Object> body = new HashMap<String, Object>();
-
-
         LookAndFeel portalDefault = defaultLookAndFeelService.getPortalDefaultLookAndFeel(request);
         LookAndFeelBinding persisted = getLookAndFeelBindingService(request).findByUserAndGroup(fromView);
         if (persisted == null) {
             persisted = LookAndFeelService.NULL_BINDING;
-        } else {
-            body.put("currentBinding", persisted.getId());
         }
 
-        body.put("lookAndFeels", lookAndFeelService.getAvailableLookAndFeels(fromView, persisted, portalDefault));
-        objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.success(body));
+        List<ThemeOption> lookAndFeels = lookAndFeelService.getAvailableLookAndFeels(fromView, persisted, portalDefault);
+
+        objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.success()
+                .put("currentBinding", persisted.getId())
+                .put("lookAndFeels", lookAndFeels));
     }
 
     private LookAndFeelBindingService getLookAndFeelBindingService(PortletRequest request) {
         return Utils.isGuest(request) ? guestThemeBindingService : userThemesBindingService;
-    }
-
-    @ExceptionHandler({ApplicationException.class})
-    public void handleApplicationException(ApplicationException e, ResourceResponse response) throws IOException {
-        LOGGER.warn(e.getMessage());
-        objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.error(e.getMessage()));
-    }
-
-    @ExceptionHandler({Exception.class})
-    public void handleApplicationError(Exception e, ResourceResponse response) throws IOException {
-        LOGGER.error(e, e);
-        objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.error(e.getMessage()));
     }
 
 }

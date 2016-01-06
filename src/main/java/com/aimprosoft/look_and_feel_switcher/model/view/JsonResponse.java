@@ -1,32 +1,39 @@
 package com.aimprosoft.look_and_feel_switcher.model.view;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * crated by m.tkachenko on 05.10.15 17:43
  */
-public class JsonResponse<T> {
+public class JsonResponse {
 
     private String status;
-    private T body;
+    private Map<String, Object> body = new HashMap<String, Object>();
 
-    private JsonResponse(T body, String status) {
-        this.body = body;
+    private JsonResponse(String status) {
         this.status = status;
     }
 
-    public static <T> JsonResponse<T> success(T body) {
-        return new JsonResponse<T>(body, "success");
+    public static JsonResponse success() {
+        return new JsonResponse("success");
     }
 
-    public static <T> JsonResponse<T> error(T body) {
-        return new JsonResponse<T>(body, "error");
+    public static JsonResponse error(String error) {
+        return new JsonResponse("error").put("error", error);
     }
 
-    public T getBody() {
+    public Map<String, Object> getBody() {
         return body;
     }
 
     public String getStatus() {
         return status;
+    }
+
+    public JsonResponse put(String key, Object value) {
+        body.put(key, value);
+        return this;
     }
 
 }

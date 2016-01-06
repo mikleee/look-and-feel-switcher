@@ -40,7 +40,7 @@
 
 <script>
     angular.module('${ns}selectLookAndFeel', ['lookAndFeelServices'])
-            .controller('selectLookAndFeelController', ['$scope', '$http', 'lookAndFeelService', 'initConfig', selectLookAndFeelController])
+            .controller('selectLookAndFeelController', ['$scope', '$http', 'lookAndFeelService', 'initConfig', SelectLookAndFeelController])
             .service('initConfig', function () {
                 return {
                     ns: '${ns}',
