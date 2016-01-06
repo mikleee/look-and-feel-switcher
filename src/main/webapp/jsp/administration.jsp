@@ -88,7 +88,6 @@
             <div>
                 <div class="row-fluid">
                     <div class="span5">
-
                         <div>
                             <label for="${ns}themes"><%--<spring:message code="label.themes"/>--%></label>
                             <select id="${ns}themes" class="lfb-select" ng-disabled="expressions.disableFormCondition()"

@@ -57,18 +57,17 @@
 
     <div class="lfs-container" ng-controller="selectLookAndFeelController">
         <div>
-            <div ng-if="models.message && models.status != 'waiting'" class="alert" ng-class="expressions.messageStyle()" ng-bind="models.message"></div>
+            <div ng-if="message && status != 'waiting'" class="alert" ng-class="expressions.messageStyle()" ng-bind="message"></div>
             <div>
                 <div class="row-fluid">
                     <div class="span5">
-
                         <div>
-                            <label for="${ns}themes"><%--<spring:message code="label.themes"/>--%></label>
+                            <label for="${ns}themes">asdasd<%--<spring:message code="label.themes"/>--%></label>
                             <select id="${ns}themes" class="lfb-select" ng-disabled="expressions.disableFormCondition()"
                                     ng-options="theme as theme.name for theme in models.lookAndFeels track by theme.id" ng-model="models.currentTheme"></select>
                         </div>
                         <div ng-if="models.currentTheme && models.currentTheme.hasColorSchemes()">
-                            <label for="${ns}color-schemes"><%--<spring:message code="label.color-schemes"/>--%></label>
+                            <label for="${ns}color-schemes">asdasdsad<%--<spring:message code="label.color-schemes"/>--%></label>
                             <select id="${ns}color-schemes" class="lfb-select" ng-disabled="expressions.disableFormCondition()"
                                     ng-options="cs as cs.name for cs in models.currentTheme.colorSchemes track by cs.id" ng-model="models.currentColorScheme"></select>
                         </div>

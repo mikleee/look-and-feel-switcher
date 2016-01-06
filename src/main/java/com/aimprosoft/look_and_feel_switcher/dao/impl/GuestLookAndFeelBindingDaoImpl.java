@@ -4,6 +4,7 @@ import com.aimprosoft.look_and_feel_switcher.dao.GuestLookAndFeelBindingDao;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,7 +20,7 @@ public class GuestLookAndFeelBindingDaoImpl implements GuestLookAndFeelBindingDa
 
     @Override
     public List<LookAndFeelBinding> findAll() {
-        return (List<LookAndFeelBinding>) dataSource.values(); //todo
+        return new ArrayList<LookAndFeelBinding>(dataSource.values());
     }
 
     @Override

@@ -1,42 +1,33 @@
+/**
+ * @param $scope
+ * @param $http
+ * @param service {LookAndFeelService}
+ * @param initConfig
+ * @constructor
+ */
 function SelectLookAndFeelController($scope, $http, service, initConfig) {
-    $scope.models = {
-        /**
-         * @type{LookAndFeelBinding}
-         */
-        lookAndFeelBinding: initConfig.lookAndFeelBinding,
-        /**
-         * @type{[Theme]}
-         */
-        lookAndFeels: [],
-        /**
-         * @type{Theme}
-         */
-        currentTheme: null,
-        /**
-         * @type{LookAndFeelOption}
-         */
-        currentColorScheme: null,
-        message: null,
-        status: 'waiting'
-    };
+    $scope.message = null;
+    $scope.status = 'waiting';
+    $scope.models = service.getModels();
+
 
     var handlers = {
         onThemeChange: function (newVal) {
-            var cs = service.getColorSchemeToShow(newVal);
-            $scope.models.currentColorScheme = cs;
-            $scope.models.lookAndFeelBinding.lookAndFeel.themeId = newVal ? newVal.id : null;
-            $scope.models.lookAndFeelBinding.lookAndFeel.colorSchemeId = cs ? cs.id : null;
+            var cs = service.getPreselectedColorScheme(newVal);
+            service.getModels().currentColorScheme = cs;
+            service.getModels().lookAndFeelBinding.lookAndFeel.themeId = newVal ? newVal.id : null;
+            service.getModels().lookAndFeelBinding.lookAndFeel.colorSchemeId = cs ? cs.id : null;
         },
         onColorSchemeChange: function (newVal) {
-            $scope.models.currentColorScheme = newVal;
-            $scope.models.lookAndFeelBinding.lookAndFeel.colorSchemeId = newVal ? newVal.id : null;
+            service.getModels().currentColorScheme = newVal;
+            service.getModels().lookAndFeelBinding.lookAndFeel.colorSchemeId = newVal ? newVal.id : null;
         },
         showMessage: function (status, message) {
-            $scope.models.status = status;
-            $scope.models.message = message;
+            $scope.status = status;
+            $scope.message = message;
         },
         hideMessage: function () {
-            $scope.models.message = null;
+            $scope.message = null;
         }
     };
 
@@ -45,15 +36,11 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
             handlers.showMessage('error', 'internal server error');
         },
         onInitLookAndFeels: function (response) {
-            if (response.data.body['lookAndFeels'].length == 0) {
+            service.setLookAndFeels(response.data.body['lookAndFeels']);
+            if (service.isNoData()) {
                 handlers.showMessage('warning', 'no available themes have been found');
             } else {
-                angular.forEach(response.data.body['lookAndFeels'], function (v, k) {
-                    $scope.models.lookAndFeels.push(new Theme().fromObject(v));
-                });
-                $scope.models.currentTheme = service.getThemeToShow($scope.models.lookAndFeels);
-                $scope.models.currentColorScheme = service.getColorSchemeToShow($scope.models.currentTheme);
-                $scope.models.status = 'success';
+                $scope.status = 'success';
                 handlers.hideMessage();
             }
         },
@@ -68,13 +55,16 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
 
     $scope.expressions = {
         screenShotPath: function () {
-            return service.getScreenshotPath($scope.models.currentTheme, $scope.models.currentColorScheme);
+            return service.getScreenshotPath();
+        },
+        jopa: function () {
+            return $scope.models.currentTheme && $scope.models.currentTheme.hasColorSchemes();
         },
         disableFormCondition: function () {
-            return $scope.models.status == 'waiting' || $scope.models.lookAndFeels.length == 0;
+            return $scope.status == 'waiting' || service.isNoData();
         },
         messageStyle: function () {
-            switch ($scope.models.status) {
+            switch ($scope.status) {
                 case 'error':
                     return 'alert-danger';
                 case 'warning':
@@ -89,32 +79,27 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
 
     $scope.listeners = {
         resetBinding: function () {
-            $scope.models.status = 'waiting';
+            $scope.status = 'waiting';
             window.location = initConfig.resetBindingUrl;
         },
         applyBinding: function () {
-            $scope.models.status = 'waiting';
+            $scope.status = 'waiting';
 
-            var data = {'lookAndFeel.themeId': $scope.models.currentTheme.id};
+            var data = {'lookAndFeel.themeId': service.getModels().currentTheme.id};
             if ($scope.models.currentColorScheme) {
-                data['lookAndFeel.colorSchemeId'] = $scope.models.currentColorScheme.id;
+                data['lookAndFeel.colorSchemeId'] = service.getModels().currentColorScheme.id;
             }
 
-            $http.post(initConfig.applyBindingUrl, $scope.models.lookAndFeelBinding).then(callBacks.onBindingApplied, callBacks.onRequestFailed);
+            $http.post(initConfig.applyBindingUrl, service.getModels().lookAndFeelBinding).then(callBacks.onBindingApplied, callBacks.onRequestFailed);
         }
     };
 
     {   //init
-        if (!$scope.models.lookAndFeelBinding.lookAndFeel) {
-            var lookAndFeel = new LookAndFeel();
-            lookAndFeel.companyId = $scope.models.lookAndFeelBinding.companyId;
-            $scope.models.lookAndFeelBinding.lookAndFeel = lookAndFeel;
-        }
+        service.setLookAndFeelBinding(initConfig.lookAndFeelBinding);
+        $http.get(initConfig.initLookAndFeelUrl).then(callBacks.onInitLookAndFeels, callBacks.onRequestFailed);
 
         $scope.$watch('models.currentTheme', handlers.onThemeChange);
         $scope.$watch('models.currentColorScheme', handlers.onColorSchemeChange);
-
-        $http.get(initConfig.initLookAndFeelUrl).then(callBacks.onInitLookAndFeels, callBacks.onRequestFailed);
     }
 
-};
+}

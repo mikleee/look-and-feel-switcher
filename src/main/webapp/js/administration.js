@@ -1,34 +1,22 @@
-function SelectLookAndFeelAdministrationController($scope, $http, lookAndFeelService, portletConfig) {
-    $scope.models = {
-        /**
-         * @type{[Theme]}
-         */
-        lookAndFeels: [],
-        /**
-         * @type{Theme}
-         */
-        currentTheme: null,
-        /**
-         * @type{LookAndFeelOption}
-         */
-        currentColorScheme: null,
-        message: null,
-        status: 'waiting'
-    };
+function SelectLookAndFeelAdministrationController($scope, $http, service, portletConfig) {
+    $scope.message = null;
+    $scope.status = 'waiting';
+    $scope.models = service.getModels();
+
 
     var handlers = {
         onThemeChange: function (newVal) {
-            $scope.models.currentColorScheme = lookAndFeelService.getColorSchemeToShow(newVal);
+            service.getModels().currentColorScheme = service.getPreselectedColorScheme(newVal);
         },
         onColorSchemeChange: function (newVal) {
-            $scope.models.currentColorScheme = newVal;
+            service.getModels().currentColorScheme = newVal;
         },
         showMessage: function (status, message) {
-            $scope.models.status = status;
-            $scope.models.message = message;
+            $scope.status = status;
+            $scope.message = message;
         },
         hideMessage: function () {
-            $scope.models.message = null;
+            $scope.message = null;
         }
     };
 
@@ -37,15 +25,11 @@ function SelectLookAndFeelAdministrationController($scope, $http, lookAndFeelSer
             handlers.showMessage('error', 'internal server error');
         },
         onInitLookAndFeels: function (response) {
-            if (response.data.body['lookAndFeels'].length == 0) {
+            service.setLookAndFeels(response.data.body['lookAndFeels']);
+            if (service.isNoData()) {
                 handlers.showMessage('warning', 'no available themes have been found');
             } else {
-                angular.forEach(response.data.body['lookAndFeels'], function (v, k) {
-                    $scope.models.lookAndFeels.push(new Theme().fromObject(v));
-                });
-                $scope.models.currentTheme = lookAndFeelService.getThemeToShow($scope.models.lookAndFeels);
-                $scope.models.currentColorScheme = lookAndFeelService.getColorSchemeToShow($scope.models.currentTheme);
-                $scope.models.status = 'success';
+                $scope.status = 'success';
                 handlers.hideMessage();
             }
         },
@@ -60,13 +44,13 @@ function SelectLookAndFeelAdministrationController($scope, $http, lookAndFeelSer
 
     $scope.expressions = {
         screenShotPath: function () {
-            return lookAndFeelService.getScreenshotPath($scope.models.currentTheme, $scope.models.currentColorScheme);
+            return service.getScreenshotPath();
         },
         disableFormCondition: function () {
-            return $scope.models.status == 'waiting' || $scope.models.lookAndFeels.length == 0;
+            return $scope.status == 'waiting' || service.isNoData();
         },
         messageStyle: function () {
-            switch ($scope.models.status) {
+            switch ($scope.status) {
                 case 'error':
                     return 'alert-danger';
                 case 'warning':
@@ -79,14 +63,16 @@ function SelectLookAndFeelAdministrationController($scope, $http, lookAndFeelSer
         }
     };
 
-    $scope.listeners = {};
+    $scope.listeners = {
+
+    };
 
     {   //init
+        $http.get(portletConfig.initLookAndFeelUrl).then(callBacks.onInitLookAndFeels, callBacks.onRequestFailed);
 
         $scope.$watch('models.currentTheme', handlers.onThemeChange);
         $scope.$watch('models.currentColorScheme', handlers.onColorSchemeChange);
-
-        $http.get(portletConfig.initLookAndFeelUrl).then(callBacks.onInitLookAndFeels, callBacks.onRequestFailed);
     }
+
 
 }

@@ -62,11 +62,11 @@ LookAndFeelBinding.prototype = new BaseModel();
  *
  * @constructor
  */
-function LookAndFeel(id, shown) {
+function LookAndFeel(id, shown, companyId) {
     this.id = id;
     this.themeId = null;
     this.colorSchemeId = null;
-    this.companyId = null;
+    this.companyId = companyId;
     this.shown = shown
 }
 
