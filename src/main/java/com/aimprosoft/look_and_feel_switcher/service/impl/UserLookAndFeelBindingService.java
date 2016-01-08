@@ -2,7 +2,6 @@ package com.aimprosoft.look_and_feel_switcher.service.impl;
 
 import com.aimprosoft.look_and_feel_switcher.dao.UserLookAndFeelBindingDao;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding;
-import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

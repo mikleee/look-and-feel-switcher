@@ -51,12 +51,7 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-
     <bean id="objectMapper" class="org.codehaus.jackson.map.ObjectMapper"/>
-
-    <bean class="org.springframework.context.support.ResourceBundleMessageSource">
-        <property name="basenames" value="label.label"/>
-    </bean>
 
 </beans>
 

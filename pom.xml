@@ -14,7 +14,7 @@
 
     <properties>
         <spring.version>3.0.7.RELEASE</spring.version>
-        <liferay.version>6.2.1</liferay.version>
+        <liferay.version>6.2.4</liferay.version>
         <deploy.dir>/home/misha/Work/Liferay/6.2-ce-ga4-TS</deploy.dir>
     </properties>
 

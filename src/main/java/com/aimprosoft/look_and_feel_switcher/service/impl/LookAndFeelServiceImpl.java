@@ -4,7 +4,6 @@ import com.aimprosoft.look_and_feel_switcher.dao.LookAndFeelDao;
 import com.aimprosoft.look_and_feel_switcher.exception.ApplicationException;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding;
-import com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse;
 import com.aimprosoft.look_and_feel_switcher.model.view.LookAndFeelOption;
 import com.aimprosoft.look_and_feel_switcher.model.view.ThemeOption;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelService;
@@ -22,10 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**

@@ -59,7 +59,6 @@ function LookAndFeelBinding() {
 LookAndFeelBinding.prototype = new BaseModel();
 
 /**
- *
  * @constructor
  */
 function LookAndFeel(id, shown, companyId) {
@@ -69,4 +68,13 @@ function LookAndFeel(id, shown, companyId) {
     this.companyId = companyId;
     this.shown = shown
 }
+
+/**
+ * @constructor
+ */
+function RolePermissions() {
+    this.role = '';
+    this.actions = {};
+}
+RolePermissions.prototype = new BaseModel();
 

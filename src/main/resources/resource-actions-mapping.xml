@@ -12,6 +12,9 @@
                 <action-key>VIEW</action-key>
                 <action-key>APPLY</action-key>
             </supports>
+            <site-member-defaults/>
+            <guest-defaults/>
+            <guest-unsupported/>
         </permissions>
     </model-resource>
 </resource-action-mapping>

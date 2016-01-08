@@ -2,23 +2,15 @@
  * @constructor
  */
 var LookAndFeelService = function () {
+    /**
+     * @type {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: LookAndFeelOption, permissionMap: [RolePermissions]}}
+     */
     var models = {
-        /**
-         * @type{LookAndFeelBinding}
-         */
         lookAndFeelBinding: null,
-        /**
-         * @type{[Theme]}
-         */
         lookAndFeels: [],
-        /**
-         * @type{Theme}
-         */
         currentTheme: null,
-        /**
-         * @type{LookAndFeelOption}
-         */
-        currentColorScheme: null
+        currentColorScheme: null,
+        permissionMap: []
     };
 
     var util = {

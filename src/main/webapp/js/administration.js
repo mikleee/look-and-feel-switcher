@@ -1,3 +1,10 @@
+/**
+ * @param $scope
+ * @param $http
+ * @param service
+ * @param portletConfig {{ns: String, initLookAndFeelUrl: String, permissionTableUrl: String}}
+ * @constructor
+ */
 function SelectLookAndFeelAdministrationController($scope, $http, service, portletConfig) {
     $scope.message = null;
     $scope.status = 'waiting';
@@ -9,7 +16,7 @@ function SelectLookAndFeelAdministrationController($scope, $http, service, portl
             service.getModels().currentColorScheme = service.getPreselectedColorScheme(newVal);
         },
         onColorSchemeChange: function (newVal) {
-            service.getModels().currentColorScheme = newVal;
+            listeners.fetchPermissions(newVal);
         },
         showMessage: function (status, message) {
             $scope.status = status;
@@ -22,16 +29,19 @@ function SelectLookAndFeelAdministrationController($scope, $http, service, portl
 
     var callBacks = {
         onRequestFailed: function (response) {
-            handlers.showMessage('error', 'internal server error');
+            handlers.showMessage('error', Util.getMessage('internal-server-errors'));
         },
         onInitLookAndFeels: function (response) {
             service.setLookAndFeels(response.data.body['lookAndFeels']);
             if (service.isNoData()) {
-                handlers.showMessage('warning', 'no available themes have been found');
+                handlers.showMessage('warning', Util.getMessage('no-themes-found'));
             } else {
                 $scope.status = 'success';
                 handlers.hideMessage();
             }
+        },
+        onPermissionsFetched: function (response) {
+            service.getModels().permissionMap = response.data.body['permissions'];
         },
         onBindingApplied: function (response) {
             if (response.data.status == 'error') {
@@ -63,8 +73,12 @@ function SelectLookAndFeelAdministrationController($scope, $http, service, portl
         }
     };
 
-    $scope.listeners = {
-
+    var listeners = {
+        fetchPermissions: function (lookAndFeel) {
+            if (lookAndFeel) {
+                $http.post(portletConfig.permissionTableUrl, {id: lookAndFeel.id}).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
+            }
+        }
     };
 
     {   //init

@@ -33,12 +33,12 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
 
     var callBacks = {
         onRequestFailed: function (response) {
-            handlers.showMessage('error', 'internal server error');
+            handlers.showMessage('error', Util.getMessage('internal-server-errors'));
         },
         onInitLookAndFeels: function (response) {
             service.setLookAndFeels(response.data.body['lookAndFeels']);
             if (service.isNoData()) {
-                handlers.showMessage('warning', 'no available themes have been found');
+                handlers.showMessage('warning', Util.getMessage('no-themes-found'));
             } else {
                 $scope.status = 'success';
                 handlers.hideMessage();

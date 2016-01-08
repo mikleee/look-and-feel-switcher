@@ -10,6 +10,7 @@ public class JsonResponse {
 
     private String status;
     private Map<String, Object> body = new HashMap<String, Object>();
+    private Object meta;
 
     private JsonResponse(String status) {
         this.status = status;
@@ -29,6 +30,15 @@ public class JsonResponse {
 
     public String getStatus() {
         return status;
+    }
+
+    public Object getMeta() {
+        return meta;
+    }
+
+    public JsonResponse setMeta(Object meta) {
+        this.meta = meta;
+        return this;
     }
 
     public JsonResponse put(String key, Object value) {

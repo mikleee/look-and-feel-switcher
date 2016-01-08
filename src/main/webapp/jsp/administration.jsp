@@ -8,6 +8,7 @@
 <%--@elvariable id="themeDisplay" type="com.liferay.portal.theme.ThemeDisplay"--%>
 <%--@elvariable id="screenShotPath" type="java.lang.String"--%>
 <%--@elvariable id="colorSchemes" type="java.util.List<com.liferay.portal.model.ColorScheme>"--%>
+<%--@elvariable id="actions" type="java.util.List<java.lang.String>"--%>
 
 <portlet:defineObjects/>
 
@@ -23,7 +24,7 @@
                 return {
                     ns: '${ns}',
                     initLookAndFeelUrl: '${initLookAndFeelUrl}',
-                    applyLookAndFeelMapUrl: '<portlet:resourceURL id="applyLookAndFeelsToShow"/>'
+                    permissionTableUrl: '<portlet:resourceURL id="permissionTable"/>'
                 }
             });
 </script>
@@ -89,17 +90,39 @@
                 <div class="row-fluid">
                     <div class="span5">
                         <div>
-                            <label for="${ns}themes"><%--<spring:message code="label.themes"/>--%></label>
+                            <label for="${ns}themes"><liferay-ui:message key="lfs-themes"/></label>
                             <select id="${ns}themes" class="lfb-select" ng-disabled="expressions.disableFormCondition()"
                                     ng-options="theme as theme.name for theme in models.lookAndFeels track by theme.id" ng-model="models.currentTheme"></select>
                         </div>
                         <div ng-if="models.currentTheme && models.currentTheme.hasColorSchemes()">
-                            <label for="${ns}color-schemes"><%--<spring:message code="label.color-schemes"/>--%></label>
+                            <label for="${ns}color-schemes"><liferay-ui:message key="lfs-color-schemes"/></label>
                             <select id="${ns}color-schemes" class="lfb-select" ng-disabled="expressions.disableFormCondition()"
                                     ng-options="cs as cs.name for cs in models.currentTheme.colorSchemes track by cs.id" ng-model="models.currentColorScheme"></select>
                         </div>
                         <div>
                             <img ng-src="{{expressions.screenShotPath()}}" class="lfs-screen-shot">
+                        </div>
+                    </div>
+                    <div class="span7">
+                        <div>
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead class="table-columns">
+                                    <tr>
+                                        <th><liferay-ui:message key="lfs-role"/></th>
+                                        <c:forEach items="${actions}" var="action">
+                                            <th><liferay-ui:message key="${action}"/></th>
+                                        </c:forEach>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="p in models.permissionMap track by p.role">
+                                        <td>{{p.role}}</td>
+                                        <td ng-repeat="(key, value) in p.actions">
+                                            <input type="checkbox" ng-model="value"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
