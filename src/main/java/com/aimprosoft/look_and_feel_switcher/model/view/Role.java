@@ -10,6 +10,9 @@ public class Role {
     private String name;
     private String type;
 
+    public Role() {
+    }
+
     public Role(com.liferay.portal.model.Role role) {
         name = role.getName();
         type = RoleConstants.GUEST.equals(name) ? "guest" : role.getTypeLabel();
@@ -19,8 +22,15 @@ public class Role {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getType() {
         return type;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
 }

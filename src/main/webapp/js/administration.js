@@ -2,7 +2,7 @@
  * @param $scope
  * @param $http
  * @param service
- * @param portletConfig {{ns: String, initLookAndFeelUrl: String, permissionTableUrl: String}}
+ * @param portletConfig {{ns: String, initLookAndFeelUrl: String, permissionTableUrl: String, applyPermissionsUrl: String}}
  * @constructor
  */
 function SelectLookAndFeelAdministrationController($scope, $http, service, portletConfig) {
@@ -88,7 +88,7 @@ function SelectLookAndFeelAdministrationController($scope, $http, service, portl
  * @param $scope
  * @param $http
  * @param service
- * @param portletConfig {{ns: String, initLookAndFeelUrl: String, permissionTableUrl: String}}
+ * @param portletConfig {{ns: String, initLookAndFeelUrl: String, permissionTableUrl: String, applyPermissionsUrl: String}}
  * @constructor
  */
 function LookAndFeelPermissionsController($scope, $http, service, portletConfig) {
@@ -110,6 +110,9 @@ function LookAndFeelPermissionsController($scope, $http, service, portletConfig)
     var callBacks = {
         onRequestFailed: function (response) {
             handlers.showMessage('error', Util.getMessage('internal-server-errors'));
+        },
+        onPermissionSubmitted: function (response) {
+
         }
     };
 
@@ -130,7 +133,8 @@ function LookAndFeelPermissionsController($scope, $http, service, portletConfig)
 
     $scope.listeners = {
         submitPermissions: function () {
-            alert(JSON.stringify(service.getModels().permissionMap));
+            var data = {id: 'asdasd', permissions: service.getModels().permissionMap};
+            $http.post(portletConfig.applyPermissionsUrl, data).then(callBacks.onPermissionSubmitted, callBacks.onRequestFailed);
         }
     };
 

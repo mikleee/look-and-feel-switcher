@@ -25,7 +25,8 @@
                 return {
                     ns: '${ns}',
                     initLookAndFeelUrl: '${initLookAndFeelUrl}',
-                    permissionTableUrl: '<portlet:resourceURL id="permissionTable"/>'
+                    permissionTableUrl: '<portlet:resourceURL id="permissionTable"/>',
+                    applyPermissionsUrl: '<portlet:resourceURL id="applyPermissions"/>'
                 }
             });
 </script>
@@ -77,7 +78,7 @@
                                     <tr ng-repeat="p in models.permissionMap track by p.role.name" class="{{'lfr-role lfr-role-' + p.role.type}}">
                                         <td class="first">{{p.role.name}}</td>
                                         <td ng-repeat="(key, value) in p.actions">
-                                            <input type="checkbox" ng-model="value"/>
+                                            <input type="checkbox" ng-model="p.actions[key]"/>
                                         </td>
                                     </tr>
                                 </tbody>

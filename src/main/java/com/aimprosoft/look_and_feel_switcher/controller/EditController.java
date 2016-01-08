@@ -3,11 +3,12 @@ package com.aimprosoft.look_and_feel_switcher.controller;
 import com.aimprosoft.look_and_feel_switcher.exception.ApplicationException;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
 import com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse;
+import com.aimprosoft.look_and_feel_switcher.model.view.ResourcePermission;
 import com.aimprosoft.look_and_feel_switcher.model.view.Role;
 import com.aimprosoft.look_and_feel_switcher.model.view.RolePermission;
 import com.aimprosoft.look_and_feel_switcher.model.view.ThemeOption;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelPermissionService;
-import com.aimprosoft.look_and_feel_switcher.utils.LookAndFeelsTypeReference;
+import com.aimprosoft.look_and_feel_switcher.utils.ResourcePermissionTypeReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -50,10 +51,10 @@ public class EditController extends BaseController {
         objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.success().put("lookAndFeels", lookAndFeels));
     }
 
-    @ResourceMapping("applyLookAndFeelsToShow")
-    public void applyLookAndFeelsToShow(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
-        List<LookAndFeel> lookAndFeels = objectMapper.readValue(request.getPortletInputStream(), new LookAndFeelsTypeReference());
-        lookAndFeelService.updateLookAndFeelsToShow(lookAndFeels);
+    @ResourceMapping("applyPermissions")
+    public void applyPermissions(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
+        ResourcePermission resourcePermission = objectMapper.readValue(request.getPortletInputStream(), new ResourcePermissionTypeReference());
+        System.out.println(1);
     }
 
     @ResourceMapping("permissionTable") //todo collect request
