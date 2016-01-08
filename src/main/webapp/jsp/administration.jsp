@@ -20,6 +20,7 @@
 <script>
     angular.module('${ns}lookAndFeelAdministration', ['lookAndFeelServices'])
             .controller('selectLookAndFeelAdministrationController', ['$scope', '$http', 'lookAndFeelService', 'portletConfig', SelectLookAndFeelAdministrationController])
+            .controller('lookAndFeelPermissionsController', ['$scope', '$http', 'lookAndFeelService', 'portletConfig', LookAndFeelPermissionsController])
             .service('portletConfig', function () {
                 return {
                     ns: '${ns}',
@@ -29,66 +30,14 @@
             });
 </script>
 
-
-<%--<div ng-app="${ns}lookAndFeelAdministration" class="lfs-container">--%>
-<%--<div ng-controller="controller">--%>
-<%--<div id="${ns}error-message"></div>--%>
-
-<%--<div class="row-fluid lfs-container">--%>
-<%--<div class="navbar navbar-inner container-fluid">--%>
-<%--<div class="row-fluid">--%>
-<%--<div>--%>
-<%--<p class="span6 navbar-text">Look and feel to show</p>--%>
-<%--</div>--%>
-<%--<div class="span2 offset4">--%>
-<%--<button type="button" class="btn btn-primary navbar-btn" ng-click="listeners.applyMap()">Apply</button>--%>
-<%--</div>--%>
-<%--</div>--%>
-<%--</div>--%>
-<%--<div class="look-and-feel-map" ng-cloak>--%>
-<%--<div class="theme-row" ng-repeat="theme in models.lookAndFeels">--%>
-<%--<div class="row-fluid">--%>
-<%--<div class="span6">--%>
-<%--<div class="row-fluid">--%>
-<%--<div class="span1">--%>
-<%--<input id="{{expressions.nsValue('theme'+theme.id)}}" type="checkbox" ng-model="theme.selected">--%>
-<%--</div>--%>
-<%--<div class="span7">--%>
-<%--<label for="{{expressions.nsValue('theme'+theme.id)}}">{{theme.name}}</label>--%>
-<%--</div>--%>
-<%--&lt;%&ndash;<div class="span4" ng-if="!theme['colorSchemes'] || theme['colorSchemes'].length == 0">&ndash;%&gt;--%>
-<%--&lt;%&ndash;<img ng-src="{{theme['screenShotPath']}}"/>&ndash;%&gt;--%>
-<%--&lt;%&ndash;</div>&ndash;%&gt;--%>
-<%--</div>--%>
-<%--</div>--%>
-<%--<div class="span6" ng-if="theme.hasColorSchemes()">--%>
-<%--<div class="row-fluid" ng-repeat="cs in theme.colorSchemes">--%>
-<%--<div class="span1">--%>
-<%--<input id="{{expressions.nsValue('cs'+cs.id)}}" type="checkbox" ng-model="cs.selected">--%>
-<%--</div>--%>
-<%--<div class="span7">--%>
-<%--<label for="{{expressions.nsValue('cs'+cs.id)}}">{{cs.name}}</label>--%>
-<%--</div>--%>
-<%--&lt;%&ndash;<div class="span4">&ndash;%&gt;--%>
-<%--&lt;%&ndash;<img ng-src="{{cs['screenShotPath']}}"/>&ndash;%&gt;--%>
-<%--&lt;%&ndash;</div>&ndash;%&gt;--%>
-<%--</div>--%>
-<%--</div>--%>
-<%--</div>--%>
-<%--</div>--%>
-<%--</div>--%>
-<%--</div>--%>
-<%--</div>--%>
-<%--</div>--%>
-
-<div ng-app="${ns}lookAndFeelAdministration">
+<div ng-app="${ns}lookAndFeelAdministration" class="aui">
 
     <div class="lfs-container" ng-controller="selectLookAndFeelAdministrationController">
         <div>
             <div ng-if="models.message && models.status != 'waiting'" class="alert" ng-class="expressions.messageStyle()" ng-bind="models.message"></div>
             <div>
                 <div class="row-fluid">
-                    <div class="span5">
+                    <div class="span4">
                         <div>
                             <label for="${ns}themes"><liferay-ui:message key="lfs-themes"/></label>
                             <select id="${ns}themes" class="lfb-select" ng-disabled="expressions.disableFormCondition()"
@@ -103,7 +52,17 @@
                             <img ng-src="{{expressions.screenShotPath()}}" class="lfs-screen-shot">
                         </div>
                     </div>
-                    <div class="span7">
+                    <div class="span8" ng-controller="lookAndFeelPermissionsController">
+                        <div class="navbar navbar-inner container-fluid">
+                            <div class="row-fluid">
+                                <div>
+                                    <p class="span6 navbar-text"><liferay-ui:message key="lfs-look-and-feel-permissions"/></p>
+                                </div>
+                                <div class="span2 offset4">
+                                    <button type="button" class="btn btn-primary navbar-btn" ng-click="listeners.submitPermissions()"><liferay-ui:message key="submit"/></button>
+                                </div>
+                            </div>
+                        </div>
                         <div>
                             <table class="table table-bordered table-hover table-striped">
                                 <thead class="table-columns">
@@ -114,9 +73,9 @@
                                         </c:forEach>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr ng-repeat="p in models.permissionMap track by p.role">
-                                        <td>{{p.role}}</td>
+                                <tbody class="table-data">
+                                    <tr ng-repeat="p in models.permissionMap track by p.role.name" class="{{'lfr-role lfr-role-' + p.role.type}}">
+                                        <td class="first">{{p.role.name}}</td>
                                         <td ng-repeat="(key, value) in p.actions">
                                             <input type="checkbox" ng-model="value"/>
                                         </td>

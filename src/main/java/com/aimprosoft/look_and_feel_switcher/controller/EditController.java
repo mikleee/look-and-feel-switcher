@@ -3,13 +3,13 @@ package com.aimprosoft.look_and_feel_switcher.controller;
 import com.aimprosoft.look_and_feel_switcher.exception.ApplicationException;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
 import com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse;
+import com.aimprosoft.look_and_feel_switcher.model.view.Role;
 import com.aimprosoft.look_and_feel_switcher.model.view.RolePermission;
 import com.aimprosoft.look_and_feel_switcher.model.view.ThemeOption;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelPermissionService;
 import com.aimprosoft.look_and_feel_switcher.utils.LookAndFeelsTypeReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.model.Role;
 import com.liferay.portal.theme.ThemeDisplay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -63,7 +63,7 @@ public class EditController extends BaseController {
 
         List<RolePermission> permissions = new ArrayList<RolePermission>();
         for (Role role : permissionService.getRoles(themeDisplay)) {
-            RolePermission rolePermission = new RolePermission(role.getName());
+            RolePermission rolePermission = new RolePermission(role);
             for (String action : permissionService.getLookAndFeelActions()) {
                 boolean hasPermission = permissionService.hasPermission(themeDisplay, model.getId().toString(), action);
                 rolePermission.put(action, hasPermission);

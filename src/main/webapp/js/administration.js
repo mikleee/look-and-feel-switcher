@@ -42,13 +42,6 @@ function SelectLookAndFeelAdministrationController($scope, $http, service, portl
         },
         onPermissionsFetched: function (response) {
             service.getModels().permissionMap = response.data.body['permissions'];
-        },
-        onBindingApplied: function (response) {
-            if (response.data.status == 'error') {
-                handlers.showMessage('error', response.data.body);
-            } else {
-                window.location.reload();
-            }
         }
     };
 
@@ -88,5 +81,57 @@ function SelectLookAndFeelAdministrationController($scope, $http, service, portl
         $scope.$watch('models.currentColorScheme', handlers.onColorSchemeChange);
     }
 
+}
+
+
+/**
+ * @param $scope
+ * @param $http
+ * @param service
+ * @param portletConfig {{ns: String, initLookAndFeelUrl: String, permissionTableUrl: String}}
+ * @constructor
+ */
+function LookAndFeelPermissionsController($scope, $http, service, portletConfig) {
+    $scope.message = null;
+    $scope.status = 'waiting';
+    $scope.models = service.getModels();
+
+
+    var handlers = {
+        showMessage: function (status, message) {
+            $scope.status = status;
+            $scope.message = message;
+        },
+        hideMessage: function () {
+            $scope.message = null;
+        }
+    };
+
+    var callBacks = {
+        onRequestFailed: function (response) {
+            handlers.showMessage('error', Util.getMessage('internal-server-errors'));
+        }
+    };
+
+    $scope.expressions = {
+        messageStyle: function () {
+            switch ($scope.status) {
+                case 'error':
+                    return 'alert-danger';
+                case 'warning':
+                    return 'alert-warning';
+                case 'success':
+                    return 'alert-success';
+                default :
+                    return '';
+            }
+        }
+    };
+
+    $scope.listeners = {
+        submitPermissions: function () {
+            alert(JSON.stringify(service.getModels().permissionMap));
+        }
+    };
 
 }

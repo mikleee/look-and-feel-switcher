@@ -76,7 +76,7 @@ var LookAndFeelService = function () {
         return util.getPreselectedColorScheme(currentTheme);
     };
     /**
-     * @returns {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: LookAndFeelOption}}
+     * @returns {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: LookAndFeelOption, permissionMap: [RolePermissions]}}
      */
     this.getModels = function () {
         return models;

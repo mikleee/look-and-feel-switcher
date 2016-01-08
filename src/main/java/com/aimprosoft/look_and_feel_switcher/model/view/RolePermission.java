@@ -1,5 +1,6 @@
 package com.aimprosoft.look_and_feel_switcher.model.view;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,21 +9,21 @@ import java.util.Map;
  */
 public class RolePermission {
 
-    private String role;
+    private Role role;
     private Map<String, Boolean> actions = new HashMap<String, Boolean>();
 
     public RolePermission() {
     }
 
-    public RolePermission(String role) {
+    public RolePermission(Role role) {
         this.role = role;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

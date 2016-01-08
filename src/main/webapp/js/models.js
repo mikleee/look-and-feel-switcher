@@ -73,7 +73,10 @@ function LookAndFeel(id, shown, companyId) {
  * @constructor
  */
 function RolePermissions() {
-    this.role = '';
+    /**
+     * @type {{name: String, type: String}}
+     */
+    this.role = {};
     this.actions = {};
 }
 RolePermissions.prototype = new BaseModel();
