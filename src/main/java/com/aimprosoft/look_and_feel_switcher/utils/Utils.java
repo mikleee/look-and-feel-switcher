@@ -44,6 +44,14 @@ public class Utils {
         return themeDisplay;
     }
 
+    public static long getCompanyId(ServletRequest request) {
+        return getThemeDisplay(request).getCompanyId();
+    }
+
+    public static long getCompanyId(PortletRequest request) {
+        return getThemeDisplay(request).getCompanyId();
+    }
+
 
     public static String spentTime(long start) {
         return "[" + (System.currentTimeMillis() - start) / 1000. + "] sec.";

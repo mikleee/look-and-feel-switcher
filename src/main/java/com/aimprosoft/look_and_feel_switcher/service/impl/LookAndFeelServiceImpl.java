@@ -4,8 +4,10 @@ import com.aimprosoft.look_and_feel_switcher.dao.LookAndFeelDao;
 import com.aimprosoft.look_and_feel_switcher.exception.ApplicationException;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding;
+import com.aimprosoft.look_and_feel_switcher.model.view.Action;
 import com.aimprosoft.look_and_feel_switcher.model.view.LookAndFeelOption;
 import com.aimprosoft.look_and_feel_switcher.model.view.ThemeOption;
+import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelPermissionService;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelService;
 import com.aimprosoft.look_and_feel_switcher.utils.LookAndFeelUtils;
 import com.aimprosoft.look_and_feel_switcher.utils.Utils;
@@ -13,6 +15,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.ColorScheme;
 import com.liferay.portal.model.Company;
 import com.liferay.portal.model.Theme;
+import com.liferay.portal.model.User;
 import com.liferay.portal.service.CompanyLocalServiceUtil;
 import com.liferay.portal.service.ThemeLocalServiceUtil;
 import org.apache.log4j.Logger;
@@ -40,6 +43,9 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
 
     @Autowired
     private LookAndFeelDao lookAndFeelDao;
+    @Autowired
+    private LookAndFeelPermissionService permissionService;
+
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -57,15 +63,16 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
         List<Integer> ids = lookAndFeelDao.getIds(companyId);
 
         for (Theme theme : ThemeLocalServiceUtil.getThemes(companyId)) {
-            if(SKIPPED_THEMES.contains(theme.getThemeId())){
+            if (SKIPPED_THEMES.contains(theme.getThemeId())) {
                 continue;
             }
 
             LookAndFeel lookAndFeelTheme = lookAndFeelDao.findTheme(theme.getThemeId(), companyId);
 
             if (lookAndFeelTheme == null) {
-                lookAndFeelTheme = new LookAndFeel(theme, companyId, true);
+                lookAndFeelTheme = new LookAndFeel(theme, companyId);
                 lookAndFeelDao.save(lookAndFeelTheme);
+                permissionService.addAllPermissions(lookAndFeelTheme);
                 LOGGER.info("Look and feels " + lookAndFeelTheme + " has been registered");
             } else {
                 ids.remove(lookAndFeelTheme.getId());
@@ -74,8 +81,9 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
             for (ColorScheme colorScheme : theme.getColorSchemes()) {
                 LookAndFeel lookAndFeelColorScheme = lookAndFeelDao.findColorScheme(theme.getThemeId(), colorScheme.getColorSchemeId(), companyId);
                 if (lookAndFeelColorScheme == null) {
-                    lookAndFeelColorScheme = new LookAndFeel(theme, colorScheme, companyId, true);
+                    lookAndFeelColorScheme = new LookAndFeel(theme, colorScheme, companyId);
                     lookAndFeelDao.save(lookAndFeelColorScheme);
+                    permissionService.addAllPermissions(lookAndFeelColorScheme);
                     LOGGER.info("Look and feels " + lookAndFeelColorScheme + " has been registered");
                 } else {
                     ids.remove(lookAndFeelColorScheme.getId());
@@ -83,7 +91,7 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
             }
         }
 
-        if (!ids.isEmpty()) {
+        if (!ids.isEmpty()) { //todo remove permissions
             for (Integer id : ids) {
                 lookAndFeelDao.delete(id);
             }
@@ -92,11 +100,11 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
         LOGGER.debug("Look and feel synchronizing for " + companyId + " finished in " + Utils.spentTime(start));
     }
 
-    public List<LookAndFeel> findAllThemes(long companyId, long userId) throws ApplicationException {
+    public List<LookAndFeel> findAllThemes(long companyId) throws ApplicationException {
         synchronize(companyId);
         List<LookAndFeel> result = new ArrayList<LookAndFeel>();
 
-        for (LookAndFeel displayedTheme : lookAndFeelDao.findDisplayedThemes(companyId)) {
+        for (LookAndFeel displayedTheme : lookAndFeelDao.findAllThemes(companyId)) {
             result.add(displayedTheme);
         }
 
@@ -116,26 +124,21 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
     }
 
     @Override
-    public void updateLookAndFeelsToShow(List<LookAndFeel> lookAndFeels) {
-        for (LookAndFeel lookAndFeel : lookAndFeels) {
-            LookAndFeel persisted = lookAndFeelDao.findOne(lookAndFeel.getId());
-            persisted.setShown(lookAndFeel.getShown());
-            lookAndFeelDao.save(persisted);
-        }
-    }
-
-    @Override
-    public List<ThemeOption> getAvailableLookAndFeels(LookAndFeelBinding fromView, LookAndFeelBinding persisted, LookAndFeel portalDefault) throws ApplicationException {
+    public List<ThemeOption> getAvailableLookAndFeels(LookAndFeelBinding fromView, LookAndFeelBinding persisted, LookAndFeel portalDefault, User user) throws ApplicationException {
         List<ThemeOption> lookAndFeels = new ArrayList<ThemeOption>();
 
         long companyId = fromView.getLookAndFeel().getCompanyId();
-        for (LookAndFeel themeLookAndFeel : findAllThemes(companyId, fromView.getUserId())) {
-            ThemeOption themeOption = createThemeOption(themeLookAndFeel, persisted, portalDefault.getThemeId());
-            lookAndFeels.add(themeOption);
+        for (LookAndFeel themeLookAndFeel : findAllThemes(companyId)) {
+            ThemeOption themeOption = createThemeOption(themeLookAndFeel, persisted, portalDefault.getThemeId(), user);
+            if (themeOption.getAllowedActions().contains(Action.VIEW)) {
+                lookAndFeels.add(themeOption);
 
-            for (LookAndFeel csLookAndFeel : lookAndFeelDao.findColorSchemes(themeLookAndFeel.getThemeId(), companyId)) {
-                LookAndFeelOption colorSchemeOption = createColorSchemeOption(csLookAndFeel, persisted, portalDefault.getColorSchemeId());
-                themeOption.addColorScheme(colorSchemeOption);
+                for (LookAndFeel csLookAndFeel : lookAndFeelDao.findColorSchemes(themeLookAndFeel.getThemeId(), companyId)) {
+                    LookAndFeelOption colorSchemeOption = createColorSchemeOption(csLookAndFeel, persisted, portalDefault.getColorSchemeId(), user);
+                    if (colorSchemeOption.getAllowedActions().contains(Action.VIEW)) {
+                        themeOption.addColorScheme(colorSchemeOption);
+                    }
+                }
             }
         }
         return lookAndFeels;
@@ -148,23 +151,20 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
 
         for (LookAndFeel themeLookAndFeel : lookAndFeelDao.findThemes(companyId)) {
             ThemeOption themeOption = createThemeOption(themeLookAndFeel);
-
             for (LookAndFeel csLookAndFeel : lookAndFeelDao.findColorSchemes(themeLookAndFeel.getThemeId(), companyId)) {
                 LookAndFeelOption colorSchemeOption = createColorSchemeOption(csLookAndFeel);
                 themeOption.addColorScheme(colorSchemeOption);
             }
-
             lookAndFeels.add(themeOption);
         }
         return lookAndFeels;
     }
 
-    private ThemeOption createThemeOption(LookAndFeel themeLookAndFeel, LookAndFeelBinding persisted, String defaultThemeId) {
-        Theme theme = themeLookAndFeel.getTheme();
-        ThemeOption themeOption = new ThemeOption(theme.getThemeId(), theme.getName());
-        themeOption.setScreenShotPath(LookAndFeelUtils.getScreenShotPath(theme));
-        themeOption.setBind(theme.getThemeId().equals(persisted.getLookAndFeel().getThemeId()));
-        themeOption.setPortalDefault(theme.getThemeId().equals(defaultThemeId));
+    private ThemeOption createThemeOption(LookAndFeel themeLookAndFeel, LookAndFeelBinding persisted, String defaultThemeId, User user) throws ApplicationException {
+        ThemeOption themeOption = createThemeOption(themeLookAndFeel);
+        themeOption.setBind(themeOption.getId().equals(persisted.getLookAndFeel().getThemeId()));
+        themeOption.setPortalDefault(themeOption.getId().equals(defaultThemeId));
+        themeOption.setAllowedActions(permissionService.getAllowedActions(themeLookAndFeel, user));
         return themeOption;
     }
 
@@ -172,16 +172,14 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
         Theme theme = themeLookAndFeel.getTheme();
         ThemeOption themeOption = new ThemeOption(themeLookAndFeel.getId(), theme.getName());
         themeOption.setScreenShotPath(LookAndFeelUtils.getScreenShotPath(theme));
-        themeOption.setSelected(themeLookAndFeel.getShown());
         return themeOption;
     }
 
-    private LookAndFeelOption createColorSchemeOption(LookAndFeel csLookAndFeel, LookAndFeelBinding persisted, String defaultColorSchemeId) {
-        ColorScheme colorScheme = csLookAndFeel.getColorScheme();
-        LookAndFeelOption colorSchemeOption = new LookAndFeelOption(colorScheme.getColorSchemeId(), colorScheme.getName());
-        colorSchemeOption.setScreenShotPath(LookAndFeelUtils.getScreenShotPath(colorScheme));
-        colorSchemeOption.setBind(colorScheme.getColorSchemeId().equals(persisted.getLookAndFeel().getColorSchemeId()));
-        colorSchemeOption.setPortalDefault(colorScheme.getColorSchemeId().equals(defaultColorSchemeId));
+    private LookAndFeelOption createColorSchemeOption(LookAndFeel csLookAndFeel, LookAndFeelBinding persisted, String defaultColorSchemeId, User user) throws ApplicationException {
+        LookAndFeelOption colorSchemeOption = createColorSchemeOption(csLookAndFeel);
+        colorSchemeOption.setBind(colorSchemeOption.getId().equals(persisted.getLookAndFeel().getColorSchemeId()));
+        colorSchemeOption.setPortalDefault(colorSchemeOption.getId().equals(defaultColorSchemeId));
+        colorSchemeOption.setAllowedActions(permissionService.getAllowedActions(csLookAndFeel, user));
         return colorSchemeOption;
     }
 
@@ -189,7 +187,6 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
         ColorScheme colorScheme = csLookAndFeel.getColorScheme();
         LookAndFeelOption colorSchemeOption = new LookAndFeelOption(csLookAndFeel.getId(), colorScheme.getName());
         colorSchemeOption.setScreenShotPath(LookAndFeelUtils.getScreenShotPath(colorScheme));
-        colorSchemeOption.setSelected(csLookAndFeel.getShown());
         return colorSchemeOption;
     }
 

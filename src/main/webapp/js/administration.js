@@ -2,7 +2,7 @@
  * @param $scope
  * @param $http
  * @param service
- * @param portletConfig {{ns: String, initLookAndFeelUrl: String, permissionTableUrl: String, applyPermissionsUrl: String}}
+ * @param portletConfig {{ns: String, initLookAndFeelUrl: String, fetchPermissionsUrl: String, applyPermissionsUrl: String}}
  * @constructor
  */
 function SelectLookAndFeelAdministrationController($scope, $http, service, portletConfig) {
@@ -14,9 +14,6 @@ function SelectLookAndFeelAdministrationController($scope, $http, service, portl
     var handlers = {
         onThemeChange: function (newVal) {
             service.getModels().currentColorScheme = service.getPreselectedColorScheme(newVal);
-        },
-        onColorSchemeChange: function (newVal) {
-            listeners.fetchPermissions(newVal);
         },
         showMessage: function (status, message) {
             $scope.status = status;
@@ -38,10 +35,8 @@ function SelectLookAndFeelAdministrationController($scope, $http, service, portl
             } else {
                 $scope.status = 'success';
                 handlers.hideMessage();
+                $scope.$broadcast(Util.events.FETCH_PERMISSIONS_REQUESTED);
             }
-        },
-        onPermissionsFetched: function (response) {
-            service.getModels().permissionMap = response.data.body['permissions'];
         }
     };
 
@@ -66,11 +61,9 @@ function SelectLookAndFeelAdministrationController($scope, $http, service, portl
         }
     };
 
-    var listeners = {
-        fetchPermissions: function (lookAndFeel) {
-            if (lookAndFeel) {
-                $http.post(portletConfig.permissionTableUrl, {id: lookAndFeel.id}).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
-            }
+    $scope.listeners = {
+        onLookAndFeelChange: function () {
+            return $scope.$broadcast(Util.events.FETCH_PERMISSIONS_REQUESTED);
         }
     };
 
@@ -88,7 +81,7 @@ function SelectLookAndFeelAdministrationController($scope, $http, service, portl
  * @param $scope
  * @param $http
  * @param service
- * @param portletConfig {{ns: String, initLookAndFeelUrl: String, permissionTableUrl: String, applyPermissionsUrl: String}}
+ * @param portletConfig {{ns: String, initLookAndFeelUrl: String, fetchPermissionsUrl: String, applyPermissionsUrl: String}}
  * @constructor
  */
 function LookAndFeelPermissionsController($scope, $http, service, portletConfig) {
@@ -112,7 +105,21 @@ function LookAndFeelPermissionsController($scope, $http, service, portletConfig)
             handlers.showMessage('error', Util.getMessage('internal-server-errors'));
         },
         onPermissionSubmitted: function (response) {
+            $scope.status = 'success';
+        },
+        onPermissionsFetched: function (response) {
+            service.getModels().permissionMap = response.data.body['permissions']['permissions'];
+            $scope.status = 'success';
+        }
+    };
 
+    var listeners = {
+        fetchPermissions: function () {
+            var activeLookAndFeel = service.getActiveLookAndFeel();
+            if (activeLookAndFeel) {
+                $scope.status = 'waiting';
+                $http.post(portletConfig.fetchPermissionsUrl, {id: activeLookAndFeel.id}).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
+            }
         }
     };
 
@@ -128,12 +135,19 @@ function LookAndFeelPermissionsController($scope, $http, service, portletConfig)
                 default :
                     return '';
             }
+        },
+        disableCondition: function () {
+            return $scope.status == 'waiting';
         }
     };
 
+    $scope.$on(Util.events.FETCH_PERMISSIONS_REQUESTED, listeners.fetchPermissions);
+
     $scope.listeners = {
         submitPermissions: function () {
-            var data = {id: 'asdasd', permissions: service.getModels().permissionMap};
+            $scope.status = 'waiting';
+            var activeLookAndFeel = service.getActiveLookAndFeel();
+            var data = {id: activeLookAndFeel ? activeLookAndFeel.id : null, permissions: service.getModels().permissionMap};
             $http.post(portletConfig.applyPermissionsUrl, data).then(callBacks.onPermissionSubmitted, callBacks.onRequestFailed);
         }
     };

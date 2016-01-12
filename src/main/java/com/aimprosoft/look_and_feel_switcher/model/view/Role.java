@@ -7,6 +7,7 @@ import com.liferay.portal.model.RoleConstants;
  */
 public class Role {
 
+    private long id;
     private String name;
     private String type;
 
@@ -14,8 +15,17 @@ public class Role {
     }
 
     public Role(com.liferay.portal.model.Role role) {
+        id = role.getRoleId();
         name = role.getName();
         type = RoleConstants.GUEST.equals(name) ? "guest" : role.getTypeLabel();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

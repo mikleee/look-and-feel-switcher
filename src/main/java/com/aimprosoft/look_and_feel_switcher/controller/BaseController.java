@@ -2,6 +2,7 @@ package com.aimprosoft.look_and_feel_switcher.controller;
 
 import com.aimprosoft.look_and_feel_switcher.exception.ApplicationException;
 import com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse;
+import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelPermissionService;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelService;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -24,11 +25,13 @@ public abstract class BaseController {
     protected ObjectMapper objectMapper;
     @Autowired
     protected LookAndFeelService lookAndFeelService;
+    @Autowired
+    protected LookAndFeelPermissionService permissionService;
 
 
     @ExceptionHandler({ApplicationException.class})
     public void handleApplicationException(ApplicationException e, ResourceResponse response) throws IOException {
-        logger.warn(e.getMessage());
+        logger.warn(e.getMessage(), e);
         objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.error(e.getMessage()));
     }
 

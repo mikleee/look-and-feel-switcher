@@ -3,9 +3,7 @@ package com.aimprosoft.look_and_feel_switcher.controller;
 import com.aimprosoft.look_and_feel_switcher.exception.ApplicationException;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
 import com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse;
-import com.aimprosoft.look_and_feel_switcher.model.view.ResourcePermission;
-import com.aimprosoft.look_and_feel_switcher.model.view.Role;
-import com.aimprosoft.look_and_feel_switcher.model.view.RolePermission;
+import com.aimprosoft.look_and_feel_switcher.model.view.ResourcePermissions;
 import com.aimprosoft.look_and_feel_switcher.model.view.ThemeOption;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelPermissionService;
 import com.aimprosoft.look_and_feel_switcher.utils.ResourcePermissionTypeReference;
@@ -24,9 +22,9 @@ import javax.portlet.RenderRequest;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
+import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getCompanyId;
 import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getThemeDisplay;
 
 /**
@@ -53,25 +51,14 @@ public class EditController extends BaseController {
 
     @ResourceMapping("applyPermissions")
     public void applyPermissions(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
-        ResourcePermission resourcePermission = objectMapper.readValue(request.getPortletInputStream(), new ResourcePermissionTypeReference());
-        System.out.println(1);
+        ResourcePermissions resourcePermissions = objectMapper.readValue(request.getPortletInputStream(), new ResourcePermissionTypeReference());
+        permissionService.applyPermissions(resourcePermissions, getCompanyId(request));
     }
 
     @ResourceMapping("permissionTable") //todo collect request
     public void permissionTable(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
         LookAndFeel model = objectMapper.readValue(request.getPortletInputStream(), LookAndFeel.class);
-        ThemeDisplay themeDisplay = getThemeDisplay(request);
-
-        List<RolePermission> permissions = new ArrayList<RolePermission>();
-        for (Role role : permissionService.getRoles(themeDisplay)) {
-            RolePermission rolePermission = new RolePermission(role);
-            for (String action : permissionService.getLookAndFeelActions()) {
-                boolean hasPermission = permissionService.hasPermission(themeDisplay, model.getId().toString(), action);
-                rolePermission.put(action, hasPermission);
-            }
-            permissions.add(rolePermission);
-        }
-
+        ResourcePermissions permissions = permissionService.getPermissions(getThemeDisplay(request).getCompanyId(), model.getId());
         objectMapper.writeValue(response.getWriter(), JsonResponse.success().put("permissions", permissions));
     }
 

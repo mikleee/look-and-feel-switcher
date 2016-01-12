@@ -87,6 +87,12 @@ var LookAndFeelService = function () {
     this.isNoData = function () {
         return models.lookAndFeels.length == 0;
     };
+    /**
+     * @returns {LookAndFeel}
+     */
+    this.getActiveLookAndFeel = function () {
+        return models.currentColorScheme ? models.currentColorScheme : models.currentTheme;
+    };
 
 };
 

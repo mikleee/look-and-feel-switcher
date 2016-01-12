@@ -1,8 +1,10 @@
 package com.aimprosoft.look_and_feel_switcher.model.view;
 
 
-import java.util.HashMap;
-import java.util.Map;
+import org.codehaus.jackson.annotate.JsonIgnore;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * crated by m.tkachenko on 08.01.16 15:14
@@ -10,7 +12,7 @@ import java.util.Map;
 public class RolePermission {
 
     private Role role;
-    private Map<String, Boolean> actions = new HashMap<String, Boolean>();
+    private List<Action> actions = new ArrayList<Action>();
 
     public RolePermission() {
     }
@@ -27,16 +29,25 @@ public class RolePermission {
         this.role = role;
     }
 
-    public Map<String, Boolean> getActions() {
+    public List<Action> getActions() {
         return actions;
     }
 
-    public void setActions(Map<String, Boolean> actions) {
+    public void setActions(List<Action> actions) {
         this.actions = actions;
     }
 
-    public void put(String action, Boolean hasPermission) {
-        actions.put(action, hasPermission);
+    public void put(Action action) {
+        actions.add(action);
+    }
+
+    @JsonIgnore
+    public String[] getActionIds() {
+        String[] result = new String[actions.size()];
+        for (int i = 0; i < actions.size(); i++) {
+            result[i] = actions.get(i).getName();
+        }
+        return result;
     }
 
 }

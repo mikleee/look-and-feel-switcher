@@ -4,6 +4,7 @@ import com.aimprosoft.look_and_feel_switcher.exception.ApplicationException;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding;
 import com.aimprosoft.look_and_feel_switcher.model.view.ThemeOption;
+import com.liferay.portal.model.User;
 
 import java.util.List;
 
@@ -18,9 +19,7 @@ public interface LookAndFeelService {
 
     LookAndFeel find(LookAndFeel lookAndFeel);
 
-    void updateLookAndFeelsToShow(List<LookAndFeel> lookAndFeels);
-
-    List<ThemeOption> getAvailableLookAndFeels(LookAndFeelBinding fromView, LookAndFeelBinding persisted, LookAndFeel portalDefault) throws ApplicationException;
+    List<ThemeOption> getAvailableLookAndFeels(LookAndFeelBinding fromView, LookAndFeelBinding persisted, LookAndFeel portalDefault, User user) throws ApplicationException;
 
     List<ThemeOption> getAllLookAndFeels(Long companyId) throws ApplicationException;
 

@@ -96,7 +96,7 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
 
     {   //init
         service.setLookAndFeelBinding(initConfig.lookAndFeelBinding);
-        $http.get(initConfig.initLookAndFeelUrl).then(callBacks.onPermissionSubmitted, callBacks.onRequestFailed);
+        $http.get(initConfig.initLookAndFeelUrl).then(callBacks.onInitLookAndFeels, callBacks.onRequestFailed);
 
         $scope.$watch('models.currentTheme', handlers.onThemeChange);
         $scope.$watch('models.currentColorScheme', handlers.onColorSchemeChange);

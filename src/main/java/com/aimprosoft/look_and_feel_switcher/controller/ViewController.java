@@ -84,7 +84,7 @@ public class ViewController extends BaseController {
             persisted = LookAndFeelService.NULL_BINDING;
         }
 
-        List<ThemeOption> lookAndFeels = lookAndFeelService.getAvailableLookAndFeels(fromView, persisted, portalDefault);
+        List<ThemeOption> lookAndFeels = lookAndFeelService.getAvailableLookAndFeels(fromView, persisted, portalDefault, getThemeDisplay(request).getUser());
 
         objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.success()
                 .put("currentBinding", persisted.getId())

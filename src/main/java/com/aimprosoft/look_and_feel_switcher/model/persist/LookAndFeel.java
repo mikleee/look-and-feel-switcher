@@ -33,8 +33,6 @@ public class LookAndFeel implements PersistModel<Integer> {
     private String colorSchemeId;
     @Column(name = "company_id")
     private Long companyId;
-    @Column(name = "shown")
-    private Boolean shown = true;
     @OneToMany(mappedBy = "lookAndFeel")
     private List<LookAndFeelBinding> bindings;
 
@@ -77,14 +75,6 @@ public class LookAndFeel implements PersistModel<Integer> {
 
     public void setCompanyId(Long companyId) {
         this.companyId = companyId;
-    }
-
-    public Boolean getShown() {
-        return shown;
-    }
-
-    public void setShown(Boolean hidden) {
-        this.shown = hidden;
     }
 
     @JsonIgnore
@@ -135,22 +125,19 @@ public class LookAndFeel implements PersistModel<Integer> {
             sb.append(", colorSchemeId=").append(colorSchemeId);
         if (companyId != null)
             sb.append(", companyId=").append(companyId);
-        if (shown != null)
-            sb.append(", shown=").append(shown);
         return sb.toString();
     }
 
     public LookAndFeel() {
     }
 
-    public LookAndFeel(Theme theme, Long companyId, boolean shown) {
+    public LookAndFeel(Theme theme, Long companyId) {
         this.themeId = theme.getThemeId();
         this.companyId = companyId;
-        this.shown = shown;
     }
 
-    public LookAndFeel(Theme theme, ColorScheme colorScheme, Long companyId, boolean shown) {
-        this(theme, companyId, shown);
+    public LookAndFeel(Theme theme, ColorScheme colorScheme, Long companyId) {
+        this(theme, companyId);
         this.colorSchemeId = colorScheme.getColorSchemeId();
     }
 
