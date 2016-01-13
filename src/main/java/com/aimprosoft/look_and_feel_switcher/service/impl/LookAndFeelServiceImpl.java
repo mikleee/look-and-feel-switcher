@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -119,7 +120,7 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
     public LookAndFeel find(LookAndFeel lookAndFeel) throws ApplicationException {
         LookAndFeel result = lookAndFeelDao.findById(lookAndFeel.getId());
         if (result == null) {
-            throw new ApplicationException("requested-look-and-feel-not-available");
+            throw new ApplicationException("lfs-requested-look-and-feel-not-available");
         }
         return result;
     }
@@ -139,9 +140,11 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
                     if (colorSchemeOption.isViewActionPermitted()) {
                         themeOption.addColorScheme(colorSchemeOption);
                     }
+                    Collections.sort(themeOption.getColorSchemes());
                 }
             }
         }
+        Collections.sort(lookAndFeels);
         return lookAndFeels;
     }
 
@@ -155,9 +158,11 @@ public class LookAndFeelServiceImpl implements LookAndFeelService, InitializingB
             for (LookAndFeel csLookAndFeel : lookAndFeelDao.findColorSchemes(themeLookAndFeel.getThemeId(), companyId)) {
                 ColorSchemeOption colorSchemeOption = createColorSchemeOption(csLookAndFeel);
                 themeOption.addColorScheme(colorSchemeOption);
+                Collections.sort(themeOption.getColorSchemes());
             }
             lookAndFeels.add(themeOption);
         }
+        Collections.sort(lookAndFeels);
         return lookAndFeels;
     }
 

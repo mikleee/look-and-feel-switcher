@@ -45,13 +45,13 @@ function LookAndFeelOption() {
 }
 LookAndFeelOption.prototype = new BaseModel();
 
-/**
- * @constructor
- */
-function ColorScheme() {
-
-}
-ColorScheme.prototype = new LookAndFeelOption();
+///**
+// * @constructor
+// */
+//function ColorScheme() {
+//
+//}
+//ColorScheme.prototype = new LookAndFeelOption();
 
 /**
  * @constructor
@@ -66,8 +66,9 @@ function Theme() {
     };
     this.fromObject = function (obj) {
         angular.merge(this, obj);
-        for (var i = 0; i < this.colorSchemes.length; i++) {
-            this.colorSchemes[i] = new ColorScheme().fromObject(this.colorSchemes[i]);
+        this.colorSchemes = [];
+        for (var i = 0; i < obj.colorSchemes.length; i++) {
+            this.colorSchemes.push(new LookAndFeelOption().fromObject(obj.colorSchemes[i]));
         }
         return this;
     };

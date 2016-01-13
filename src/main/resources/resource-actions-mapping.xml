@@ -10,7 +10,6 @@
         <permissions>
             <supports>
                 <action-key>VIEW</action-key>
-                <action-key>APPLY</action-key>
             </supports>
             <site-member-defaults/>
             <guest-defaults/>

@@ -32,12 +32,46 @@
 </script>
 
 <div ng-app="${ns}lookAndFeelAdministration" class="aui" ng-cloak>
-
     <div class="lfs-container" ng-controller="selectLookAndFeelAdministrationController">
         <div>
             <div ng-if="models.message && models.status != 'waiting'" class="alert" ng-class="expressions.messageStyle()" ng-bind="models.message"></div>
             <div>
+                <ul class="nav nav-tabs">
+                    <li class="tab"><a href="#"><liferay-ui:message key="lfs-permissions"/></a></li>
+                    <li class="tab"><a href="#"><liferay-ui:message key="lfs-administration"/></a></li>
+                </ul>
+            </div>
+            <div>
                 <div class="row-fluid">
+                    <div class="span8" ng-controller="lookAndFeelPermissionsController">
+                        <div>
+                            <div class="lfs-locker" ng-if="expressions.disableCondition()"></div>
+                            <h3><liferay-ui:message key="lfs-define-permissions"/></h3>
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead class="table-columns">
+                                    <tr>
+                                        <th><liferay-ui:message key="lfs-role"/></th>
+                                        <c:forEach items="${actions}" var="action">
+                                            <th><label><liferay-ui:message key="${action.name}"/></label></th>
+                                        </c:forEach>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-data">
+                                    <tr ng-repeat="p in models.permissionMap track by p.role.name" class="{{'lfr-role lfr-role-' + p.role.type}}">
+                                        <td class="first">{{p.role.name}}</td>
+                                        <td ng-repeat="a in p.actions track by a.id">
+                                            <input type="checkbox" ng-model="p.actions[$index].permitted"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" ng-click="listeners.submitPermissions()" ng-disabled="expressions.disableCondition()"><liferay-ui:message key="submit"/></button>
+                            <button type="button" class="btn btn-default" ng-click="listeners.submitPermissions()" ng-disabled="expressions.disableCondition()"><liferay-ui:message key="submit"/></button>
+                        </div>
+                    </div>
+
                     <div class="span4">
                         <div>
                             <label for="${ns}themes"><liferay-ui:message key="lfs-themes"/></label>
@@ -53,39 +87,6 @@
                         </div>
                         <div>
                             <img ng-src="{{expressions.screenShotPath()}}" class="lfs-screen-shot">
-                        </div>
-                    </div>
-                    <div class="span8" ng-controller="lookAndFeelPermissionsController">
-                        <div class="navbar navbar-inner container-fluid">
-                            <div class="row-fluid">
-                                <div>
-                                    <p class="span6 navbar-text"><liferay-ui:message key="lfs-look-and-feel-permissions"/></p>
-                                </div>
-                                <div class="span2 offset4">
-                                    <button type="button" class="btn btn-primary navbar-btn" ng-click="listeners.submitPermissions()" ng-disabled="expressions.disableCondition()"><liferay-ui:message key="submit"/></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="lfs-locker" ng-if="expressions.disableCondition()"></div>
-                            <table class="table table-bordered table-hover table-striped">
-                                <thead class="table-columns">
-                                    <tr>
-                                        <th><liferay-ui:message key="lfs-role"/></th>
-                                        <c:forEach items="${actions}" var="action">
-                                            <th><label><liferay-ui:message key="${action.name}"/></label></th>
-                                        </c:forEach>
-                                    </tr>
-                                </thead>
-                                <tbody class="table-data">
-                                    <tr ng-repeat="p in models.permissionMap track by p.role.name" class="{{'lfr-role lfr-role-' + p.role.type}}">
-                                        <td class="first">{{p.role.name}}</td>
-                                        <td ng-repeat="a in p track by a.id">
-                                            <input type="checkbox" ng-model="p.actions[$index].permitted"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </div>

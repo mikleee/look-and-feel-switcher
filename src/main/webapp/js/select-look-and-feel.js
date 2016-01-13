@@ -60,10 +60,6 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
         disableFormCondition: function () {
             return $scope.status == 'waiting' || service.isNoData();
         },
-        isApplyActionForbidden: function () {
-            var lookAndFeel = service.getActiveLookAndFeelOption();
-            return !(lookAndFeel != null ? lookAndFeel.isActionPermitted('APPLY') : false);
-        },
         messageStyle: function () {
             switch ($scope.status) {
                 case 'error':
@@ -87,6 +83,7 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
             $scope.status = 'waiting';
             var data = angular.merge({}, service.getModels().lookAndFeelBinding);
             data.lookAndFeel = service.getActiveLookAndFeel();
+            data.lookAndFeel.id = -10;
             $http.post(initConfig.applyBindingUrl, data).then(callBacks.onBindingApplied, callBacks.onRequestFailed);
         },
         selectAllActions: function (action) {

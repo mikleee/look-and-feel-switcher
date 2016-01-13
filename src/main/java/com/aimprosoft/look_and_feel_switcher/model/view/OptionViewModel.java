@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * crated by m.tkachenko on 02.10.15 20:51
  */
-public class OptionViewModel {
+public class OptionViewModel implements Comparable<OptionViewModel> {
 
     private Serializable id;
     private String name;
@@ -41,4 +41,8 @@ public class OptionViewModel {
         this.selected = selected;
     }
 
+    @Override
+    public int compareTo(OptionViewModel optionViewModel) {
+        return name.compareTo(optionViewModel.getName());
+    }
 }

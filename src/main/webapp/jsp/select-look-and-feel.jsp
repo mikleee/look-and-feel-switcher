@@ -56,8 +56,8 @@
 <div ng-app="${ns}selectLookAndFeel">
     <div class="lfs-container" ng-controller="selectLookAndFeelController" ng-cloak>
         <div>
-            <div ng-if="message && status != 'waiting'" class="alert" ng-class="expressions.messageStyle()" ng-bind="message"></div>
-            <div>
+            <div ng-show="message" class="alert" ng-class="expressions.messageStyle()" ng-bind="message"></div>
+            <div class="container-fluid">
                 <div class="row-fluid">
                     <div class="span5">
                         <div>
@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div>
-                    <button class="btn btn-primary" ng-disabled="expressions.disableFormCondition() || expressions.isApplyActionForbidden()"
+                    <button class="btn btn-primary" ng-disabled="expressions.disableFormCondition()"
                             ng-click="listeners.applyBinding()"><liferay-ui:message key="lfs-apply"/></button>
                     <button class="btn btn-default" ng-disabled="expressions.disableFormCondition()" ng-click="listeners.resetBinding()"
                             ng-if="models.lookAndFeelBinding.id != null"><liferay-ui:message key="lfs-reset-to-default"/></button>

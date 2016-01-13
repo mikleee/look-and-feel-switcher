@@ -13,6 +13,10 @@ div.lfs-container div.lfs-locker {
     height: 100%;
 }
 
+div.lfs-message {
+    transition: background-color 1s;
+}
+
 .lfs-bind-option {
     background-color: #DDD;
 }
@@ -23,9 +27,16 @@ div.lfs-container div.lfs-locker {
 
 img.lfs-screen-shot {
     border: 1px #DDD solid;
-    border-radius: 8px;
+    border-radius: 3px;
     max-height: 250px;
     max-width: 250px;
+    box-shadow: 0 0 10px rgb(221, 221, 221);
+    transition: max-width 1.5s, max-height 1.5s;
+}
+
+img.lfs-screen-shot:hover {
+    max-height: 100%;
+    max-width: 100%;
 }
 
 div.lfb-waiting-indicator {
@@ -36,29 +47,9 @@ div.lfb-waiting-indicator {
 select.lfb-select {
     width: 220px;
     max-width: 70%;
+    transition: border 1s;
 }
 
 .lfb-display-none {
     display: none;
-}
-
-div.look-and-feel-map {
-    overflow-y: auto;
-}
-
-div.look-and-feel-map div.theme-row {
-    padding: 3px 6px;
-    margin: 2px 3px;
-}
-
-div.look-and-feel-map div.theme-row:hover {
-    background-color: #F6F6F6;
-    border-radius: 5px;
-}
-
-div.look-and-feel-map img {
-    border: 1px #DDDDDD solid;
-    height: 35px;
-    margin: 2px;
-    border-radius: 3px;
 }

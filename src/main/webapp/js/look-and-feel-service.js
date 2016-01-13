@@ -3,7 +3,7 @@
  */
 var LookAndFeelService = function () {
     /**
-     * @type {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: ColorScheme, permissionMap: [RolePermissions]}}
+     * @type {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: LookAndFeelOption, permissionMap: [RolePermissions]}}
      */
     var models = {
         lookAndFeelBinding: null,
@@ -14,22 +14,26 @@ var LookAndFeelService = function () {
     };
 
     var util = {
+        /**
+         * @param models: {[LookAndFeelOption]}
+         * @returns {LookAndFeelOption}
+         */
         getBindLookAndFeel: function (models) {
             for (var i = 0; i < models.length; i++) {
-                if (models[i]['bind']) {
+                if (models[i].bind) {
                     return models[i];
                 }
             }
             return null;
         },
         /**
-         * @param lookAndFeels {Theme}
+         * @param lookAndFeels {[Theme]}
          * @returns {Theme}
          */
         getPreselectedTheme: function (lookAndFeels) {
             if (lookAndFeels.length > 0) {
                 var bindTheme = util.getBindLookAndFeel(lookAndFeels);
-                return new Theme().fromObject(bindTheme ? bindTheme : lookAndFeels[0]);
+                return bindTheme ? bindTheme : lookAndFeels[0];
             }
         },
         /**
@@ -38,8 +42,8 @@ var LookAndFeelService = function () {
          */
         getPreselectedColorScheme: function (currentTheme) {
             if (currentTheme && currentTheme.colorSchemes && currentTheme.colorSchemes.length > 0) {
-                var bindTheme = util.getBindLookAndFeel(currentTheme.colorSchemes);
-                return new LookAndFeelOption().fromObject(bindTheme ? bindTheme : currentTheme.colorSchemes[0]);
+                var bindCs = util.getBindLookAndFeel(currentTheme.colorSchemes);
+                return bindCs ? bindCs : currentTheme.colorSchemes[0];
             } else {
                 return null;
             }
@@ -52,7 +56,7 @@ var LookAndFeelService = function () {
         angular.forEach(lookAndFeels, function (v, k) {
             models.lookAndFeels.push(new Theme().fromObject(v));
         });
-        models.currentTheme = util.getPreselectedTheme(lookAndFeels);
+        models.currentTheme = util.getPreselectedTheme(models.lookAndFeels);
         models.currentColorScheme = util.getPreselectedColorScheme(models.currentTheme);
     };
     this.setLookAndFeelBinding = function (lookAndFeelBinding) {
@@ -70,13 +74,13 @@ var LookAndFeelService = function () {
     };
     /**
      * @param currentTheme
-     * @returns {ColorScheme}
+     * @returns {LookAndFeelOption}
      */
     this.getPreselectedColorScheme = function (currentTheme) {
         return util.getPreselectedColorScheme(currentTheme);
     };
     /**
-     * @returns {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: ColorScheme, permissionMap: [RolePermissions]}}
+     * @returns {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: LookAndFeelOption, permissionMap: [RolePermissions]}}
      */
     this.getModels = function () {
         return models;
@@ -100,10 +104,6 @@ var LookAndFeelService = function () {
         var lookAndFeelOption = this.getActiveLookAndFeelOption();
         return new LookAndFeel(lookAndFeelOption.id, models.lookAndFeelBinding.companyId);
     };
-
-    this.toggleAction = function (action) {
-    }
-
 };
 
 var lookAndFeelServices = angular.module('lookAndFeelServices', [])
