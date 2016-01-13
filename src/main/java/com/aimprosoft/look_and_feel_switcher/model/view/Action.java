@@ -1,16 +1,11 @@
 package com.aimprosoft.look_and_feel_switcher.model.view;
 
 import com.liferay.portal.model.ResourceAction;
-import com.liferay.portal.security.permission.ActionKeys;
 
 /**
  * crated by m.tkachenko on 11.01.16 14:01
  */
 public class Action {
-
-    public final static Action VIEW = new Action() {{
-        setName(ActionKeys.VIEW);
-    }};
 
     private Long id;
     private String name;
@@ -55,6 +50,7 @@ public class Action {
 
         Action action = (Action) o;
 
+        if (getPermitted() != action.getPermitted()) return false;
         return !(getName() != null ? !getName().equals(action.getName()) : action.getName() != null);
 
     }

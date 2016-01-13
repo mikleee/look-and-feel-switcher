@@ -9,20 +9,17 @@ import java.util.List;
  */
 public class ThemeOption extends LookAndFeelOption {
 
-    private List<LookAndFeelOption> colorSchemes;
+    private List<ColorSchemeOption> colorSchemes = new ArrayList<ColorSchemeOption>();
 
     public ThemeOption(Serializable id, String name) {
         super(id, name);
     }
 
-    public List<LookAndFeelOption> getColorSchemes() {
+    public List<ColorSchemeOption> getColorSchemes() {
         return colorSchemes;
     }
 
-    public void addColorScheme(LookAndFeelOption colorScheme) {
-        if (colorSchemes == null) {
-            colorSchemes = new ArrayList<LookAndFeelOption>();
-        }
+    public void addColorScheme(ColorSchemeOption colorScheme) {
         colorSchemes.add(colorScheme);
     }
 

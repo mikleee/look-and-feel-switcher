@@ -1,6 +1,5 @@
 package com.aimprosoft.look_and_feel_switcher.model.persist;
 
-import com.aimprosoft.look_and_feel_switcher.exception.ApplicationException;
 import com.liferay.portal.model.ColorScheme;
 import com.liferay.portal.model.Theme;
 import com.liferay.portal.service.ThemeLocalServiceUtil;
@@ -105,7 +104,7 @@ public class LookAndFeel implements PersistModel<Integer> {
     private void init() {
         theme = ThemeLocalServiceUtil.fetchTheme(companyId, themeId);
 
-        if (colorSchemeId != null) {
+        if (theme != null && colorSchemeId != null) {
             for (ColorScheme scheme : theme.getColorSchemes()) {
                 if (scheme.getColorSchemeId().equals(colorSchemeId)) {
                     colorScheme = scheme;
@@ -139,31 +138,6 @@ public class LookAndFeel implements PersistModel<Integer> {
     public LookAndFeel(Theme theme, ColorScheme colorScheme, Long companyId) {
         this(theme, companyId);
         this.colorSchemeId = colorScheme.getColorSchemeId();
-    }
-
-    public void validate() throws ApplicationException {
-        if (themeId == null) {
-            throw new ApplicationException("Select theme");
-        }
-        init();
-
-        if (theme == null) {
-            throw new ApplicationException("Requested theme is not exist anymore");
-        }
-
-        if (theme.getColorSchemes().isEmpty()) {
-            if (colorSchemeId != null) {
-                throw new ApplicationException("Requested theme does not support any color schemes anymore");
-            }
-        } else {
-            for (ColorScheme scheme : theme.getColorSchemes()) {
-                if (scheme.getColorSchemeId().equals(colorSchemeId)) {
-                    return;
-                }
-            }
-            throw new ApplicationException("Requested color scheme is not supported anymore");
-        }
-
     }
 
 

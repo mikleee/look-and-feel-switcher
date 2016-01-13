@@ -53,10 +53,6 @@ public class Utils {
     }
 
 
-    public static String spentTime(long start) {
-        return "[" + (System.currentTimeMillis() - start) / 1000. + "] sec.";
-    }
-
     public static String getFileSeparator() {
         return System.getProperty("file.separator");
     }

@@ -26,8 +26,32 @@ function LookAndFeelOption() {
     this.portalDefault = false;
     this.screenShotPath = null;
     this.lookAndFeelId = null;
+    /**
+     * @type {[{name: String, id: String, permitted: Boolean}]}
+     */
+    this.actions = [];
+    /**
+     * @param action
+     * @returns {boolean}
+     */
+    this.isActionPermitted = function (action) {
+        for (var i = 0; i < this.actions.length; i++) {
+            if (this.actions[i].name == action) {
+                return this.actions[i].permitted;
+            }
+        }
+        return false;
+    };
 }
 LookAndFeelOption.prototype = new BaseModel();
+
+/**
+ * @constructor
+ */
+function ColorScheme() {
+
+}
+ColorScheme.prototype = new LookAndFeelOption();
 
 /**
  * @constructor
@@ -39,7 +63,14 @@ function Theme() {
     this.colorSchemes = [];
     this.hasColorSchemes = function () {
         return this.colorSchemes && this.colorSchemes.length > 0;
-    }
+    };
+    this.fromObject = function (obj) {
+        angular.merge(this, obj);
+        for (var i = 0; i < this.colorSchemes.length; i++) {
+            this.colorSchemes[i] = new ColorScheme().fromObject(this.colorSchemes[i]);
+        }
+        return this;
+    };
 }
 Theme.prototype = new LookAndFeelOption();
 
@@ -61,12 +92,11 @@ LookAndFeelBinding.prototype = new BaseModel();
 /**
  * @constructor
  */
-function LookAndFeel(id, shown, companyId) {
+function LookAndFeel(id, companyId) {
     this.id = id;
     this.themeId = null;
     this.colorSchemeId = null;
     this.companyId = companyId;
-    this.shown = shown
 }
 
 /**

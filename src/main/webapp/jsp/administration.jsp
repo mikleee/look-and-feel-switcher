@@ -73,7 +73,7 @@
                                     <tr>
                                         <th><liferay-ui:message key="lfs-role"/></th>
                                         <c:forEach items="${actions}" var="action">
-                                            <th><liferay-ui:message key="${action.name}"/></th>
+                                            <th><label><liferay-ui:message key="${action.name}"/></label></th>
                                         </c:forEach>
                                     </tr>
                                 </thead>

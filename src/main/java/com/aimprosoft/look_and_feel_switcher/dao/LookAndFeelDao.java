@@ -11,6 +11,8 @@ import java.util.List;
  */
 public interface LookAndFeelDao extends CrudRepository<LookAndFeel, Integer> {
 
+    LookAndFeel findById(Integer id);
+
     @Query("from LookAndFeel l where l.themeId = ?1 and l.colorSchemeId = ?2 and l.companyId = ?3")
     LookAndFeel findColorScheme(String themeId, String colorSchemeId, Long companyId);
 

@@ -36,7 +36,6 @@ public abstract class AbstractLookAndFeelBindingService implements LookAndFeelBi
     @Override
     @Transactional
     public LookAndFeelBinding applyBinding(LookAndFeelBinding binding) throws ApplicationException {
-        binding.getLookAndFeel().validate();
         LookAndFeelBinding persisted = findByUserAndGroup(binding);
 
         if (persisted != null) {

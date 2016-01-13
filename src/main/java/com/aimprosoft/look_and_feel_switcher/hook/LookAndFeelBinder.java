@@ -44,7 +44,7 @@ public class LookAndFeelBinder extends Action {
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
         ThemeDisplay themeDisplay = getThemeDisplay(request);
 
-        if (/*isAjax(request) ||*/ isControlPanel(themeDisplay)) {
+        if (isAjax(request) || isControlPanel(themeDisplay)) {
             return;
         }
 

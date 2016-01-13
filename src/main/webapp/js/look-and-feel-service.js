@@ -3,7 +3,7 @@
  */
 var LookAndFeelService = function () {
     /**
-     * @type {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: LookAndFeelOption, permissionMap: [RolePermissions]}}
+     * @type {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: ColorScheme, permissionMap: [RolePermissions]}}
      */
     var models = {
         lookAndFeelBinding: null,
@@ -58,7 +58,7 @@ var LookAndFeelService = function () {
     this.setLookAndFeelBinding = function (lookAndFeelBinding) {
         models.lookAndFeelBinding = lookAndFeelBinding;
         if (!lookAndFeelBinding.lookAndFeel) {
-            models.lookAndFeelBinding.lookAndFeel = new LookAndFeel(null, null, lookAndFeelBinding.companyId);
+            models.lookAndFeelBinding.lookAndFeel = new LookAndFeel(null, lookAndFeelBinding.companyId);
         }
     };
     this.getScreenshotPath = function () {
@@ -70,13 +70,13 @@ var LookAndFeelService = function () {
     };
     /**
      * @param currentTheme
-     * @returns {*|LookAndFeelOption}
+     * @returns {ColorScheme}
      */
     this.getPreselectedColorScheme = function (currentTheme) {
         return util.getPreselectedColorScheme(currentTheme);
     };
     /**
-     * @returns {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: LookAndFeelOption, permissionMap: [RolePermissions]}}
+     * @returns {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: ColorScheme, permissionMap: [RolePermissions]}}
      */
     this.getModels = function () {
         return models;
@@ -88,11 +88,21 @@ var LookAndFeelService = function () {
         return models.lookAndFeels.length == 0;
     };
     /**
+     * @returns {LookAndFeelOption}
+     */
+    this.getActiveLookAndFeelOption = function () {
+        return models.currentColorScheme ? models.currentColorScheme : models.currentTheme;
+    };
+    /**
      * @returns {LookAndFeel}
      */
     this.getActiveLookAndFeel = function () {
-        return models.currentColorScheme ? models.currentColorScheme : models.currentTheme;
+        var lookAndFeelOption = this.getActiveLookAndFeelOption();
+        return new LookAndFeel(lookAndFeelOption.id, models.lookAndFeelBinding.companyId);
     };
+
+    this.toggleAction = function (action) {
+    }
 
 };
 

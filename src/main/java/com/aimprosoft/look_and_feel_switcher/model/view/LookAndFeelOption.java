@@ -1,5 +1,8 @@
 package com.aimprosoft.look_and_feel_switcher.model.view;
 
+import com.liferay.portal.security.permission.ActionKeys;
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +15,7 @@ public class LookAndFeelOption extends OptionViewModel {
     private Boolean bind = false;
     private Boolean portalDefault = false;
     private String screenShotPath;
-    private List<Action> allowedActions = new ArrayList<Action>();
+    private List<Action> actions = new ArrayList<Action>();
 
     public LookAndFeelOption(Serializable id, String name) {
         super(id, name);
@@ -42,12 +45,22 @@ public class LookAndFeelOption extends OptionViewModel {
         this.screenShotPath = screenShotPath;
     }
 
-    public List<Action> getAllowedActions() {
-        return allowedActions;
+    public List<Action> getActions() {
+        return actions;
     }
 
-    public void setAllowedActions(List<Action> allowedActions) {
-        this.allowedActions = allowedActions;
+    public void setActions(List<Action> actions) {
+        this.actions = actions;
+    }
+
+    @JsonIgnore
+    public boolean isViewActionPermitted() {
+        for (Action action : actions) {
+            if (action.getName().equals(ActionKeys.VIEW)) {
+                return action.getPermitted();
+            }
+        }
+        return false;
     }
 
 }

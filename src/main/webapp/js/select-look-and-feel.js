@@ -46,7 +46,7 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
         },
         onBindingApplied: function (response) {
             if (response.data.status == 'error') {
-                handlers.showMessage('error', response.data.body);
+                handlers.showMessage('error', Util.getMessage(response.data.body['error']));
             } else {
                 window.location.reload();
             }
@@ -57,11 +57,12 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
         screenShotPath: function () {
             return service.getScreenshotPath();
         },
-        jopa: function () {
-            return $scope.models.currentTheme && $scope.models.currentTheme.hasColorSchemes();
-        },
         disableFormCondition: function () {
             return $scope.status == 'waiting' || service.isNoData();
+        },
+        isApplyActionForbidden: function () {
+            var lookAndFeel = service.getActiveLookAndFeelOption();
+            return !(lookAndFeel != null ? lookAndFeel.isActionPermitted('APPLY') : false);
         },
         messageStyle: function () {
             switch ($scope.status) {
@@ -84,13 +85,12 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
         },
         applyBinding: function () {
             $scope.status = 'waiting';
+            var data = angular.merge({}, service.getModels().lookAndFeelBinding);
+            data.lookAndFeel = service.getActiveLookAndFeel();
+            $http.post(initConfig.applyBindingUrl, data).then(callBacks.onBindingApplied, callBacks.onRequestFailed);
+        },
+        selectAllActions: function (action) {
 
-            var data = {'lookAndFeel.themeId': service.getModels().currentTheme.id};
-            if ($scope.models.currentColorScheme) {
-                data['lookAndFeel.colorSchemeId'] = service.getModels().currentColorScheme.id;
-            }
-
-            $http.post(initConfig.applyBindingUrl, service.getModels().lookAndFeelBinding).then(callBacks.onBindingApplied, callBacks.onRequestFailed);
         }
     };
 

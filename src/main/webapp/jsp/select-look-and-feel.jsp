@@ -54,7 +54,7 @@
 
 
 <div ng-app="${ns}selectLookAndFeel">
-    <div class="lfs-container" ng-controller="selectLookAndFeelController">
+    <div class="lfs-container" ng-controller="selectLookAndFeelController" ng-cloak>
         <div>
             <div ng-if="message && status != 'waiting'" class="alert" ng-class="expressions.messageStyle()" ng-bind="message"></div>
             <div>
@@ -70,15 +70,16 @@
                             <select id="${ns}color-schemes" class="lfb-select" ng-disabled="expressions.disableFormCondition()"
                                     ng-options="cs as cs.name for cs in models.currentTheme.colorSchemes track by cs.id" ng-model="models.currentColorScheme"></select>
                         </div>
-
                     </div>
                     <div class="span7">
                         <img ng-src="{{expressions.screenShotPath()}}" class="lfs-screen-shot">
                     </div>
                 </div>
                 <div>
-                    <button class="btn btn-primary" ng-disabled="expressions.disableFormCondition()" ng-click="listeners.applyBinding()"><liferay-ui:message key="lfs-apply"/></button>
-                    <button class="btn btn-default" ng-disabled="expressions.disableFormCondition()" ng-click="listeners.resetBinding()" ng-if="models.lookAndFeelBinding.id != null"><liferay-ui:message key="lfs-reset-to-default"/></button>
+                    <button class="btn btn-primary" ng-disabled="expressions.disableFormCondition() || expressions.isApplyActionForbidden()"
+                            ng-click="listeners.applyBinding()"><liferay-ui:message key="lfs-apply"/></button>
+                    <button class="btn btn-default" ng-disabled="expressions.disableFormCondition()" ng-click="listeners.resetBinding()"
+                            ng-if="models.lookAndFeelBinding.id != null"><liferay-ui:message key="lfs-reset-to-default"/></button>
                 </div>
             </div>
         </div>

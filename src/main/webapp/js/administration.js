@@ -115,7 +115,7 @@ function LookAndFeelPermissionsController($scope, $http, service, portletConfig)
 
     var listeners = {
         fetchPermissions: function () {
-            var activeLookAndFeel = service.getActiveLookAndFeel();
+            var activeLookAndFeel = service.getActiveLookAndFeelOption();
             if (activeLookAndFeel) {
                 $scope.status = 'waiting';
                 $http.post(portletConfig.fetchPermissionsUrl, {id: activeLookAndFeel.id}).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
@@ -146,7 +146,7 @@ function LookAndFeelPermissionsController($scope, $http, service, portletConfig)
     $scope.listeners = {
         submitPermissions: function () {
             $scope.status = 'waiting';
-            var activeLookAndFeel = service.getActiveLookAndFeel();
+            var activeLookAndFeel = service.getActiveLookAndFeelOption();
             var data = {id: activeLookAndFeel ? activeLookAndFeel.id : null, permissions: service.getModels().permissionMap};
             $http.post(portletConfig.applyPermissionsUrl, data).then(callBacks.onPermissionSubmitted, callBacks.onRequestFailed);
         }
