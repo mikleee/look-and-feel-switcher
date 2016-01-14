@@ -116,8 +116,8 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
 
     @Override
     public void updatePermissions(long companyId, Role role, List<Action> actions, String lookAndFeelId) throws ApplicationException {
+        ResourcePermission resourcePermission = fetchResourcePermission(companyId, role, lookAndFeelId);
         try {
-            ResourcePermission resourcePermission = ResourcePermissionLocalServiceUtil.fetchResourcePermission(companyId, RESOURCE_NAME, SCOPE, lookAndFeelId, role.getId());
             if (resourcePermission == null) {
                 for (Action action : actions) {
                     ResourcePermissionLocalServiceUtil.addResourcePermission(companyId, RESOURCE_NAME, SCOPE, lookAndFeelId, role.getId(), action.getName());
@@ -153,6 +153,11 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
     }
 
     public boolean hasPermission(long companyId, Role role, String resourceId, Action action) throws ApplicationException {
+        ResourcePermission resourcePermission = fetchResourcePermission(companyId, role, resourceId);
+        return resourcePermission != null && resourcePermission.hasActionId(action.getName());
+    }
+
+    private ResourcePermission fetchResourcePermission(long companyId, Role role, String resourceId) throws ApplicationException {
         DynamicQuery query = DynamicQueryFactoryUtil.forClass(ResourcePermission.class)
                 .add(PropertyFactoryUtil.forName("companyId").eq(companyId))
                 .add(PropertyFactoryUtil.forName("name").eq(RESOURCE_NAME))
@@ -161,7 +166,7 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
                 .add(PropertyFactoryUtil.forName("roleId").eq(role.getId()));
         try {
             List<ResourcePermission> list = (List<ResourcePermission>) ResourcePermissionLocalServiceUtil.dynamicQuery(query);
-            return !list.isEmpty() && list.get(0).hasActionId(action.getName());
+            return list.isEmpty() ? null : list.get(0);
         } catch (Exception e) {
             throw new ApplicationException();
         }

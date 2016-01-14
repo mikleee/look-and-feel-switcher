@@ -1,7 +1,8 @@
 <%@ include file="../init.jspf" %>
 
-<script src="<c:url value="/js/message-controller.js"/>"></script>
+
 <script src="<c:url value="/js/models.js"/>"></script>
+<script src="<c:url value="/js/message-controller.js"/>"></script>
 <script src="<c:url value="/js/look-and-feel-service.js"/>"></script>
 <script src="<c:url value="/js/preferences.js"/>"></script>
 
