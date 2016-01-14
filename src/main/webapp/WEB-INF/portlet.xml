@@ -8,7 +8,7 @@
 
     <portlet>
         <portlet-name>themes-switcher</portlet-name>
-        <display-name>Look and feel switcher</display-name>
+        <display-name>Themes switcher</display-name>
         <portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
         <init-param>
             <name>contextConfigLocation</name>

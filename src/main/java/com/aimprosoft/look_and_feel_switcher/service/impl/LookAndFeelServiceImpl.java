@@ -38,7 +38,7 @@ public class LookAndFeelServiceImpl implements LookAndFeelService {
     public LookAndFeel find(LookAndFeel lookAndFeel) throws ApplicationException {
         LookAndFeel result = lookAndFeelDao.findById(lookAndFeel.getId());
         if (result == null) {
-            throw new ApplicationException("lfs-requested-look-and-feel-not-available");
+            throw new ApplicationException("ts-requested-look-and-feel-not-available");
         }
         return result;
     }

@@ -44,21 +44,21 @@
 </script>
 
 <div ng-app="${ns}lookAndFeelAdministration" class="aui" ng-cloak>
-    <div class="lfs-container">
+    <div class="ts-container">
         <div ng-controller="preferencesController">
             <div>
                 <ul class="nav nav-tabs">
                     <li class="tab" ng-class="{active : tab == 'permissions'}" ng-click="listeners.onTabChange('permissions')">
-                        <a href="#permissions"><liferay-ui:message key="lfs-permissions"/></a>
+                        <a href="#permissions"><liferay-ui:message key="ts-permissions"/></a>
                     </li>
                     <li class="tab" ng-class="{active : tab == 'administration'}" ng-click="listeners.onTabChange('administration')">
-                        <a href="#administration"><liferay-ui:message key="lfs-administration"/></a>
+                        <a href="#administration"><liferay-ui:message key="ts-administration"/></a>
                     </li>
                 </ul>
             </div>
             <div>
-                <div class="lfs-container" ng-controller="messageController">
-                    <div ng-show="message" class="alert" ng-class="expressions.messageStyle() + 'lfs-message'" ng-bind="message"></div>
+                <div class="ts-container" ng-controller="messageController">
+                    <div ng-show="message" class="alert" ng-class="expressions.messageStyle() + 'ts-message'" ng-bind="message"></div>
                     <ng-view></ng-view>
                 </div>
             </div>

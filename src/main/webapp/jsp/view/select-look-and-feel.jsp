@@ -56,33 +56,33 @@
 
 
 <div ng-app="${ns}selectLookAndFeel">
-    <div class="lfs-container" ng-controller="messageController" ng-cloak>
-        <div ng-show="message" class="alert" ng-class="expressions.messageStyle() + 'lfs-message'" ng-bind="message"></div>
+    <div class="ts-container" ng-controller="messageController" ng-cloak>
+        <div ng-show="message" class="alert" ng-class="expressions.messageStyle() + 'ts-message'" ng-bind="message"></div>
         <div ng-controller="selectLookAndFeelController">
             <div class="row-fluid">
                 <div class="span5">
-                    <h3><liferay-ui:message key="lfs-select-theme"/></h3>
+                    <h3><liferay-ui:message key="ts-select-theme"/></h3>
 
                     <div>
-                        <label for="${ns}themes"><liferay-ui:message key="lfs-themes"/></label>
+                        <label for="${ns}themes"><liferay-ui:message key="ts-themes"/></label>
                         <select id="${ns}themes" class="lfb-select" ng-disabled="expressions.disableFormCondition()"
                                 ng-options="theme as theme.name for theme in models.lookAndFeels track by theme.id" ng-model="models.currentTheme"></select>
                     </div>
                     <div ng-if="models.currentTheme && models.currentTheme.hasColorSchemes()">
-                        <label for="${ns}color-schemes"><liferay-ui:message key="lfs-color-schemes"/></label>
+                        <label for="${ns}color-schemes"><liferay-ui:message key="ts-color-schemes"/></label>
                         <select id="${ns}color-schemes" class="lfb-select" ng-disabled="expressions.disableFormCondition()"
                                 ng-options="cs as cs.name for cs in models.currentTheme.colorSchemes track by cs.id" ng-model="models.currentColorScheme"></select>
                     </div>
                 </div>
                 <div class="span7">
-                    <img ng-src="{{expressions.screenShotPath()}}" class="lfs-screen-shot">
+                    <img ng-src="{{expressions.screenShotPath()}}" class="ts-screen-shot">
                 </div>
             </div>
             <div class="row-fluid">
                 <button class="btn btn-primary" ng-disabled="expressions.disableFormCondition()"
-                        ng-click="listeners.applyBinding()"><liferay-ui:message key="lfs-apply"/></button>
+                        ng-click="listeners.applyBinding()"><liferay-ui:message key="ts-apply"/></button>
                 <button class="btn btn-default" ng-disabled="expressions.disableFormCondition()" ng-click="listeners.resetBinding()"
-                        ng-if="models.lookAndFeelBinding.id != null"><liferay-ui:message key="lfs-reset-to-default"/></button>
+                        ng-if="models.lookAndFeelBinding.id != null"><liferay-ui:message key="ts-reset-to-default"/></button>
             </div>
         </div>
     </div>

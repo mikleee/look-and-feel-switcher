@@ -7,6 +7,9 @@ import com.aimprosoft.look_and_feel_switcher.model.view.ResourcePermissions;
 import com.aimprosoft.look_and_feel_switcher.model.view.Role;
 import com.aimprosoft.look_and_feel_switcher.model.view.RolePermission;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelPermissionService;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.ResourceAction;
 import com.liferay.portal.model.ResourcePermission;
@@ -150,9 +153,15 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
     }
 
     public boolean hasPermission(long companyId, Role role, String resourceId, Action action) throws ApplicationException {
+        DynamicQuery query = DynamicQueryFactoryUtil.forClass(ResourcePermission.class)
+                .add(PropertyFactoryUtil.forName("companyId").eq(companyId))
+                .add(PropertyFactoryUtil.forName("name").eq(RESOURCE_NAME))
+                .add(PropertyFactoryUtil.forName("scope").eq(SCOPE))
+                .add(PropertyFactoryUtil.forName("primKey").eq(resourceId))
+                .add(PropertyFactoryUtil.forName("roleId").eq(role.getId()));
         try {
-            ResourcePermission resourcePermission = ResourcePermissionLocalServiceUtil.fetchResourcePermission(companyId, RESOURCE_NAME, SCOPE, resourceId, role.getId());
-            return resourcePermission != null && resourcePermission.hasActionId(action.getName());
+            List<ResourcePermission> list = (List<ResourcePermission>) ResourcePermissionLocalServiceUtil.dynamicQuery(query);
+            return !list.isEmpty() && list.get(0).hasActionId(action.getName());
         } catch (Exception e) {
             throw new ApplicationException();
         }

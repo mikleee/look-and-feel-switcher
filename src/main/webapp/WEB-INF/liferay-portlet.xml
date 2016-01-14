@@ -6,8 +6,8 @@
     <portlet>
         <portlet-name>themes-switcher</portlet-name>
         <icon>/icon.png</icon>
-        <friendly-url-mapper-class>com.aimprosoft.look_and_feel_switcher.hook.FriendlyUrlMapper</friendly-url-mapper-class>
-        <friendly-url-mapping>look-and-feel-binder</friendly-url-mapping>
+        <friendly-url-mapper-class>com.liferay.portal.kernel.portlet.DefaultFriendlyURLMapper</friendly-url-mapper-class>
+        <friendly-url-mapping>themes-switcher</friendly-url-mapping>
         <friendly-url-routes>../themes-switcher-routes.xml</friendly-url-routes>
         <header-portlet-css>/css/themes-switcher.css</header-portlet-css>
         <header-portlet-javascript>/js/lib/angular.min.js</header-portlet-javascript>

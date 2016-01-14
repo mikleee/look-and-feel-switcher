@@ -6,7 +6,7 @@ package com.aimprosoft.look_and_feel_switcher.exception;
 public class ApplicationException extends Exception {
 
     public ApplicationException() {
-        super("lfs-internal-server-error");
+        super("ts-internal-server-error");
     }
 
     public ApplicationException(String message, Object... args) {

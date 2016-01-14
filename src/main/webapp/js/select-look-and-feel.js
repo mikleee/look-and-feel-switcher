@@ -31,12 +31,12 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
 
     var callBacks = {
         onRequestFailed: function (response) {
-            handlers.showMessage('lfs-internal-server-error', lfsConstants.state.ERROR);
+            handlers.showMessage('ts-internal-server-error', lfsConstants.state.ERROR);
         },
         onInitLookAndFeels: function (response) {
             service.setLookAndFeels(response.data.body['lookAndFeels']);
             if (service.isNoData()) {
-                handlers.showMessage('lfs-no-themes-found', lfsConstants.state.WARNING);
+                handlers.showMessage('ts-no-themes-found', lfsConstants.state.WARNING);
             } else {
                 state = lfsConstants.state.SUCCESS;
                 handlers.hideMessage();

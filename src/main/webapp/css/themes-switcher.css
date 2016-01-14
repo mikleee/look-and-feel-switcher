@@ -1,41 +1,41 @@
-div.lfs-container {
+div.ts-container {
     padding: 10px;
 }
 
-div.lfs-container h3 {
+div.ts-container h3 {
     color: #8D8D8D;
     font-size: 20px;
     font-weight: normal;
 }
 
-div.lfs-container .lfs-action-label {
+div.ts-container .ts-action-label {
     cursor: pointer;
 }
 
-div.lfs-container .lfs-message {
-    animation: lfs-message 0.5s;
+div.ts-container .ts-message {
+    animation: ts-message 0.5s;
 }
 
-div.lfs-container div {
+div.ts-container div {
     position: relative;
 }
 
-div.lfs-container div.lfs-locker {
+div.ts-container div.ts-locker {
     background-color: rgba(243, 243, 243, 0.5);
     position: absolute;
     width: 100%;
     height: 100%;
 }
 
-.lfs-bind-option {
+.ts-bind-option {
     background-color: #DDD;
 }
 
-.lfs-default-option {
+.ts-default-option {
     background-color: #8add8d;
 }
 
-img.lfs-screen-shot {
+img.ts-screen-shot {
     border: 1px #DDD solid;
     border-radius: 3px;
     max-height: 250px;
@@ -44,7 +44,7 @@ img.lfs-screen-shot {
     transition: max-width 1.5s, max-height 1.5s;
 }
 
-img.lfs-screen-shot:hover {
+img.ts-screen-shot:hover {
     max-height: 100%;
     max-width: 100%;
 }
@@ -66,7 +66,7 @@ select.lfb-select {
 
 /* animations */
 
-@keyframes lfs-message {
+@keyframes ts-message {
     from {
         opacity: 0.3;
     }
