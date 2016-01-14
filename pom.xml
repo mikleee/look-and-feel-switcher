@@ -6,9 +6,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.aimprosoft</groupId>
-    <artifactId>look-and-feel-switcher-portlet</artifactId>
+    <artifactId>themes-switcher-portlet</artifactId>
     <packaging>war</packaging>
-    <name>look-and-feel-switcher</name>
+    <name>themes-switcher</name>
     <version>1.0</version>
 
 
@@ -81,7 +81,7 @@
             <!--</plugin>-->
         </plugins>
 
-        <finalName>look-and-feel-switcher-portlet</finalName>
+        <finalName>themes-switcher-portlet</finalName>
     </build>
 
 

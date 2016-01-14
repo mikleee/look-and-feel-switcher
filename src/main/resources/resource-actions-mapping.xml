@@ -2,10 +2,11 @@
 <!DOCTYPE resource-action-mapping PUBLIC "-//Liferay//DTD Resource Action Mapping 6.2.0//EN" "http://www.liferay.com/dtd/liferay-resource-action-mapping_6_2_0.dtd">
 
 <resource-action-mapping>
+
     <model-resource>
         <model-name>com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel</model-name>
         <portlet-ref>
-            <portlet-name>look-and-feel-switcher</portlet-name>
+            <portlet-name>themes-switcher</portlet-name>
         </portlet-ref>
         <permissions>
             <supports>
@@ -16,6 +17,7 @@
             <guest-unsupported/>
         </permissions>
     </model-resource>
+
 </resource-action-mapping>
 
 

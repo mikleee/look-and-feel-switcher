@@ -2,6 +2,20 @@ div.lfs-container {
     padding: 10px;
 }
 
+div.lfs-container h3 {
+    color: #8D8D8D;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+div.lfs-container .lfs-action-label {
+    cursor: pointer;
+}
+
+div.lfs-container .lfs-message {
+    animation: lfs-message 0.5s;
+}
+
 div.lfs-container div {
     position: relative;
 }
@@ -11,10 +25,6 @@ div.lfs-container div.lfs-locker {
     position: absolute;
     width: 100%;
     height: 100%;
-}
-
-div.lfs-message {
-    transition: background-color 1s;
 }
 
 .lfs-bind-option {
@@ -52,4 +62,15 @@ select.lfb-select {
 
 .lfb-display-none {
     display: none;
+}
+
+/* animations */
+
+@keyframes lfs-message {
+    from {
+        opacity: 0.3;
+    }
+    to {
+        opacity: initial;
+    }
 }

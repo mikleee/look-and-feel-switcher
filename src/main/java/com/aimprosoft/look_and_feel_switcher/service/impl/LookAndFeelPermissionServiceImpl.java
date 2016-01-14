@@ -30,9 +30,11 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
     @Override
     public ResourcePermissions getPermissions(long companyId, Integer lookAndFeelId) throws ApplicationException {
         ResourcePermissions permissions = new ResourcePermissions();
+        List<Action> actions = getLookAndFeelActions();
+        permissions.setAllowedActions(actions);
         for (Role role : getCompanyRoles(companyId)) {
             RolePermission rolePermission = new RolePermission(role);
-            for (Action action : getLookAndFeelActions()) {
+            for (Action action : actions) {
                 boolean permitted = hasPermission(companyId, role, lookAndFeelId.toString(), action);
                 action.setPermitted(permitted);
                 rolePermission.put(action);

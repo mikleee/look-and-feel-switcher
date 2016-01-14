@@ -7,6 +7,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,6 +28,9 @@ public class LookAndFeel implements PersistModel<Integer> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private LookAndFeelType type;
     @Column(name = "theme_id")
     private String themeId;
     @Column(name = "color_scheme_id")
@@ -50,6 +55,14 @@ public class LookAndFeel implements PersistModel<Integer> {
     @Override
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public LookAndFeelType getType() {
+        return type;
+    }
+
+    public void setType(LookAndFeelType type) {
+        this.type = type;
     }
 
     public String getThemeId() {

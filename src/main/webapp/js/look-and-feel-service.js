@@ -3,14 +3,14 @@
  */
 var LookAndFeelService = function () {
     /**
-     * @type {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: LookAndFeelOption, permissionMap: [RolePermissions]}}
+     * @type {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: LookAndFeelOption, resourcePermissions: ResourcePermissions}}
      */
     var models = {
         lookAndFeelBinding: null,
         lookAndFeels: [],
         currentTheme: null,
         currentColorScheme: null,
-        permissionMap: []
+        resourcePermissions: []
     };
 
     var util = {
@@ -37,7 +37,7 @@ var LookAndFeelService = function () {
             }
         },
         /**
-         * @param currentTheme{Theme}
+         * @param currentTheme {Theme}
          * @returns {LookAndFeelOption}
          */
         getPreselectedColorScheme: function (currentTheme) {
@@ -47,17 +47,36 @@ var LookAndFeelService = function () {
             } else {
                 return null;
             }
+        },
+        /**
+         * @param rolePermissions {RolePermissions}
+         * @param id
+         * @returns {Action}
+         */
+        getActionById: function (rolePermissions, id) {
+            for (var i = 0; i < rolePermissions.actions.length; i++) {
+                if (rolePermissions.actions[i].id == id) {
+                    return rolePermissions.actions[i];
+                }
+            }
+            return null;
         }
     };
 
 
     this.setLookAndFeels = function (lookAndFeels) {
         models.lookAndFeels = [];
-        angular.forEach(lookAndFeels, function (v, k) {
+        angular.forEach(lookAndFeels, function (v) {
             models.lookAndFeels.push(new Theme().fromObject(v));
         });
         models.currentTheme = util.getPreselectedTheme(models.lookAndFeels);
         models.currentColorScheme = util.getPreselectedColorScheme(models.currentTheme);
+    };
+    this.setResourcePermissions = function (resourcePermissions) {
+        models.resourcePermissions = resourcePermissions;
+        angular.forEach(models.resourcePermissions.allowedActions, function (v) {
+            v.name = lfsConstants.getMessage(v.name);
+        });
     };
     this.setLookAndFeelBinding = function (lookAndFeelBinding) {
         models.lookAndFeelBinding = lookAndFeelBinding;
@@ -80,7 +99,7 @@ var LookAndFeelService = function () {
         return util.getPreselectedColorScheme(currentTheme);
     };
     /**
-     * @returns {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: LookAndFeelOption, permissionMap: [RolePermissions]}}
+     * @returns {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: LookAndFeelOption, resourcePermissions: ResourcePermissions}}
      */
     this.getModels = function () {
         return models;
@@ -104,6 +123,25 @@ var LookAndFeelService = function () {
         var lookAndFeelOption = this.getActiveLookAndFeelOption();
         return new LookAndFeel(lookAndFeelOption.id, models.lookAndFeelBinding.companyId);
     };
+    this.toggleAction = function (actionId) {
+        var checkedCount = 0, perspectiveState;
+
+        angular.forEach(models.resourcePermissions.permissions, function (v) {
+            var a = util.getActionById(v, actionId);
+            if (a && a.permitted) {
+                checkedCount++;
+            }
+        });
+
+        perspectiveState = checkedCount != models.resourcePermissions.permissions.length;
+
+        angular.forEach(models.resourcePermissions.permissions, function (v) {
+            var a = util.getActionById(v, actionId);
+            if (a) {
+                a.permitted = perspectiveState;
+            }
+        });
+    }
 };
 
 var lookAndFeelServices = angular.module('lookAndFeelServices', [])

@@ -56,7 +56,7 @@ public class ViewController extends BaseController {
         LookAndFeelBinding emptyBinding = new LookAndFeelBinding(themeDisplay);
         LookAndFeelBinding currentBinding = getLookAndFeelBindingService(request).findByUserAndGroup(emptyBinding);
 
-        return new ModelAndView("select-look-and-feel", map)
+        return new ModelAndView("view/select-look-and-feel", map)
                 .addObject("themeDisplay", themeDisplay)
                 .addObject("lookAndFeelBinding", objectMapper.writeValueAsString(currentBinding != null ? currentBinding : emptyBinding));
     }

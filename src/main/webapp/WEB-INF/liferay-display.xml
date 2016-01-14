@@ -3,6 +3,6 @@
 
 <display>
 	<category name="aimprosoft">
-		<portlet id="look-and-feel-switcher"/>
+		<portlet id="themes-switcher"/>
 	</category>
 </display>

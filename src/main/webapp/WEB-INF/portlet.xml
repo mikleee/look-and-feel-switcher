@@ -7,12 +7,12 @@
 
 
     <portlet>
-        <portlet-name>look-and-feel-switcher</portlet-name>
+        <portlet-name>themes-switcher</portlet-name>
         <display-name>Look and feel switcher</display-name>
         <portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
         <init-param>
             <name>contextConfigLocation</name>
-            <value>/WEB-INF/look-and-feel-switcher-mvc-context.xml</value>
+            <value>/WEB-INF/themes-switcher-mvc-context.xml</value>
         </init-param>
         <expiration-cache>0</expiration-cache>
         <supports>
@@ -37,7 +37,6 @@
         <security-role-ref>
             <role-name>user</role-name>
         </security-role-ref>
-
     </portlet>
 
 </portlet-app>

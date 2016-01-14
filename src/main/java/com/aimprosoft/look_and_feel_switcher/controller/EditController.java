@@ -40,7 +40,7 @@ public class EditController extends BaseController {
     @RenderMapping
     public ModelAndView showAdministrationPage(RenderRequest request, ModelMap map) throws SystemException, PortalException, ApplicationException {
         ThemeDisplay themeDisplay = getThemeDisplay(request);
-        return new ModelAndView("administration", map).addObject("themeDisplay", themeDisplay).addObject("actions", permissionService.getLookAndFeelActions());
+        return new ModelAndView("edit/preferences", map).addObject("themeDisplay", themeDisplay);
     }
 
     @ResourceMapping("getLookAndFeelMap")
@@ -55,7 +55,7 @@ public class EditController extends BaseController {
         permissionService.applyPermissions(resourcePermissions, getCompanyId(request));
     }
 
-    @ResourceMapping("permissionTable") //todo collect request
+    @ResourceMapping("permissionTable")
     public void permissionTable(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
         LookAndFeel model = objectMapper.readValue(request.getPortletInputStream(), LookAndFeel.class);
         ResourcePermissions permissions = permissionService.getPermissions(getThemeDisplay(request).getCompanyId(), model.getId());

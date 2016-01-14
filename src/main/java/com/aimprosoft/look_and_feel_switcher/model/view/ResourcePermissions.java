@@ -10,6 +10,7 @@ public class ResourcePermissions {
 
     private String id;
     private List<RolePermission> permissions = new ArrayList<RolePermission>();
+    private List<Action> allowedActions = new ArrayList<Action>();
 
     public String getId() {
         return id;
@@ -27,4 +28,11 @@ public class ResourcePermissions {
         this.permissions = permissions;
     }
 
+    public List<Action> getAllowedActions() {
+        return allowedActions;
+    }
+
+    public void setAllowedActions(List<Action> allowedActions) {
+        this.allowedActions = allowedActions;
+    }
 }

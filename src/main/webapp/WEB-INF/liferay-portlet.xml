@@ -4,17 +4,15 @@
 <liferay-portlet-app>
 
     <portlet>
-        <portlet-name>look-and-feel-switcher</portlet-name>
+        <portlet-name>themes-switcher</portlet-name>
         <icon>/icon.png</icon>
         <friendly-url-mapper-class>com.aimprosoft.look_and_feel_switcher.hook.FriendlyUrlMapper</friendly-url-mapper-class>
         <friendly-url-mapping>look-and-feel-binder</friendly-url-mapping>
-        <friendly-url-routes>../look-and-feel-switcher-routes.xml</friendly-url-routes>
-        <header-portlet-css>/css/look-and-feel-switcher.css</header-portlet-css>
-        <!--<header-portlet-javascript>/js/lib/jquery-2.1.1.js</header-portlet-javascript>-->
+        <friendly-url-routes>../themes-switcher-routes.xml</friendly-url-routes>
+        <header-portlet-css>/css/themes-switcher.css</header-portlet-css>
         <header-portlet-javascript>/js/lib/angular.min.js</header-portlet-javascript>
+        <header-portlet-javascript>/js/lib/angular-route.min.js</header-portlet-javascript>
         <header-portlet-javascript>/js/util.js</header-portlet-javascript>
-        <!--<header-portlet-javascript>/js/lib/jquery.blockUI.js</header-portlet-javascript>-->
-        <!--<header-portlet-javascript>/js/lib/jquery-ui.min.js</header-portlet-javascript>-->
     </portlet>
 
 

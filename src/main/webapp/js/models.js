@@ -45,14 +45,6 @@ function LookAndFeelOption() {
 }
 LookAndFeelOption.prototype = new BaseModel();
 
-///**
-// * @constructor
-// */
-//function ColorScheme() {
-//
-//}
-//ColorScheme.prototype = new LookAndFeelOption();
-
 /**
  * @constructor
  */
@@ -103,12 +95,39 @@ function LookAndFeel(id, companyId) {
 /**
  * @constructor
  */
+function ResourcePermissions() {
+    this.id = null;
+    /**
+     * @type {[Action]}
+     */
+    this.allowedActions = [];
+    /**
+     * @type {[RolePermissions]}
+     */
+    this.permissions = [];
+}
+
+
+/**
+ * @constructor
+ */
 function RolePermissions() {
     /**
      * @type {{name: String, type: String}}
      */
     this.role = {};
-    this.actions = {};
+    /**
+     * @type {[Action]}
+     */
+    this.actions = [];
 }
-RolePermissions.prototype = new BaseModel();
+
+/**
+ * @constructor
+ */
+function Action() {
+    this.id = null;
+    this.name = null;
+    this.permitted = false;
+}
 

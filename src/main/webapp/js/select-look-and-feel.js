@@ -6,10 +6,8 @@
  * @constructor
  */
 function SelectLookAndFeelController($scope, $http, service, initConfig) {
-    $scope.message = null;
-    $scope.status = 'waiting';
+    var state;
     $scope.models = service.getModels();
-
 
     var handlers = {
         onThemeChange: function (newVal) {
@@ -22,31 +20,31 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
             service.getModels().currentColorScheme = newVal;
             service.getModels().lookAndFeelBinding.lookAndFeel.colorSchemeId = newVal ? newVal.id : null;
         },
-        showMessage: function (status, message) {
-            $scope.status = status;
-            $scope.message = message;
+        showMessage: function (message, status) {
+            state = status;
+            $scope.$emit(lfsConstants.event.SHOW_MESSAGE, message, status);
         },
         hideMessage: function () {
-            $scope.message = null;
+            $scope.$emit(lfsConstants.event.HIDE_MESSAGE);
         }
     };
 
     var callBacks = {
         onRequestFailed: function (response) {
-            handlers.showMessage('error', Util.getMessage('internal-server-errors'));
+            handlers.showMessage('lfs-internal-server-error', lfsConstants.state.ERROR);
         },
         onInitLookAndFeels: function (response) {
             service.setLookAndFeels(response.data.body['lookAndFeels']);
             if (service.isNoData()) {
-                handlers.showMessage('warning', Util.getMessage('no-themes-found'));
+                handlers.showMessage('lfs-no-themes-found', lfsConstants.state.WARNING);
             } else {
-                $scope.status = 'success';
+                state = lfsConstants.state.SUCCESS;
                 handlers.hideMessage();
             }
         },
         onBindingApplied: function (response) {
-            if (response.data.status == 'error') {
-                handlers.showMessage('error', Util.getMessage(response.data.body['error']));
+            if (response.data.status == lfsConstants.state.ERROR) {
+                handlers.showMessage(response.data.body['error'], lfsConstants.state.ERROR);
             } else {
                 window.location.reload();
             }
@@ -58,36 +56,20 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
             return service.getScreenshotPath();
         },
         disableFormCondition: function () {
-            return $scope.status == 'waiting' || service.isNoData();
-        },
-        messageStyle: function () {
-            switch ($scope.status) {
-                case 'error':
-                    return 'alert-danger';
-                case 'warning':
-                    return 'alert-warning';
-                case 'success':
-                    return 'alert-success';
-                default :
-                    return '';
-            }
+            return state == lfsConstants.state.WAITING || service.isNoData();
         }
     };
 
     $scope.listeners = {
         resetBinding: function () {
-            $scope.status = 'waiting';
+            state = lfsConstants.state.WAITING;
             window.location = initConfig.resetBindingUrl;
         },
         applyBinding: function () {
-            $scope.status = 'waiting';
+            state = lfsConstants.state.WAITING;
             var data = angular.merge({}, service.getModels().lookAndFeelBinding);
             data.lookAndFeel = service.getActiveLookAndFeel();
-            data.lookAndFeel.id = -10;
             $http.post(initConfig.applyBindingUrl, data).then(callBacks.onBindingApplied, callBacks.onRequestFailed);
-        },
-        selectAllActions: function (action) {
-
         }
     };
 
