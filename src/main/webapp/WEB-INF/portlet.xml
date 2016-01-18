@@ -21,9 +21,9 @@
             <portlet-mode>EDIT</portlet-mode>
         </supports>
         <portlet-info>
-            <title>Look and feel switcher</title>
-            <short-title>Look and feel switcher</short-title>
-            <keywords>theme, color scheme</keywords>
+            <title>Themes switcher</title>
+            <short-title>Themes switcher</short-title>
+            <keywords>theme, color scheme, switcher</keywords>
         </portlet-info>
         <security-role-ref>
             <role-name>administrator</role-name>

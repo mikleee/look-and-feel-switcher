@@ -59,7 +59,7 @@
             </div>
             <div>
                 <div class="ts-container" ng-controller="messageController">
-                    <div ng-show="message" class="alert" ng-class="expressions.messageStyle() + 'ts-message'" ng-bind="message"></div>
+                    <div ng-show="message" class="alert" ng-class="messageStyle + ' ts-message'" ng-bind="message"></div>
                     <ng-view></ng-view>
                 </div>
             </div>

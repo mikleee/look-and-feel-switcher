@@ -57,20 +57,20 @@
 
 <div ng-app="${ns}selectLookAndFeel">
     <div class="ts-container" ng-controller="messageController" ng-cloak>
-        <div ng-show="message" class="alert" ng-class="expressions.messageStyle() + 'ts-message'" ng-bind="message"></div>
+        <div ng-show="message" class="alert" ng-class="messageStyle + ' ts-message'" ng-bind="message"></div>
         <div ng-controller="selectLookAndFeelController">
+            <h3><liferay-ui:message key="ts-select-theme"/></h3>
             <div class="row-fluid">
                 <div class="span5">
-                    <h3><liferay-ui:message key="ts-select-theme"/></h3>
 
                     <div>
                         <label for="${ns}themes"><liferay-ui:message key="ts-themes"/></label>
-                        <select id="${ns}themes" class="lfb-select" ng-disabled="expressions.disableFormCondition()"
+                        <select id="${ns}themes" class="ts-select" ng-disabled="expressions.disableFormCondition()"
                                 ng-options="theme as theme.name for theme in models.lookAndFeels track by theme.id" ng-model="models.currentTheme"></select>
                     </div>
                     <div ng-if="models.currentTheme && models.currentTheme.hasColorSchemes()">
                         <label for="${ns}color-schemes"><liferay-ui:message key="ts-color-schemes"/></label>
-                        <select id="${ns}color-schemes" class="lfb-select" ng-disabled="expressions.disableFormCondition()"
+                        <select id="${ns}color-schemes" class="ts-select" ng-disabled="expressions.disableFormCondition()"
                                 ng-options="cs as cs.name for cs in models.currentTheme.colorSchemes track by cs.id" ng-model="models.currentColorScheme"></select>
                     </div>
                 </div>

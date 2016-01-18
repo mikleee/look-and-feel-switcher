@@ -10,13 +10,13 @@
             </div>
             <div>
                 <label for="${ns}themes"><liferay-ui:message key="ts-themes"/></label>
-                <select id="${ns}themes" class="lfb-select" ng-disabled="expressions.disableFormCondition()"
+                <select id="${ns}themes" class="ts-select" ng-disabled="expressions.disableFormCondition()"
                         ng-options="theme as theme.name for theme in models.lookAndFeels track by theme.id" ng-model="models.currentTheme"
                         ng-change="listeners.onLookAndFeelChange()"></select>
             </div>
             <div ng-if="models.currentTheme && models.currentTheme.hasColorSchemes()">
                 <label for="${ns}color-schemes"><liferay-ui:message key="ts-color-schemes"/></label>
-                <select id="${ns}color-schemes" class="lfb-select" ng-disabled="expressions.disableFormCondition()"
+                <select id="${ns}color-schemes" class="ts-select" ng-disabled="expressions.disableFormCondition()"
                         ng-options="cs as cs.name for cs in models.currentTheme.colorSchemes track by cs.id" ng-model="models.currentColorScheme"
                         ng-change="listeners.onLookAndFeelChange()"></select>
             </div>
@@ -26,7 +26,6 @@
         </div>
 
         <div class="span8">
-            <div class="ts-locker" ng-if="expressions.disableCondition()"></div>
             <h3><liferay-ui:message key="ts-define-permissions"/></h3>
             <table class="table table-bordered table-hover table-striped">
                 <thead class="table-columns">
@@ -41,7 +40,7 @@
                     <tr ng-repeat="p in models.resourcePermissions.permissions track by p.role.name" class="{{'lfr-role lfr-role-' + p.role.type}}">
                         <td class="first">{{p.role.name}}</td>
                         <td ng-repeat="a in p.actions track by a.id">
-                            <input type="checkbox" ng-model="models.resourcePermissions.permissions[$parent.$index].actions[$index].permitted"/>
+                            <input type="checkbox" ng-model="models.resourcePermissions.permissions[$parent.$index].actions[$index].permitted" ng-disabled="expressions.disableCondition()"/>
                         </td>
                     </tr>
                 </tbody>

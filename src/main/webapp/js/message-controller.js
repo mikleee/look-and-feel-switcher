@@ -5,16 +5,19 @@
 function MessageController($scope) {
     var status;
     $scope.message = null;
+    $scope.messageStyle = '';
 
 
-    $scope.messageStyle = function () {
+    var defineStyle = function () {
         switch (status) {
-            case 'error':
+            case lfsConstants.state.ERROR:
                 return 'alert-danger';
-            case 'warning':
+            case lfsConstants.state.WARNING:
                 return 'alert-warning';
-            case 'success':
+            case lfsConstants.state.SUCCESS:
                 return 'alert-success';
+            case lfsConstants.state.WAITING:
+                return 'alert-info';
             default :
                 return '';
         }
@@ -22,12 +25,13 @@ function MessageController($scope) {
 
     var listener = {
         onShowMessage: function (event, message, messageStatus) {
-            $scope.message = lfsConstants.getMessage(message);
             status = messageStatus;
+            $scope.messageStyle = defineStyle();
+            $scope.message = lfsConstants.getMessage(message);
         },
         onHideMessage: function () {
-            status = null;
             $scope.message = null;
+            $scope.messageStyle = '';
         }
     };
     $scope.$on(lfsConstants.event.SHOW_MESSAGE, listener.onShowMessage);

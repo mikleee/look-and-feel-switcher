@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 @Service
 public class DefaultLookAndFeelService {
 
-    public static final String DEFAULT_THEME = "LIFERAY_SHARED_lfb-default-theme";
-    public static final String DEFAULT_COLOR_SCHEME = "LIFERAY_SHARED_lfb-default-color-scheme";
+    public static final String DEFAULT_THEME = "LIFERAY_SHARED_ts-default-theme";
+    public static final String DEFAULT_COLOR_SCHEME = "LIFERAY_SHARED_ts-default-color-scheme";
 
     public void storeLookAndFeel(HttpServletRequest request, ThemeDisplay themeDisplay) {
         request.getSession().setAttribute(DEFAULT_THEME, themeDisplay.getTheme().getThemeId());

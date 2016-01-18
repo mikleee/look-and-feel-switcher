@@ -24,7 +24,7 @@ import javax.persistence.Transient;
  * @author Mikhail Tkachenko
  */
 @Entity
-@Table(name = "lfb_look_and_feel_binding")
+@Table(name = "ts_look_and_feel_binding")
 public class LookAndFeelBinding implements PersistModel<Integer> {
 
     private static final long serialVersionUID = 1L;

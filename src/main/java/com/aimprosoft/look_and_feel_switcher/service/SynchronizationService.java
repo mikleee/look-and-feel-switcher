@@ -5,14 +5,10 @@ import com.aimprosoft.look_and_feel_switcher.exception.ApplicationException;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelType;
 import com.aimprosoft.look_and_feel_switcher.utils.Timer;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.ColorScheme;
-import com.liferay.portal.model.Company;
 import com.liferay.portal.model.Theme;
-import com.liferay.portal.service.CompanyLocalServiceUtil;
 import com.liferay.portal.service.ThemeLocalServiceUtil;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +20,7 @@ import java.util.Set;
  * crated by m.tkachenko on 14.01.16 11:31
  */
 @Service
-public class SynchronizationService implements InitializingBean {
+public class SynchronizationService {
 
     private final static Logger LOGGER = Logger.getLogger(SynchronizationService.class);
 
@@ -38,16 +34,6 @@ public class SynchronizationService implements InitializingBean {
     @Autowired
     private LookAndFeelPermissionService permissionService;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        try {
-            for (Company company : CompanyLocalServiceUtil.getCompanies()) {
-                synchronize(company.getCompanyId());
-            }
-        } catch (SystemException e) {
-            throw new ApplicationException("Synchronize failed");
-        }
-    }
 
     public void synchronize(long companyId) throws ApplicationException {
         Timer timer = new Timer();
@@ -77,11 +63,7 @@ public class SynchronizationService implements InitializingBean {
         }
 
         if (!ids.isEmpty()) {
-            for (Integer id : ids) {
-                lookAndFeelDao.delete(id);
-                permissionService.deletePermissions(companyId, id.toString());
-            }
-            LOGGER.info("Look and feels " + ids + " have been removed because they had not been found in the portal registry");
+            invalidate(ids, companyId);
         }
         LOGGER.debug("Look and feel synchronizing for " + companyId + " finished in " + timer.getSeconds() + " sec.");
     }
@@ -102,6 +84,17 @@ public class SynchronizationService implements InitializingBean {
         permissionService.addDefaultPermissions(result);
         LOGGER.info("Look and feels " + result + " has been registered");
         return result;
+    }
+
+    private void invalidate(List<Integer> ids, long companyId) throws ApplicationException {
+        for (Integer id : ids) {
+            LookAndFeel lookAndFeel = lookAndFeelDao.findById(id);
+            if (lookAndFeel != null) {
+                lookAndFeelDao.delete(id);
+                permissionService.deletePermissions(companyId, id.toString());
+                LOGGER.info("Look and feel " + lookAndFeel + " have been removed because it has not been found in the portal registry");
+            }
+        }
     }
 
 }

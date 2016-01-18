@@ -21,7 +21,7 @@ import java.util.List;
  * crated by m.tkachenko on 19.10.15 10:34
  */
 @Entity
-@Table(name = "lfb_look_and_feel")
+@Table(name = "ts_look_and_feel")
 public class LookAndFeel implements PersistModel<Integer> {
 
     @Id
@@ -128,16 +128,11 @@ public class LookAndFeel implements PersistModel<Integer> {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if (id != null)
-            sb.append("id=").append(id);
-        if (themeId != null)
-            sb.append(", themeId=").append(themeId);
-        if (colorSchemeId != null)
-            sb.append(", colorSchemeId=").append(colorSchemeId);
-        if (companyId != null)
-            sb.append(", companyId=").append(companyId);
-        return sb.toString();
+        return "id=" + id +
+                ", type=" + type +
+                ", themeId='" + themeId + '\'' +
+                ", colorSchemeId='" + colorSchemeId + '\'' +
+                ", companyId=" + companyId;
     }
 
     public LookAndFeel() {
