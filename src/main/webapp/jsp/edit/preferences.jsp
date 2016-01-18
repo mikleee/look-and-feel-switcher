@@ -32,7 +32,7 @@
                     applyPermissionsUrl: '<portlet:resourceURL id="applyPermissions"/>'
                 }
             })
-            .config(function ($routeProvider, $locationProvider) {
+            .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
                 $routeProvider
                         .when('/permissions', {
                             templateUrl: '${pageContext.request.contextPath}/jsp/edit/look-and-feel-permissions.jsp'
@@ -41,7 +41,7 @@
                         }).otherwise({
                             templateUrl: '${pageContext.request.contextPath}/jsp/edit/look-and-feel-permissions.jsp'
                         });
-            });
+            }]);
 </script>
 
 <div ng-app="${ns}lookAndFeelAdministration" class="aui" ng-cloak>
