@@ -37,7 +37,8 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
         permissions.setAllowedActions(actions);
         for (Role role : getCompanyRoles(companyId)) {
             RolePermission rolePermission = new RolePermission(role);
-            for (Action action : actions) {
+            for (Action item : getLookAndFeelActions()) {
+                Action action = item.clone();
                 boolean permitted = hasPermission(companyId, role, lookAndFeelId.toString(), action);
                 action.setPermitted(permitted);
                 rolePermission.put(action);
@@ -45,14 +46,14 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
             permissions.getPermissions().add(rolePermission);
         }
 
-        permissions.setId(lookAndFeelId.toString());
+        permissions.setId(lookAndFeelId);
         return permissions;
     }
 
     @Override
     public void applyPermissions(ResourcePermissions resourcePermissions, long companyId) throws ApplicationException {
         for (RolePermission rolePermission : resourcePermissions.getPermissions()) {
-            updatePermissions(companyId, rolePermission.getRole(), rolePermission.getActions(), resourcePermissions.getId());
+            updatePermissions(companyId, rolePermission.getRole(), rolePermission.getActions(), String.valueOf(resourcePermissions.getId()));
         }
     }
 
@@ -123,7 +124,7 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
                     ResourcePermissionLocalServiceUtil.addResourcePermission(companyId, RESOURCE_NAME, SCOPE, lookAndFeelId, role.getId(), action.getName());
                 }
             } else {
-                ResourcePermissionLocalServiceUtil.setResourcePermissions(companyId, RESOURCE_NAME, SCOPE, lookAndFeelId, role.getId(), actionIds(actions));
+                ResourcePermissionLocalServiceUtil.setResourcePermissions(companyId, RESOURCE_NAME, SCOPE, lookAndFeelId, role.getId(), permittedActionIds(actions));
             }
         } catch (Exception e) {
             throw new ApplicationException();
@@ -172,15 +173,15 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
         }
     }
 
-    private String[] actionIds(List<Action> actions) {
-        List<String> allowed = new ArrayList<String>();
+    private String[] permittedActionIds(List<Action> actions) {
+        List<String> result = new ArrayList<String>();
         for (Action action : actions) {
             if (action.getPermitted()) {
-                allowed.add(action.getName());
+                result.add(action.getName());
             }
         }
 
-        return allowed.toArray(new String[]{});
+        return result.toArray(new String[]{});
     }
 
 

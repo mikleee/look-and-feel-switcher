@@ -4,12 +4,16 @@ import com.aimprosoft.look_and_feel_switcher.exception.ApplicationException;
 import com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelPermissionService;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelService;
+import com.liferay.portal.kernel.util.ParamUtil;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.portlet.ModelAndView;
+import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
+import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import java.io.IOException;
 
@@ -28,6 +32,11 @@ public abstract class BaseController {
     @Autowired
     protected LookAndFeelPermissionService permissionService;
 
+
+    @ResourceMapping("getTemplate")
+    public ModelAndView getTemplate(ResourceRequest request) throws ApplicationException, IOException {
+        return new ModelAndView(ParamUtil.getString(request, "template"));
+    }
 
     @ExceptionHandler({ApplicationException.class})
     public void handleApplicationException(ApplicationException e, ResourceResponse response) throws IOException {

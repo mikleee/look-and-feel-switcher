@@ -8,15 +8,15 @@ import java.util.List;
  */
 public class ResourcePermissions {
 
-    private String id;
+    private Integer id;
     private List<RolePermission> permissions = new ArrayList<RolePermission>();
     private List<Action> allowedActions = new ArrayList<Action>();
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

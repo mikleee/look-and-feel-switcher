@@ -33,7 +33,7 @@ function SelectLookAndFeelPreferencesController($scope, $http, service, portletC
         },
         showMessage: function (status, message) {
             state = status;
-            $scope.$emit(lfsConstants.event.SHOW_MESSAGE, message, status);
+            $scope.$emit(tsConstants.event.SHOW_MESSAGE, message, status);
         },
         hideMessage: function () {
             $scope.message = null;
@@ -42,16 +42,16 @@ function SelectLookAndFeelPreferencesController($scope, $http, service, portletC
 
     var callBacks = {
         onRequestFailed: function (response) {
-            handlers.showMessage('ts-internal-server-error', lfsConstants.state.ERROR);
+            handlers.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
         },
         onInitLookAndFeels: function (response) {
             service.setLookAndFeels(response.data.body['lookAndFeels']);
             if (service.isNoData()) {
-                handlers.showMessage('ts-no-themes-found', lfsConstants.state.WARNING);
+                handlers.showMessage('ts-no-themes-found', tsConstants.state.WARNING);
             } else {
-                state = lfsConstants.state.SUCCESS;
+                state = tsConstants.state.SUCCESS;
                 handlers.hideMessage();
-                $scope.$emit(lfsConstants.event.FETCH_PERMISSIONS_REQUESTED);
+                $scope.$emit(tsConstants.event.FETCH_PERMISSIONS_REQUESTED);
             }
         }
     };
@@ -61,13 +61,13 @@ function SelectLookAndFeelPreferencesController($scope, $http, service, portletC
             return service.getScreenshotPath();
         },
         disableFormCondition: function () {
-            return state == lfsConstants.state.WAITING || service.isNoData();
+            return state == tsConstants.state.WAITING || service.isNoData();
         }
     };
 
     $scope.listeners = {
         onLookAndFeelChange: function () {
-            return $scope.$emit(lfsConstants.event.FETCH_PERMISSIONS_REQUESTED);
+            return $scope.$emit(tsConstants.event.FETCH_PERMISSIONS_REQUESTED);
         }
     };
 
@@ -85,7 +85,7 @@ function SelectLookAndFeelPreferencesController($scope, $http, service, portletC
  * @param $scope
  * @param $http
  * @param service
- * @param portletConfig {{ns: String, initLookAndFeelUrl: String, fetchPermissionsUrl: String, applyPermissionsUrl: String}}
+ * @param portletConfig
  * @constructor
  */
 function LookAndFeelPermissionsController($scope, $http, service, portletConfig) {
@@ -96,7 +96,7 @@ function LookAndFeelPermissionsController($scope, $http, service, portletConfig)
     var handlers = {
         showMessage: function (status, message) {
             state = status;
-            $scope.$emit(lfsConstants.event.SHOW_MESSAGE, message, status);
+            $scope.$emit(tsConstants.event.SHOW_MESSAGE, message, status);
         },
         hideMessage: function () {
             $scope.message = null;
@@ -105,14 +105,11 @@ function LookAndFeelPermissionsController($scope, $http, service, portletConfig)
 
     var callBacks = {
         onRequestFailed: function (response) {
-            handlers.showMessage('ts-internal-server-error', lfsConstants.state.ERROR);
-        },
-        onPermissionSubmitted: function (response) {
-            state = lfsConstants.state.SUCCESS;
+            handlers.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
         },
         onPermissionsFetched: function (response) {
             service.setResourcePermissions(response.data.body['permissions']);
-            state = lfsConstants.state.SUCCESS;
+            state = tsConstants.state.SUCCESS;
         }
     };
 
@@ -120,7 +117,7 @@ function LookAndFeelPermissionsController($scope, $http, service, portletConfig)
         fetchPermissions: function () {
             var activeLookAndFeel = service.getActiveLookAndFeelOption();
             if (activeLookAndFeel) {
-                state = lfsConstants.state.WAITING;
+                state = tsConstants.state.WAITING;
                 $http.post(portletConfig.fetchPermissionsUrl, {id: activeLookAndFeel.id}).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
             }
         }
@@ -128,16 +125,20 @@ function LookAndFeelPermissionsController($scope, $http, service, portletConfig)
 
     $scope.expressions = {
         disableCondition: function () {
-            return state == lfsConstants.state.WAITING;
+            return state == tsConstants.state.WAITING;
         }
     };
 
-    $scope.$on(lfsConstants.event.FETCH_PERMISSIONS_REQUESTED, listeners.fetchPermissions);
+    $scope.$on(tsConstants.event.FETCH_PERMISSIONS_REQUESTED, listeners.fetchPermissions);
 
     $scope.listeners = {
         submitPermissions: function () {
-            state = lfsConstants.state.WAITING;
-            $http.post(portletConfig.applyPermissionsUrl, service.getModels().resourcePermissions).then(callBacks.onPermissionSubmitted, callBacks.onRequestFailed);
+            state = tsConstants.state.WAITING;
+            $http.post(portletConfig.applyPermissionsUrl, service.getModels().resourcePermissions).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
+        },
+        setDefaultPermissions: function () {
+            state = tsConstants.state.WAITING;
+            $http.post(portletConfig.setDefaultPermissionsUrl, service.getModels().resourcePermissions).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
         },
         toggleAction: function (actionId) {
             service.toggleAction(actionId);

@@ -1,4 +1,4 @@
-var lfsConstants = {
+var tsConstants = {
     getMessage: function (key) {
         return Liferay.Language.get(key);
     },

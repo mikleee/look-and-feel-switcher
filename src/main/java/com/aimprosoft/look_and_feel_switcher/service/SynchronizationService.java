@@ -65,7 +65,7 @@ public class SynchronizationService {
         if (!ids.isEmpty()) {
             invalidate(ids, companyId);
         }
-        LOGGER.debug("Look and feel synchronizing for " + companyId + " finished in " + timer.getSeconds() + " sec.");
+        LOGGER.trace("Look and feel synchronizing for " + companyId + " finished in " + timer.getSeconds() + " sec.");
     }
 
     private LookAndFeel registerTheme(Theme theme, long companyId) throws ApplicationException {

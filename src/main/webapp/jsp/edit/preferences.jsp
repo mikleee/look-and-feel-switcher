@@ -18,28 +18,37 @@
     <portlet:param name="companyId" value="${themeDisplay.companyId}"/>
 </portlet:resourceURL>
 
+<portlet:resourceURL var="permissionsTemplateUrl" id="getTemplate">
+    <portlet:param name="template" value="edit/look-and-feel-permissions"/>
+</portlet:resourceURL>
+<portlet:resourceURL var="administrationTemplateUrl" id="getTemplate">
+    <portlet:param name="template" value="edit/administration"/>
+</portlet:resourceURL>
+
 <script>
+
+    var ${ns}PortletConfig = function () {
+        this.ns = '${ns}';
+        this.initLookAndFeelUrl = '${initLookAndFeelUrl}';
+        this.fetchPermissionsUrl = '<portlet:resourceURL id="fetchPermissions"/>';
+        this.applyPermissionsUrl = '<portlet:resourceURL id="applyPermissions"/>';
+        this.setDefaultPermissionsUrl = '<portlet:resourceURL id="setDefaultPermissions"/>';
+    };
+
     angular.module('${ns}lookAndFeelAdministration', ['lookAndFeelServices', 'ngRoute'])
             .controller('preferencesController', ['$scope', PreferencesController])
             .controller('messageController', ['$scope', MessageController])
             .controller('selectLookAndFeelPreferencesController', ['$scope', '$http', 'lookAndFeelService', 'portletConfig', SelectLookAndFeelPreferencesController])
             .controller('lookAndFeelPermissionsController', ['$scope', '$http', 'lookAndFeelService', 'portletConfig', LookAndFeelPermissionsController])
-            .service('portletConfig', function () {
-                return {
-                    ns: '${ns}',
-                    initLookAndFeelUrl: '${initLookAndFeelUrl}',
-                    fetchPermissionsUrl: '<portlet:resourceURL id="permissionTable"/>',
-                    applyPermissionsUrl: '<portlet:resourceURL id="applyPermissions"/>'
-                }
-            })
+            .service('portletConfig', ${ns}PortletConfig)
             .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
                 $routeProvider
                         .when('/permissions', {
-                            templateUrl: '${pageContext.request.contextPath}/jsp/edit/look-and-feel-permissions.jsp'
+                            templateUrl: '${permissionsTemplateUrl}'
                         }).when('/administration', {
-                            templateUrl: '${pageContext.request.contextPath}/jsp/edit/administration.jsp'
+                            templateUrl: '${administrationTemplateUrl}'
                         }).otherwise({
-                            templateUrl: '${pageContext.request.contextPath}/jsp/edit/look-and-feel-permissions.jsp'
+                            templateUrl: '${permissionsTemplateUrl}'
                         });
             }]);
 </script>

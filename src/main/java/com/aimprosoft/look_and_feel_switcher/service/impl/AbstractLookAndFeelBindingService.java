@@ -42,7 +42,7 @@ public abstract class AbstractLookAndFeelBindingService implements LookAndFeelBi
             binding.setId(persisted.getId());
         }
 
-        LookAndFeel lookAndFeel = lookAndFeelService.find(binding.getLookAndFeel());
+        LookAndFeel lookAndFeel = lookAndFeelService.find(binding.getLookAndFeel().getId());
         binding.setLookAndFeel(lookAndFeel);
 
         return saveOrUpdate(binding);

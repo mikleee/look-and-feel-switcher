@@ -38,7 +38,7 @@
                 </thead>
                 <tbody class="table-data">
                     <tr ng-repeat="p in models.resourcePermissions.permissions track by p.role.name" class="{{'lfr-role lfr-role-' + p.role.type}}">
-                        <td class="first">{{p.role.name}}</td>
+                        <td class="first"><span class="ts-tooltip" title="{{p.role.description}}">{{p.role.name}}</span></td>
                         <td ng-repeat="a in p.actions track by a.id">
                             <input type="checkbox" ng-model="models.resourcePermissions.permissions[$parent.$index].actions[$index].permitted" ng-disabled="expressions.disableCondition()"/>
                         </td>
@@ -50,7 +50,7 @@
 
     <div class="row-fliud">
         <button type="button" class="btn btn-primary" ng-click="listeners.submitPermissions()" ng-disabled="expressions.disableCondition()"><liferay-ui:message key="save"/></button>
-        <button type="button" class="btn btn-default"><liferay-ui:message key="submit"/></button>
+        <button type="button" class="btn btn-default" ng-click="listeners.setDefaultPermissions()"><liferay-ui:message key="ts-set-default-permissions"/></button>
     </div>
 
 </div>

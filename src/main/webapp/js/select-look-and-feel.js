@@ -22,29 +22,51 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
         },
         showMessage: function (message, status) {
             state = status;
-            $scope.$emit(lfsConstants.event.SHOW_MESSAGE, message, status);
+            $scope.$emit(tsConstants.event.SHOW_MESSAGE, message, status);
         },
         hideMessage: function () {
-            $scope.$emit(lfsConstants.event.HIDE_MESSAGE);
+            $scope.$emit(tsConstants.event.HIDE_MESSAGE);
         }
     };
 
     var callBacks = {
         onRequestFailed: function (response) {
-            handlers.showMessage('ts-internal-server-error', lfsConstants.state.ERROR);
+            handlers.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
         },
         onInitLookAndFeels: function (response) {
             service.setLookAndFeels(response.data.body['lookAndFeels']);
+
             if (service.isNoData()) {
-                handlers.showMessage('ts-no-themes-found', lfsConstants.state.WARNING);
+                handlers.showMessage('ts-no-themes-found', tsConstants.state.WARNING);
             } else {
-                state = lfsConstants.state.SUCCESS;
+                for (var i = 0; i < service.getModels().lookAndFeels.length; i++) {
+                    var theme = service.getModels().lookAndFeels[i];
+                    if (theme.portalDefault === true) {
+                        var namePrefix = ' (' + tsConstants.getMessage('ts-portal-default') + ')';
+                        if (theme.colorSchemes.length == 0) {
+                            theme.name += namePrefix;
+                        } else {
+                            for (i = 0; i < theme.colorSchemes.length; i++) {
+                                var cs = theme.colorSchemes[i];
+                                if (theme.portalDefault === true) {
+                                    cs.name += namePrefix;
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+
+
+                state = tsConstants.state.SUCCESS;
                 handlers.hideMessage();
             }
-        },
+        }
+        ,
         onBindingApplied: function (response) {
-            if (response.data.status == lfsConstants.state.ERROR) {
-                handlers.showMessage(response.data.body['error'], lfsConstants.state.ERROR);
+            if (response.data.status == tsConstants.state.ERROR) {
+                handlers.showMessage(response.data.body['error'], tsConstants.state.ERROR);
             } else {
                 window.location.reload();
             }
@@ -56,17 +78,17 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
             return service.getScreenshotPath();
         },
         disableFormCondition: function () {
-            return state == lfsConstants.state.WAITING || service.isNoData();
+            return state == tsConstants.state.WAITING || service.isNoData();
         }
     };
 
     $scope.listeners = {
         resetBinding: function () {
-            state = lfsConstants.state.WAITING;
+            state = tsConstants.state.WAITING;
             window.location = initConfig.resetBindingUrl;
         },
         applyBinding: function () {
-            state = lfsConstants.state.WAITING;
+            state = tsConstants.state.WAITING;
             var data = angular.merge({}, service.getModels().lookAndFeelBinding);
             data.lookAndFeel = service.getActiveLookAndFeel();
             $http.post(initConfig.applyBindingUrl, data).then(callBacks.onBindingApplied, callBacks.onRequestFailed);
@@ -74,7 +96,7 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
     };
 
     {   //init
-        handlers.showMessage('loading', lfsConstants.state.WAITING);
+        handlers.showMessage('loading', tsConstants.state.WAITING);
         service.setLookAndFeelBinding(initConfig.lookAndFeelBinding);
         $http.get(initConfig.initLookAndFeelUrl).then(callBacks.onInitLookAndFeels, callBacks.onRequestFailed);
 

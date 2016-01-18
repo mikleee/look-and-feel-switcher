@@ -50,7 +50,7 @@ public class ViewController extends BaseController {
 
 
     @RenderMapping
-    public ModelAndView showThemes(RenderRequest request, ModelMap map) throws SystemException, PortalException, IOException {
+    public ModelAndView renderThemes(RenderRequest request, ModelMap map) throws SystemException, PortalException, IOException {
         ThemeDisplay themeDisplay = getThemeDisplay(request);
 
         LookAndFeelBinding emptyBinding = new LookAndFeelBinding(themeDisplay);

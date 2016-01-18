@@ -5,7 +5,7 @@ import com.liferay.portal.model.ResourceAction;
 /**
  * crated by m.tkachenko on 11.01.16 14:01
  */
-public class Action {
+public class Action implements Cloneable {
 
     private Long id;
     private String name;
@@ -59,4 +59,14 @@ public class Action {
     public int hashCode() {
         return getName() != null ? getName().hashCode() : 0;
     }
+
+    @Override
+    public Action clone() {
+        try {
+            return (Action) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException();
+        }
+    }
+
 }

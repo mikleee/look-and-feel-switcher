@@ -1,8 +1,6 @@
 package com.aimprosoft.look_and_feel_switcher.model.view;
 
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,15 +37,6 @@ public class RolePermission {
 
     public void put(Action action) {
         actions.add(action);
-    }
-
-    @JsonIgnore
-    public String[] getActionIds() {
-        String[] result = new String[actions.size()];
-        for (int i = 0; i < actions.size(); i++) {
-            result[i] = actions.get(i).getName();
-        }
-        return result;
     }
 
 }

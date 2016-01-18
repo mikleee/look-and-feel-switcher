@@ -17,7 +17,7 @@ public interface LookAndFeelService {
         setLookAndFeel(new LookAndFeel());
     }};
 
-    LookAndFeel find(LookAndFeel lookAndFeel) throws ApplicationException;
+    LookAndFeel find(Integer id) throws ApplicationException;
 
     List<ThemeOption> getAvailableLookAndFeels(LookAndFeelBinding fromView, LookAndFeelBinding persisted, LookAndFeel portalDefault, User user) throws ApplicationException;
 

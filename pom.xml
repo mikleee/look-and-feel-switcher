@@ -35,8 +35,8 @@
                 <version>3.1</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -46,39 +46,6 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-antrun-plugin</artifactId>-->
-                <!--<version>1.8</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>copy-dependencies</id>-->
-                        <!--<phase>none</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>run</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<target>-->
-                                <!--<property name="upshot-portlet-dir" value="${app.server.dir}/webapps/upshot-portlet"/>-->
-                                <!--<property name="project-root-dir" value="./"/>-->
-
-                                <!--<copy todir="${upshot-portlet-dir}/jsp/" overwrite="true" verbose="true">-->
-                                    <!--<fileset dir="${project-root-dir}/jsp"/>-->
-                                <!--</copy>-->
-                                <!--<copy todir="${upshot-portlet-dir}/css/" overwrite="true" verbose="true">-->
-                                    <!--<fileset dir="${project-root-dir}/css"/>-->
-                                <!--</copy>-->
-                                <!--<copy todir="${upshot-portlet-dir}/js/" overwrite="true" verbose="true">-->
-                                    <!--<fileset dir="${project-root-dir}/js"/>-->
-                                <!--</copy>-->
-                                <!--<copy todir="${upshot-portlet-dir}/image/" overwrite="true" verbose="true">-->
-                                    <!--<fileset dir="${project-root-dir}/image"/>-->
-                                <!--</copy>-->
-                            <!--</target>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
         </plugins>
 
         <finalName>themes-switcher-portlet</finalName>

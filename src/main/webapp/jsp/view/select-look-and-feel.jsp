@@ -40,18 +40,18 @@
 </portlet:resourceURL>
 
 <script>
+    var ${ns}PortletConfig = function () {
+        this.ns = '${ns}';
+        this.resetBindingUrl = '${resetBindingUrl}';
+        this.initLookAndFeelUrl = '${initLookAndFeelUrl}';
+        this.applyBindingUrl = '${applyBindingUrl}';
+        this.lookAndFeelBinding = new LookAndFeelBinding().fromJson('${lookAndFeelBinding}');
+    };
+
     angular.module('${ns}selectLookAndFeel', ['lookAndFeelServices'])
             .controller('messageController', ['$scope', MessageController])
             .controller('selectLookAndFeelController', ['$scope', '$http', 'lookAndFeelService', 'initConfig', SelectLookAndFeelController])
-            .service('initConfig', function () {
-                return {
-                    ns: '${ns}',
-                    resetBindingUrl: '${resetBindingUrl}',
-                    initLookAndFeelUrl: '${initLookAndFeelUrl}',
-                    applyBindingUrl: '${applyBindingUrl}',
-                    lookAndFeelBinding: new LookAndFeelBinding().fromJson('${lookAndFeelBinding}')
-                }
-            });
+            .service('initConfig', ${ns}PortletConfig);
 </script>
 
 
@@ -60,6 +60,7 @@
         <div ng-show="message" class="alert" ng-class="messageStyle + ' ts-message'" ng-bind="message"></div>
         <div ng-controller="selectLookAndFeelController">
             <h3><liferay-ui:message key="ts-select-theme"/></h3>
+
             <div class="row-fluid">
                 <div class="span5">
 

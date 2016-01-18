@@ -1,6 +1,9 @@
 package com.aimprosoft.look_and_feel_switcher.model.view;
 
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.model.RoleConstants;
+
+import java.util.Locale;
 
 /**
  * crated by m.tkachenko on 08.01.16 19:23
@@ -10,6 +13,7 @@ public class Role {
     private long id;
     private String name;
     private String type;
+    private String description;
 
     public Role() {
     }
@@ -18,6 +22,11 @@ public class Role {
         id = role.getRoleId();
         name = role.getName();
         type = RoleConstants.GUEST.equals(name) ? "guest" : role.getTypeLabel();
+
+        Locale locale = LocaleThreadLocal.getThemeDisplayLocale();
+        if (locale != null) {
+            description = role.getDescription(locale);
+        }
     }
 
     public long getId() {
@@ -42,5 +51,13 @@ public class Role {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

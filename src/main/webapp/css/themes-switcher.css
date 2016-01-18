@@ -2,6 +2,10 @@ div.ts-container {
     padding: 10px;
 }
 
+div.ts-container .ts-tooltip {
+    cursor: help;
+}
+
 div.ts-container h3 {
     color: #8D8D8D;
     font-size: 20px;
@@ -20,15 +24,7 @@ div.ts-container div {
     position: relative;
 }
 
-.ts-bind-option {
-    background-color: #DDD;
-}
-
-.ts-default-option {
-    background-color: #8add8d;
-}
-
-img.ts-screen-shot {
+div.ts-container img.ts-screen-shot {
     border: 1px #DDD solid;
     border-radius: 3px;
     max-height: 200px;
@@ -37,23 +33,31 @@ img.ts-screen-shot {
     transition: max-width 1.5s, max-height 1.5s;
 }
 
-img.ts-screen-shot:hover {
+div.ts-container img.ts-screen-shot:hover {
     max-height: 300px;
     max-width: 100%;
 }
 
-div.ts-waiting-indicator {
+div.ts-container div.ts-waiting-indicator {
     background: url(../img/loading.gif) no-repeat left center;
     background-size: contain;
 }
 
-select.ts-select {
+div.ts-container select.ts-select {
     width: 220px;
     max-width: 70%;
     transition: border 1s;
 }
 
-.ts-display-none {
+div.ts-container option.ts-bind-option {
+    background-color: #DDD;
+}
+
+div.ts-container option.ts-default-option {
+    background-color: #8add8d;
+}
+
+div.ts-container .ts-display-none {
     display: none;
 }
 

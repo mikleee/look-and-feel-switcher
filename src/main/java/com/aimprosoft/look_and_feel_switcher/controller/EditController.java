@@ -5,12 +5,10 @@ import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
 import com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse;
 import com.aimprosoft.look_and_feel_switcher.model.view.ResourcePermissions;
 import com.aimprosoft.look_and_feel_switcher.model.view.ThemeOption;
-import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelPermissionService;
 import com.aimprosoft.look_and_feel_switcher.utils.ResourcePermissionTypeReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.theme.ThemeDisplay;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,11 +32,8 @@ import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getThemeDisplay;
 @RequestMapping(value = "EDIT")
 public class EditController extends BaseController {
 
-    @Autowired
-    private LookAndFeelPermissionService permissionService;
-
     @RenderMapping
-    public ModelAndView showAdministrationPage(RenderRequest request, ModelMap map) throws SystemException, PortalException, ApplicationException {
+    public ModelAndView renderPreferences(RenderRequest request, ModelMap map) throws SystemException, PortalException, ApplicationException {
         ThemeDisplay themeDisplay = getThemeDisplay(request);
         return new ModelAndView("edit/preferences", map).addObject("themeDisplay", themeDisplay);
     }
@@ -49,16 +44,30 @@ public class EditController extends BaseController {
         objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.success().put("lookAndFeels", lookAndFeels));
     }
 
+    @ResourceMapping("fetchPermissions")
+    public void fetchPermissions(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
+        LookAndFeel model = objectMapper.readValue(request.getPortletInputStream(), LookAndFeel.class);
+        writePermissions(request, response, model.getId());
+    }
+
     @ResourceMapping("applyPermissions")
     public void applyPermissions(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
         ResourcePermissions resourcePermissions = objectMapper.readValue(request.getPortletInputStream(), new ResourcePermissionTypeReference());
         permissionService.applyPermissions(resourcePermissions, getCompanyId(request));
+        writePermissions(request, response, resourcePermissions.getId());
     }
 
-    @ResourceMapping("permissionTable")
-    public void permissionTable(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
-        LookAndFeel model = objectMapper.readValue(request.getPortletInputStream(), LookAndFeel.class);
-        ResourcePermissions permissions = permissionService.getPermissions(getThemeDisplay(request).getCompanyId(), model.getId());
+    @ResourceMapping("setDefaultPermissions")
+    public void setDefaultPermissions(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
+        ResourcePermissions resourcePermissions = objectMapper.readValue(request.getPortletInputStream(), new ResourcePermissionTypeReference());
+        LookAndFeel lookAndFeel = lookAndFeelService.find(resourcePermissions.getId());
+        permissionService.addDefaultPermissions(lookAndFeel);
+        writePermissions(request, response, resourcePermissions.getId());
+    }
+
+
+    private void writePermissions(ResourceRequest request, ResourceResponse response, Integer id) throws ApplicationException, IOException {
+        ResourcePermissions permissions = permissionService.getPermissions(getThemeDisplay(request).getCompanyId(), id);
         objectMapper.writeValue(response.getWriter(), JsonResponse.success().put("permissions", permissions));
     }
 

@@ -35,8 +35,8 @@ public class LookAndFeelServiceImpl implements LookAndFeelService {
 
 
     @Override
-    public LookAndFeel find(LookAndFeel lookAndFeel) throws ApplicationException {
-        LookAndFeel result = lookAndFeelDao.findById(lookAndFeel.getId());
+    public LookAndFeel find(Integer id) throws ApplicationException {
+        LookAndFeel result = lookAndFeelDao.findById(id);
         if (result == null) {
             throw new ApplicationException("ts-requested-look-and-feel-not-available");
         }
@@ -101,7 +101,7 @@ public class LookAndFeelServiceImpl implements LookAndFeelService {
     private ThemeOption createThemeOption(LookAndFeel themeLookAndFeel, LookAndFeelBinding persisted, String defaultThemeId, User user) throws ApplicationException {
         ThemeOption themeOption = createThemeOption(themeLookAndFeel);
         themeOption.setBind(themeOption.getId().equals(persisted.getLookAndFeel().getThemeId()));
-        themeOption.setPortalDefault(themeOption.getId().equals(defaultThemeId));
+        themeOption.setPortalDefault(themeLookAndFeel.getThemeId().equals(defaultThemeId));
         themeOption.setActions(permissionService.getAllowedActions(themeLookAndFeel, user));
         return themeOption;
     }
@@ -116,7 +116,7 @@ public class LookAndFeelServiceImpl implements LookAndFeelService {
     private ColorSchemeOption createColorSchemeOption(LookAndFeel csLookAndFeel, LookAndFeelBinding persisted, String defaultColorSchemeId, User user) throws ApplicationException {
         ColorSchemeOption colorSchemeOption = createColorSchemeOption(csLookAndFeel);
         colorSchemeOption.setBind(colorSchemeOption.getId().equals(persisted.getLookAndFeel().getColorSchemeId()));
-        colorSchemeOption.setPortalDefault(colorSchemeOption.getId().equals(defaultColorSchemeId));
+        colorSchemeOption.setPortalDefault(csLookAndFeel.getColorSchemeId().equals(defaultColorSchemeId));
         colorSchemeOption.setActions(permissionService.getAllowedActions(csLookAndFeel, user));
         return colorSchemeOption;
     }

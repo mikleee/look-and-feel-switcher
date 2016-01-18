@@ -75,7 +75,7 @@ var LookAndFeelService = function () {
     this.setResourcePermissions = function (resourcePermissions) {
         models.resourcePermissions = resourcePermissions;
         angular.forEach(models.resourcePermissions.allowedActions, function (v) {
-            v.name = lfsConstants.getMessage(v.name);
+            v.name = tsConstants.getMessage(v.name);
         });
     };
     this.setLookAndFeelBinding = function (lookAndFeelBinding) {
