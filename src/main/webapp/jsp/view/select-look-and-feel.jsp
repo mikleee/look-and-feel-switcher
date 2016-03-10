@@ -61,8 +61,8 @@
         <div ng-controller="selectLookAndFeelController">
             <h3><liferay-ui:message key="ts-select-theme"/></h3>
 
-            <div class="row-fluid">
-                <div class="span5">
+            <div class="ts-row">
+                <div>
 
                     <div>
                         <label for="${ns}themes"><liferay-ui:message key="ts-themes"/></label>
@@ -75,11 +75,12 @@
                                 ng-options="cs as cs.name for cs in models.currentTheme.colorSchemes track by cs.id" ng-model="models.currentColorScheme"></select>
                     </div>
                 </div>
-                <div class="span7">
+                <div>
                     <img ng-src="{{expressions.screenShotPath()}}" class="ts-screen-shot">
                 </div>
             </div>
-            <div class="row-fluid">
+
+            <div class="row-fluid button-footer">
                 <button class="btn btn-primary" ng-disabled="expressions.disableFormCondition()"
                         ng-click="listeners.applyBinding()"><liferay-ui:message key="ts-apply"/></button>
                 <button class="btn btn-default" ng-disabled="expressions.disableFormCondition()" ng-click="listeners.resetBinding()"

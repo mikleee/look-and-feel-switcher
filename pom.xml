@@ -27,7 +27,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
-                    <outputDirectory>${deploy.dir}/deploy</outputDirectory>
+                    <outputDirectory>${deploy.dir}/deploy2</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>

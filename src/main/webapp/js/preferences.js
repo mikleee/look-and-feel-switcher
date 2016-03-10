@@ -2,14 +2,24 @@
  * @param $scope
  * @constructor
  */
-function PreferencesController($scope) {
-    $scope.tab = 'permissions';
+function PreferencesController($scope, $location) {
+    $scope.tab = null;
+    var hash = $location.path();
+    debugger;
+    if (hash == '/permissions') {
+        $scope.tab = 'permissions';
+    } else if (hash == '/administration') {
+        $scope.tab = 'administration';
+    } else {
+        $scope.tab = 'permissions';
+    }
 
     $scope.expressions = {};
 
     $scope.listeners = {
         onTabChange: function (tab) {
             $scope.tab = tab;
+            $scope.$broadcast(tsConstants.event.HIDE_MESSAGE);
         }
     };
 
@@ -19,7 +29,7 @@ function PreferencesController($scope) {
  * @param $scope
  * @param $http
  * @param service
- * @param portletConfig {{ns: String, initLookAndFeelUrl: String, fetchPermissionsUrl: String, applyPermissionsUrl: String}}
+ * @param portletConfig {PortletConfig}
  * @constructor
  */
 function SelectLookAndFeelPreferencesController($scope, $http, service, portletConfig) {
@@ -84,14 +94,17 @@ function SelectLookAndFeelPreferencesController($scope, $http, service, portletC
 /**
  * @param $scope
  * @param $http
- * @param service
- * @param portletConfig
+ * @param lookAndFeelService{LookAndFeelService}
+ * @param portletConfig {PortletConfig}
  * @constructor
  */
-function LookAndFeelPermissionsController($scope, $http, service, portletConfig) {
+function LookAndFeelPermissionsController($scope, $http, lookAndFeelService, portletConfig) {
     var state;
-    $scope.models = service.getModels();
-
+    $scope.models = lookAndFeelService.getModels();
+    /**
+     * @type {PaggedTable}
+     */
+    $scope.permissionsTable = new PaggedTable();
 
     var handlers = {
         showMessage: function (status, message) {
@@ -108,14 +121,20 @@ function LookAndFeelPermissionsController($scope, $http, service, portletConfig)
             handlers.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
         },
         onPermissionsFetched: function (response) {
-            service.setResourcePermissions(response.data.body['permissions']);
+            lookAndFeelService.setResourcePermissions(response.data.body['permissions']);
             state = tsConstants.state.SUCCESS;
+            $scope.permissionsTable.init({
+                collection: lookAndFeelService.getModels().resourcePermissions.permissions,
+                page: 1,
+                pageSize: 5,
+                pageSizes: [5, 10, 20]
+            });
         }
     };
 
     var listeners = {
         fetchPermissions: function () {
-            var activeLookAndFeel = service.getActiveLookAndFeelOption();
+            var activeLookAndFeel = lookAndFeelService.getActiveLookAndFeelOption();
             if (activeLookAndFeel) {
                 state = tsConstants.state.WAITING;
                 $http.post(portletConfig.fetchPermissionsUrl, {id: activeLookAndFeel.id}).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
@@ -134,15 +153,80 @@ function LookAndFeelPermissionsController($scope, $http, service, portletConfig)
     $scope.listeners = {
         submitPermissions: function () {
             state = tsConstants.state.WAITING;
-            $http.post(portletConfig.applyPermissionsUrl, service.getModels().resourcePermissions).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
+            $http.post(portletConfig.applyPermissionsUrl, lookAndFeelService.getModels().resourcePermissions).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
         },
         setDefaultPermissions: function () {
             state = tsConstants.state.WAITING;
-            $http.post(portletConfig.setDefaultPermissionsUrl, service.getModels().resourcePermissions).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
+            $http.post(portletConfig.setDefaultPermissionsUrl, lookAndFeelService.getModels().resourcePermissions).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
         },
         toggleAction: function (actionId) {
-            service.toggleAction(actionId);
+            lookAndFeelService.toggleAction(actionId, $scope.permissionsTable.getCurrentPage());
         }
     };
+
+}
+
+/**
+ * @param $scope
+ * @param $http
+ * @param portletConfig {PortletConfig}
+ * @constructor
+ */
+function LookAndFeelAdministrationController($scope, $http, portletConfig) {
+    var state = tsConstants.state.WAITING;
+    $scope.stat = new BindingsStats();
+
+    var handlers = {
+        showMessage: function (message, status) {
+            state = status;
+            $scope.$emit(tsConstants.event.SHOW_MESSAGE, message, status);
+        },
+        hideMessage: function () {
+            state = null;
+            $scope.$emit(tsConstants.event.HIDE_MESSAGE);
+        }
+    };
+
+    var callBacks = {
+        onRequestFailed: function (response) {
+            handlers.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
+        },
+        onBindingsRemoved: function (response) {
+            var count = response.data.body['count'];
+            $scope.stat.guest = response.data.body['guest'];
+            $scope.stat.user = response.data.body['user'];
+            handlers.showMessage('ts-all-bindings-has-been-removed', tsConstants.state.SUCCESS);
+        },
+        onStatFetched: function (response) {
+            $scope.stat.guest = response.data.body['guest'];
+            $scope.stat.user = response.data.body['user'];
+            handlers.hideMessage();
+        }
+    };
+
+    $scope.expressions = {
+        disableFormCondition: function () {
+            debugger;
+            return state == tsConstants.state.WAITING;
+        },
+        statMessage: function () {
+            return tsConstants.getMessage('ts-bindings-stat-message', [$scope.stat.user.count, $scope.stat.guest.count]);
+        }
+    };
+
+    $scope.listener = {
+        fetchStats: function () {
+            handlers.showMessage('loading', tsConstants.state.WAITING);
+            $http.get(portletConfig.bindingsStatUrl).then(callBacks.onStatFetched, callBacks.onRequestFailed);
+        },
+        removeAllBindings: function () {
+            handlers.showMessage('ts-remove-bindings', tsConstants.state.WAITING);
+            $http.post(portletConfig.removeAllBindingsUrl).then(callBacks.onBindingsRemoved, callBacks.onRequestFailed);
+        }
+    };
+
+    {
+        $scope.listener.fetchStats();
+    }
 
 }

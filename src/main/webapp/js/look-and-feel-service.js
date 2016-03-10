@@ -1,7 +1,7 @@
 /**
  * @constructor
  */
-var LookAndFeelService = function () {
+function LookAndFeelService() {
     /**
      * @type {{lookAndFeelBinding: LookAndFeelBinding, lookAndFeels: [Theme], currentTheme: Theme, currentColorScheme: LookAndFeelOption, resourcePermissions: ResourcePermissions}}
      */
@@ -123,26 +123,104 @@ var LookAndFeelService = function () {
         var lookAndFeelOption = this.getActiveLookAndFeelOption();
         return new LookAndFeel(lookAndFeelOption.id, models.lookAndFeelBinding.companyId);
     };
-    this.toggleAction = function (actionId) {
+    this.toggleAction = function (actionId, permissions) {
         var checkedCount = 0, perspectiveState;
 
-        angular.forEach(models.resourcePermissions.permissions, function (v) {
+        angular.forEach(permissions, function (v) {
             var a = util.getActionById(v, actionId);
             if (a && a.permitted) {
                 checkedCount++;
             }
         });
 
-        perspectiveState = checkedCount != models.resourcePermissions.permissions.length;
+        perspectiveState = checkedCount != permissions.length;
 
-        angular.forEach(models.resourcePermissions.permissions, function (v) {
+        angular.forEach(permissions, function (v) {
             var a = util.getActionById(v, actionId);
             if (a) {
                 a.permitted = perspectiveState;
             }
         });
     }
-};
+}
+
+/**
+ * @constructor
+ */
+function PaggedTable() {
+    var page = 1;
+    var pageSize;
+    var pageSizes;
+    var collection;
+    var pages;
+    var isApplicable;
+
+    var init = function () {
+        pages = [];
+        var cursor = 0;
+        while (cursor < collection.length - 1) {
+            var page = [];
+            var startIndex = cursor;
+            var endIndex = (startIndex + pageSize) > collection.length ? collection.length : startIndex + pageSize;
+            for (var i = cursor; i < endIndex; i++) {
+                page.push(collection[i]);
+            }
+            pages.push(page);
+            cursor += pageSize;
+        }
+    };
+
+    this.init = function (config) {
+        collection = config.collection;
+        pageSize = config.pageSize;
+        pageSizes = config.pageSizes;
+        {
+            var minPageSize = pageSizes[0];
+            for (var i = 0; i < pageSizes.length; i++) {
+                minPageSize = Math.min(minPageSize, pageSizes[i]);
+            }
+            isApplicable = minPageSize < collection.length;
+        }
+
+        page = config.page;
+        init();
+    };
+
+    this.setPageSize = function (size) {
+        pageSize = size;
+        page = 1;
+        init();
+    };
+
+    this.getPageSize = function () {
+        return pageSize;
+    };
+
+    this.getPageSizes = function () {
+        return pageSizes;
+    };
+
+    this.setPage = function (p) {
+        page = p;
+    };
+    this.getPage = function () {
+        return page;
+    };
+
+
+    this.getCurrentPage = function () {
+        return pages && pages.length > 0 ? pages[page - 1] : [];
+    };
+
+    this.getPages = function () {
+        return pages;
+    };
+
+    this.isApplicable = function () {
+        return isApplicable;
+    };
+
+}
 
 var lookAndFeelServices = angular.module('lookAndFeelServices', [])
     .service('lookAndFeelService', [LookAndFeelService]);

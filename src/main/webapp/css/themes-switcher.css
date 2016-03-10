@@ -2,8 +2,25 @@ div.ts-container {
     padding: 10px;
 }
 
-div.ts-container .ts-tooltip {
-    cursor: help;
+div.ts-container div.ts-row {
+
+}
+
+div.ts-container div.ts-row > div {
+    display: inline-block;
+    vertical-align: top;
+}
+
+div.ts-container div.ts-row > div:nth-child(1) {
+    min-width: 40%;
+}
+
+div.ts-container div.ts-row > div:nth-child(2) {
+    min-width: 58%;
+}
+
+div.ts-container div.button-footer {
+    padding: 10px 0;
 }
 
 div.ts-container h3 {
@@ -12,16 +29,13 @@ div.ts-container h3 {
     font-weight: normal;
 }
 
+div.ts-container .ts-tooltip,
 div.ts-container .ts-action-label {
     cursor: pointer;
 }
 
 div.ts-container .ts-message {
     animation: ts-message 0.5s;
-}
-
-div.ts-container div {
-    position: relative;
 }
 
 div.ts-container img.ts-screen-shot {
@@ -36,11 +50,6 @@ div.ts-container img.ts-screen-shot {
 div.ts-container img.ts-screen-shot:hover {
     max-height: 300px;
     max-width: 100%;
-}
-
-div.ts-container div.ts-waiting-indicator {
-    background: url(../img/loading.gif) no-repeat left center;
-    background-size: contain;
 }
 
 div.ts-container select.ts-select {

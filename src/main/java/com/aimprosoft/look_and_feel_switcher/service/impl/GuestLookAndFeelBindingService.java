@@ -38,4 +38,13 @@ public class GuestLookAndFeelBindingService extends AbstractLookAndFeelBindingSe
         return bindingDao.save(binding);
     }
 
+    @Override
+    public long deleteAll() {
+        return bindingDao.deleteAll();
+    }
+
+    @Override
+    public long count() {
+        return bindingDao.count();
+    }
 }

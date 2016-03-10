@@ -1,6 +1,5 @@
 <%@ include file="../init.jspf" %>
 
-
 <script src="<c:url value="/js/models.js"/>"></script>
 <script src="<c:url value="/js/message-controller.js"/>"></script>
 <script src="<c:url value="/js/look-and-feel-service.js"/>"></script>
@@ -27,19 +26,25 @@
 
 <script>
 
-    var ${ns}PortletConfig = function () {
+    /**
+     * @constructor
+     */
+    var ${ns}PortletConfig = function PortletConfig() {
         this.ns = '${ns}';
         this.initLookAndFeelUrl = '${initLookAndFeelUrl}';
         this.fetchPermissionsUrl = '<portlet:resourceURL id="fetchPermissions"/>';
         this.applyPermissionsUrl = '<portlet:resourceURL id="applyPermissions"/>';
         this.setDefaultPermissionsUrl = '<portlet:resourceURL id="setDefaultPermissions"/>';
+        this.removeAllBindingsUrl = '<portlet:resourceURL id="removeAllBindings"/>';
+        this.bindingsStatUrl = '<portlet:resourceURL id="bindingsStatUrl"/>';
     };
 
     angular.module('${ns}lookAndFeelAdministration', ['lookAndFeelServices', 'ngRoute'])
-            .controller('preferencesController', ['$scope', PreferencesController])
+            .controller('preferencesController', ['$scope', '$location', PreferencesController])
             .controller('messageController', ['$scope', MessageController])
             .controller('selectLookAndFeelPreferencesController', ['$scope', '$http', 'lookAndFeelService', 'portletConfig', SelectLookAndFeelPreferencesController])
             .controller('lookAndFeelPermissionsController', ['$scope', '$http', 'lookAndFeelService', 'portletConfig', LookAndFeelPermissionsController])
+            .controller('adminController', ['$scope', '$http', 'portletConfig', LookAndFeelAdministrationController])
             .service('portletConfig', ${ns}PortletConfig)
             .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
                 $routeProvider

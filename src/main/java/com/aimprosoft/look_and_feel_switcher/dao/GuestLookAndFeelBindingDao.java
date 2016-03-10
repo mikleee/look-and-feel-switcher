@@ -17,4 +17,8 @@ public interface GuestLookAndFeelBindingDao {
 
     void delete(Integer id);
 
+    long deleteAll();
+
+    long count();
+
 }

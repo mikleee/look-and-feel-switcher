@@ -5,10 +5,13 @@ import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
 import com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse;
 import com.aimprosoft.look_and_feel_switcher.model.view.ResourcePermissions;
 import com.aimprosoft.look_and_feel_switcher.model.view.ThemeOption;
+import com.aimprosoft.look_and_feel_switcher.service.impl.GuestLookAndFeelBindingService;
+import com.aimprosoft.look_and_feel_switcher.service.impl.UserLookAndFeelBindingService;
 import com.aimprosoft.look_and_feel_switcher.utils.ResourcePermissionTypeReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.theme.ThemeDisplay;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +23,9 @@ import javax.portlet.RenderRequest;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getCompanyId;
 import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getThemeDisplay;
@@ -31,6 +36,11 @@ import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getThemeDisplay;
 @Controller
 @RequestMapping(value = "EDIT")
 public class EditController extends BaseController {
+
+    @Autowired
+    private GuestLookAndFeelBindingService guestLookAndFeelBindingService;
+    @Autowired
+    private UserLookAndFeelBindingService userLookAndFeelBindingService;
 
     @RenderMapping
     public ModelAndView renderPreferences(RenderRequest request, ModelMap map) throws SystemException, PortalException, ApplicationException {
@@ -63,6 +73,24 @@ public class EditController extends BaseController {
         LookAndFeel lookAndFeel = lookAndFeelService.find(resourcePermissions.getId());
         permissionService.addDefaultPermissions(lookAndFeel);
         writePermissions(request, response, resourcePermissions.getId());
+    }
+
+    @ResourceMapping("bindingsStatUrl")
+    public void bindingsStat(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
+        Map<String, Object> guest = new HashMap<String, Object>();
+        guest.put("count", guestLookAndFeelBindingService.count());
+
+        Map<String, Object> user = new HashMap<String, Object>();
+        user.put("count", userLookAndFeelBindingService.count());
+
+        objectMapper.writeValue(response.getWriter(), JsonResponse.success().put("guest", guest).put("user", user));
+    }
+
+    @ResourceMapping("removeAllBindings")
+    public void removeAllBindings(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
+        guestLookAndFeelBindingService.deleteAll();
+        userLookAndFeelBindingService.deleteAll();
+        bindingsStat(request, response);
     }
 
 

@@ -29,4 +29,16 @@ public class UserLookAndFeelBindingService extends AbstractLookAndFeelBindingSer
         return bindingDao.save(binding);
     }
 
+    @Override
+    public long deleteAll() {
+        long size = count();
+        bindingDao.deleteAll();
+        return size;
+    }
+
+    @Override
+    public long count() {
+        return bindingDao.count();
+    }
+
 }

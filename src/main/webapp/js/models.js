@@ -131,3 +131,21 @@ function Action() {
     this.permitted = false;
 }
 
+/**
+ * @constructor
+ */
+function BindingsStats() {
+    this.guest = new BindingStat();
+    this.user = new BindingStat();
+    this.isEmpty = function () {
+        return this.guest.count + this.user.count == 0;
+    }
+}
+
+/**
+ * @constructor
+ */
+function BindingStat() {
+    this.count = 0;
+}
+

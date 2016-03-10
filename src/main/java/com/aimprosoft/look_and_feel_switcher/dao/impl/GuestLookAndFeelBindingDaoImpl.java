@@ -59,4 +59,15 @@ public class GuestLookAndFeelBindingDaoImpl implements GuestLookAndFeelBindingDa
         return null;
     }
 
+    @Override
+    public long deleteAll() {
+        long size = count();
+        dataSource.clear();
+        return size;
+    }
+
+    @Override
+    public long count() {
+        return dataSource.size();
+    }
 }

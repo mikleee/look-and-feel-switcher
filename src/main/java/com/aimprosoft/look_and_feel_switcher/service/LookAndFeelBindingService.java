@@ -14,4 +14,8 @@ public interface LookAndFeelBindingService {
 
     void removeBinding(LookAndFeelBinding model) throws ApplicationException;
 
+    long deleteAll();
+
+    long count();
+
 }
