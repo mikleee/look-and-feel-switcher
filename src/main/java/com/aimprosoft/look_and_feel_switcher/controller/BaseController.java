@@ -34,7 +34,8 @@ public abstract class BaseController {
 
 
     @ResourceMapping("getTemplate")
-    public ModelAndView getTemplate(ResourceRequest request) throws ApplicationException, IOException {
+    public ModelAndView getTemplate(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         return new ModelAndView(ParamUtil.getString(request, "template"));
     }
 

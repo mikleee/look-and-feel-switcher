@@ -20,11 +20,18 @@
             <portlet-mode>VIEW</portlet-mode>
             <portlet-mode>EDIT</portlet-mode>
         </supports>
+
+        <supported-locale>en</supported-locale>
+        <supported-locale>ru</supported-locale>
+        <supported-locale>uk</supported-locale>
+        <resource-bundle>i18n.language</resource-bundle>
+
         <portlet-info>
             <title>Themes switcher</title>
             <short-title>Themes switcher</short-title>
             <keywords>theme, color scheme, switcher</keywords>
         </portlet-info>
+
         <security-role-ref>
             <role-name>administrator</role-name>
         </security-role-ref>
@@ -37,6 +44,7 @@
         <security-role-ref>
             <role-name>user</role-name>
         </security-role-ref>
+
     </portlet>
 
 </portlet-app>

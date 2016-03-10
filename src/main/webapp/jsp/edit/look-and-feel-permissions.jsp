@@ -21,7 +21,8 @@
                         ng-change="listeners.onLookAndFeelChange()"></select>
             </div>
             <div>
-                <img ng-src="{{expressions.screenShotPath()}}" class="ts-screen-shot">
+                <span ng-show="screenshot.state == 'loading' || screenshot.state == 'success'"><img ng-src="{{expressions.screenShotPath()}}" class="ts-screen-shot" ng-model="screenshot"></span>
+                <span ng-show="screenshot.state == 'failed'" class="alert alert-warning"><liferay-ui:message key="ts-screenshot-is-not-available"/></span>
             </div>
         </div>
         <div>

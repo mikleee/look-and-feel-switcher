@@ -96,7 +96,7 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
     };
 
     {   //init
-        handlers.showMessage('loading', tsConstants.state.WAITING);
+        handlers.showMessage('ts-loading', tsConstants.state.WAITING);
         service.setLookAndFeelBinding(initConfig.lookAndFeelBinding);
         $http.get(initConfig.initLookAndFeelUrl).then(callBacks.onInitLookAndFeels, callBacks.onRequestFailed);
 

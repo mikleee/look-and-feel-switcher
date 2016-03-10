@@ -1,6 +1,7 @@
 <%@ include file="../init.jspf" %>
 
 <script src="<c:url value="/js/models.js"/>"></script>
+<script src="<c:url value="/js/directives.js"/>"></script>
 <script src="<c:url value="/js/message-controller.js"/>"></script>
 <script src="<c:url value="/js/look-and-feel-service.js"/>"></script>
 <script src="<c:url value="/js/preferences.js"/>"></script>
@@ -39,7 +40,7 @@
         this.bindingsStatUrl = '<portlet:resourceURL id="bindingsStatUrl"/>';
     };
 
-    angular.module('${ns}lookAndFeelAdministration', ['lookAndFeelServices', 'ngRoute'])
+    angular.module('${ns}lookAndFeelAdministration', ['lookAndFeelServices', 'ngRoute', 'tsDirectives'])
             .controller('preferencesController', ['$scope', '$location', PreferencesController])
             .controller('messageController', ['$scope', MessageController])
             .controller('selectLookAndFeelPreferencesController', ['$scope', '$http', 'lookAndFeelService', 'portletConfig', SelectLookAndFeelPreferencesController])

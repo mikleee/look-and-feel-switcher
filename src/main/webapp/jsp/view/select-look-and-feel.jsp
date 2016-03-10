@@ -1,6 +1,7 @@
 <%@ include file="../init.jspf" %>
 
 <script src="<c:url value="/js/models.js"/>"></script>
+<script src="<c:url value="/js/directives.js"/>"></script>
 <script src="<c:url value="/js/look-and-feel-service.js"/>"></script>
 <script src="<c:url value="/js/message-controller.js"/>"></script>
 <script src="<c:url value="/js/select-look-and-feel.js"/>"></script>
@@ -48,7 +49,7 @@
         this.lookAndFeelBinding = new LookAndFeelBinding().fromJson('${lookAndFeelBinding}');
     };
 
-    angular.module('${ns}selectLookAndFeel', ['lookAndFeelServices'])
+    angular.module('${ns}selectLookAndFeel', ['lookAndFeelServices', 'tsDirectives'])
             .controller('messageController', ['$scope', MessageController])
             .controller('selectLookAndFeelController', ['$scope', '$http', 'lookAndFeelService', 'initConfig', SelectLookAndFeelController])
             .service('initConfig', ${ns}PortletConfig);
@@ -76,11 +77,12 @@
                     </div>
                 </div>
                 <div>
-                    <img ng-src="{{expressions.screenShotPath()}}" class="ts-screen-shot">
+                    <span ng-show="screenshot.state == 'loading' || screenshot.state == 'success'"><img ng-src="{{expressions.screenShotPath()}}" class="ts-screen-shot" ng-model="screenshot"></span>
+                    <span ng-show="screenshot.state == 'failed'" class="alert alert-warning"><liferay-ui:message key="ts-screenshot-is-not-available"/></span>
                 </div>
             </div>
 
-            <div class="row-fluid button-footer">
+            <div class="ts-row button-footer">
                 <button class="btn btn-primary" ng-disabled="expressions.disableFormCondition()"
                         ng-click="listeners.applyBinding()"><liferay-ui:message key="ts-apply"/></button>
                 <button class="btn btn-default" ng-disabled="expressions.disableFormCondition()" ng-click="listeners.resetBinding()"

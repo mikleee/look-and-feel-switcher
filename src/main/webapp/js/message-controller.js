@@ -37,3 +37,17 @@ function MessageController($scope) {
     $scope.$on(tsConstants.event.SHOW_MESSAGE, listener.onShowMessage);
     $scope.$on(tsConstants.event.HIDE_MESSAGE, listener.onHideMessage);
 }
+
+/**
+ * @constructor
+ */
+function MessageInterface($scope) {
+    this.showMessage = function (message, status) {
+        $scope.$emit(tsConstants.event.SHOW_MESSAGE, message, status);
+        return status;
+    };
+    this.hideMessage = function (status) {
+        $scope.$emit(tsConstants.event.HIDE_MESSAGE);
+        return status;
+    };
+}

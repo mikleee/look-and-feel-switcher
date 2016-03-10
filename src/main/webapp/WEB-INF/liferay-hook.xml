@@ -4,6 +4,7 @@
 <hook>
     <portal-properties>portal.properties</portal-properties>
     <language-properties>i18n/language.properties</language-properties>
+    <language-properties>i18n/language_ru.properties</language-properties>
+    <language-properties>i18n/language_uk.properties</language-properties>
     <custom-jsp-dir>/hook/pages</custom-jsp-dir>
 </hook>
-

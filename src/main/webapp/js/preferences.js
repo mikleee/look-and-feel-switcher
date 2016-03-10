@@ -1,11 +1,12 @@
 /**
  * @param $scope
+ * @param $location
  * @constructor
  */
 function PreferencesController($scope, $location) {
     $scope.tab = null;
     var hash = $location.path();
-    debugger;
+
     if (hash == '/permissions') {
         $scope.tab = 'permissions';
     } else if (hash == '/administration') {
@@ -34,33 +35,26 @@ function PreferencesController($scope, $location) {
  */
 function SelectLookAndFeelPreferencesController($scope, $http, service, portletConfig) {
     var state;
+    var messageInterface = new MessageInterface($scope);
     $scope.models = service.getModels();
 
 
     var handlers = {
         onThemeChange: function (newVal) {
             service.getModels().currentColorScheme = service.getPreselectedColorScheme(newVal);
-        },
-        showMessage: function (status, message) {
-            state = status;
-            $scope.$emit(tsConstants.event.SHOW_MESSAGE, message, status);
-        },
-        hideMessage: function () {
-            $scope.message = null;
         }
     };
 
     var callBacks = {
         onRequestFailed: function (response) {
-            handlers.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
+            state = messageInterface.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
         },
         onInitLookAndFeels: function (response) {
             service.setLookAndFeels(response.data.body['lookAndFeels']);
             if (service.isNoData()) {
-                handlers.showMessage('ts-no-themes-found', tsConstants.state.WARNING);
+                state = messageInterface.showMessage('ts-no-themes-found', tsConstants.state.WARNING);
             } else {
-                state = tsConstants.state.SUCCESS;
-                handlers.hideMessage();
+                state = messageInterface.hideMessage(tsConstants.state.SUCCESS);
                 $scope.$emit(tsConstants.event.FETCH_PERMISSIONS_REQUESTED);
             }
         }
@@ -82,6 +76,7 @@ function SelectLookAndFeelPreferencesController($scope, $http, service, portletC
     };
 
     {   //init
+        state = messageInterface.showMessage('ts-loading', tsConstants.state.WAITING);
         $http.get(portletConfig.initLookAndFeelUrl).then(callBacks.onInitLookAndFeels, callBacks.onRequestFailed);
 
         $scope.$watch('models.currentTheme', handlers.onThemeChange);
@@ -100,35 +95,26 @@ function SelectLookAndFeelPreferencesController($scope, $http, service, portletC
  */
 function LookAndFeelPermissionsController($scope, $http, lookAndFeelService, portletConfig) {
     var state;
+    var messageInterface = new MessageInterface($scope);
     $scope.models = lookAndFeelService.getModels();
     /**
      * @type {PaggedTable}
      */
     $scope.permissionsTable = new PaggedTable();
 
-    var handlers = {
-        showMessage: function (status, message) {
-            state = status;
-            $scope.$emit(tsConstants.event.SHOW_MESSAGE, message, status);
-        },
-        hideMessage: function () {
-            $scope.message = null;
-        }
-    };
-
     var callBacks = {
         onRequestFailed: function (response) {
-            handlers.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
+            state = messageInterface.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
         },
         onPermissionsFetched: function (response) {
             lookAndFeelService.setResourcePermissions(response.data.body['permissions']);
-            state = tsConstants.state.SUCCESS;
             $scope.permissionsTable.init({
                 collection: lookAndFeelService.getModels().resourcePermissions.permissions,
                 page: 1,
                 pageSize: 5,
                 pageSizes: [5, 10, 20]
             });
+            state = messageInterface.hideMessage('ts-internal-server-error', tsConstants.state.SUCCESS);
         }
     };
 
@@ -136,7 +122,7 @@ function LookAndFeelPermissionsController($scope, $http, lookAndFeelService, por
         fetchPermissions: function () {
             var activeLookAndFeel = lookAndFeelService.getActiveLookAndFeelOption();
             if (activeLookAndFeel) {
-                state = tsConstants.state.WAITING;
+                state = messageInterface.showMessage('ts-loading', tsConstants.state.WAITING);
                 $http.post(portletConfig.fetchPermissionsUrl, {id: activeLookAndFeel.id}).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
             }
         }
@@ -173,40 +159,29 @@ function LookAndFeelPermissionsController($scope, $http, lookAndFeelService, por
  * @constructor
  */
 function LookAndFeelAdministrationController($scope, $http, portletConfig) {
-    var state = tsConstants.state.WAITING;
+    var state;
+    var messageInterface = new MessageInterface($scope);
     $scope.stat = new BindingsStats();
-
-    var handlers = {
-        showMessage: function (message, status) {
-            state = status;
-            $scope.$emit(tsConstants.event.SHOW_MESSAGE, message, status);
-        },
-        hideMessage: function () {
-            state = null;
-            $scope.$emit(tsConstants.event.HIDE_MESSAGE);
-        }
-    };
 
     var callBacks = {
         onRequestFailed: function (response) {
-            handlers.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
+            state = messageInterface.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
         },
         onBindingsRemoved: function (response) {
             var count = response.data.body['count'];
             $scope.stat.guest = response.data.body['guest'];
             $scope.stat.user = response.data.body['user'];
-            handlers.showMessage('ts-all-bindings-has-been-removed', tsConstants.state.SUCCESS);
+            state = messageInterface.showMessage('ts-all-bindings-has-been-removed', tsConstants.state.SUCCESS);
         },
         onStatFetched: function (response) {
             $scope.stat.guest = response.data.body['guest'];
             $scope.stat.user = response.data.body['user'];
-            handlers.hideMessage();
+            state = messageInterface.hideMessage(tsConstants.state.SUCCESS);
         }
     };
 
     $scope.expressions = {
         disableFormCondition: function () {
-            debugger;
             return state == tsConstants.state.WAITING;
         },
         statMessage: function () {
@@ -216,11 +191,11 @@ function LookAndFeelAdministrationController($scope, $http, portletConfig) {
 
     $scope.listener = {
         fetchStats: function () {
-            handlers.showMessage('loading', tsConstants.state.WAITING);
+            state = messageInterface.showMessage('ts-loading', tsConstants.state.WAITING);
             $http.get(portletConfig.bindingsStatUrl).then(callBacks.onStatFetched, callBacks.onRequestFailed);
         },
         removeAllBindings: function () {
-            handlers.showMessage('ts-remove-bindings', tsConstants.state.WAITING);
+            state = messageInterface.showMessage('ts-remove-bindings', tsConstants.state.WAITING);
             $http.post(portletConfig.removeAllBindingsUrl).then(callBacks.onBindingsRemoved, callBacks.onRequestFailed);
         }
     };

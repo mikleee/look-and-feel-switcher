@@ -9,7 +9,7 @@
     <property name="project-root-dir" value="./src/main/webapp"/>
 
     <target name="reload-cached-resources">
-        <property name="portlet-cache-dir" value="${server-dir}/temp/15-${portlet-name}"/>
+        <property name="portlet-cache-dir" value="${server-dir}/temp/12-${portlet-name}"/>
 
         <copy todir="${portlet-cache-dir}/jsp/" overwrite="true" verbose="true">
             <fileset dir="${project-root-dir}/jsp"/>
