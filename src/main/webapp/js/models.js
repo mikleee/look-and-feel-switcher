@@ -113,7 +113,7 @@ function ResourcePermissions() {
  */
 function RolePermissions() {
     /**
-     * @type {{name: String, type: String, description: String}}
+     * @type {{name: String, type: String, description: String, id: Number}}
      */
     this.role = {};
     /**

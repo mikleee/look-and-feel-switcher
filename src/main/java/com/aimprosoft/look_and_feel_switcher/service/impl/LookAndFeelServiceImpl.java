@@ -100,7 +100,7 @@ public class LookAndFeelServiceImpl implements LookAndFeelService {
 
     private ThemeOption createThemeOption(LookAndFeel themeLookAndFeel, LookAndFeelBinding persisted, String defaultThemeId, User user) throws ApplicationException {
         ThemeOption themeOption = createThemeOption(themeLookAndFeel);
-        themeOption.setBind(themeOption.getId().equals(persisted.getLookAndFeel().getThemeId()));
+        themeOption.setBind(themeLookAndFeel.getThemeId().equals(persisted.getLookAndFeel().getThemeId()));
         themeOption.setPortalDefault(themeLookAndFeel.getThemeId().equals(defaultThemeId));
         themeOption.setActions(permissionService.getAllowedActions(themeLookAndFeel, user));
         return themeOption;
@@ -115,7 +115,7 @@ public class LookAndFeelServiceImpl implements LookAndFeelService {
 
     private ColorSchemeOption createColorSchemeOption(LookAndFeel csLookAndFeel, LookAndFeelBinding persisted, String defaultColorSchemeId, User user) throws ApplicationException {
         ColorSchemeOption colorSchemeOption = createColorSchemeOption(csLookAndFeel);
-        colorSchemeOption.setBind(colorSchemeOption.getId().equals(persisted.getLookAndFeel().getColorSchemeId()));
+        colorSchemeOption.setBind(csLookAndFeel.getColorSchemeId().equals(persisted.getLookAndFeel().getColorSchemeId()));
         colorSchemeOption.setPortalDefault(csLookAndFeel.getColorSchemeId().equals(defaultColorSchemeId));
         colorSchemeOption.setActions(permissionService.getAllowedActions(csLookAndFeel, user));
         return colorSchemeOption;
@@ -124,7 +124,7 @@ public class LookAndFeelServiceImpl implements LookAndFeelService {
     private ColorSchemeOption createColorSchemeOption(LookAndFeel csLookAndFeel) {
         ColorScheme colorScheme = csLookAndFeel.getColorScheme();
         ColorSchemeOption colorSchemeOption = new ColorSchemeOption(csLookAndFeel.getId(), colorScheme.getName());
-        colorSchemeOption.setScreenShotPath(LookAndFeelUtils.getScreenShotPath(colorScheme));
+        colorSchemeOption.setScreenShotPath(LookAndFeelUtils.getScreenShotPath(colorScheme, csLookAndFeel.getTheme()));
         return colorSchemeOption;
     }
 

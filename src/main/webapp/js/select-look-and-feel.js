@@ -7,6 +7,7 @@
  */
 function SelectLookAndFeelController($scope, $http, service, initConfig) {
     var state;
+    var messageInterface = new MessageInterface($scope);
     $scope.models = service.getModels();
 
     var handlers = {
@@ -19,25 +20,18 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
         onColorSchemeChange: function (newVal) {
             service.getModels().currentColorScheme = newVal;
             service.getModels().lookAndFeelBinding.lookAndFeel.colorSchemeId = newVal ? newVal.id : null;
-        },
-        showMessage: function (message, status) {
-            state = status;
-            $scope.$emit(tsConstants.event.SHOW_MESSAGE, message, status);
-        },
-        hideMessage: function () {
-            $scope.$emit(tsConstants.event.HIDE_MESSAGE);
         }
     };
 
     var callBacks = {
         onRequestFailed: function (response) {
-            handlers.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
+            state = messageInterface.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
         },
         onInitLookAndFeels: function (response) {
             service.setLookAndFeels(response.data.body['lookAndFeels']);
 
             if (service.isNoData()) {
-                handlers.showMessage('ts-no-themes-found', tsConstants.state.WARNING);
+                state = messageInterface.showMessage('ts-no-themes-found', tsConstants.state.WARNING);
             } else {
                 for (var i = 0; i < service.getModels().lookAndFeels.length; i++) {
                     var theme = service.getModels().lookAndFeels[i];
@@ -58,15 +52,12 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
                     }
                 }
 
-
-                state = tsConstants.state.SUCCESS;
-                handlers.hideMessage();
+                state = messageInterface.hideMessage(tsConstants.state.SUCCESS);
             }
-        }
-        ,
+        },
         onBindingApplied: function (response) {
             if (response.data.status == tsConstants.state.ERROR) {
-                handlers.showMessage(response.data.body['error'], tsConstants.state.ERROR);
+                state = messageInterface.showMessage(response.data.body['error'], tsConstants.state.ERROR);
             } else {
                 window.location.reload();
             }
@@ -84,11 +75,11 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
 
     $scope.listeners = {
         resetBinding: function () {
-            state = tsConstants.state.WAITING;
+            state = messageInterface.showMessage('ts-theme-is-being-applied', tsConstants.state.WAITING);
             window.location = initConfig.resetBindingUrl;
         },
         applyBinding: function () {
-            state = tsConstants.state.WAITING;
+            state = messageInterface.showMessage('ts-theme-is-being-applied', tsConstants.state.WAITING);
             var data = angular.merge({}, service.getModels().lookAndFeelBinding);
             data.lookAndFeel = service.getActiveLookAndFeel();
             $http.post(initConfig.applyBindingUrl, data).then(callBacks.onBindingApplied, callBacks.onRequestFailed);
@@ -96,7 +87,7 @@ function SelectLookAndFeelController($scope, $http, service, initConfig) {
     };
 
     {   //init
-        handlers.showMessage('ts-loading', tsConstants.state.WAITING);
+        state = messageInterface.showMessage('ts-loading', tsConstants.state.WAITING);
         service.setLookAndFeelBinding(initConfig.lookAndFeelBinding);
         $http.get(initConfig.initLookAndFeelUrl).then(callBacks.onInitLookAndFeels, callBacks.onRequestFailed);
 
