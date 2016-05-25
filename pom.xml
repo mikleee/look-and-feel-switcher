@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 
@@ -9,7 +10,7 @@
     <artifactId>themes-switcher-portlet</artifactId>
     <packaging>war</packaging>
     <name>themes-switcher</name>
-    <version>1.0</version>
+    <version>1.0.0.0</version>
 
 
     <properties>
@@ -20,7 +21,6 @@
 
 
     <build>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -47,8 +47,6 @@
                 </configuration>
             </plugin>
         </plugins>
-
-        <finalName>themes-switcher-portlet</finalName>
     </build>
 
 
