@@ -18,12 +18,8 @@ public class Utils {
 
 
     public static boolean isGuest(PortletRequest request) {
-        try {
-            ThemeDisplay themeDisplay = getThemeDisplay(request);
-            return themeDisplay.getUserId() == themeDisplay.getDefaultUserId();
-        } catch (NestableException e) {
-            throw new RuntimeException();
-        }
+        ThemeDisplay themeDisplay = getThemeDisplay(request);
+        return isGuest(themeDisplay);
     }
 
     public static boolean isGuest(ThemeDisplay themeDisplay) {

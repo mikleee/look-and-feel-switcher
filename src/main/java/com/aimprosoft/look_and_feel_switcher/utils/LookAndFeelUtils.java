@@ -15,7 +15,7 @@ import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getFileSeparator
 public class LookAndFeelUtils {
 
     private final static Logger LOGGER = Logger.getLogger(LookAndFeelUtils.class);
-    private final static String SCREEN_SHOT_NAME = "screenshot.png";
+    private final static String SCREENSHOT_NAME = "screenshot.png";
     private final static String THUMBNAIL_NAME = "thumbnail.png";
 
     public static String getScreenShotPath(Theme theme) {
@@ -50,9 +50,9 @@ public class LookAndFeelUtils {
     }
 
     private static String defineImageToShow(String root) {
-        String screenShot = concatPath(root, SCREEN_SHOT_NAME);
+        String screenShot = concatPath(root, SCREENSHOT_NAME);
         if (new File(screenShot).exists()) {
-            return SCREEN_SHOT_NAME;
+            return SCREENSHOT_NAME;
         } else {
             LOGGER.warn("No screenshot found by path " + screenShot + ". returning the thumbnail " + concatPath(root, THUMBNAIL_NAME));
             return THUMBNAIL_NAME;

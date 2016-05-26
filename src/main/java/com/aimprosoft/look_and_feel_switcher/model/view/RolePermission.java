@@ -12,9 +12,6 @@ public class RolePermission {
     private Role role;
     private List<Action> actions = new ArrayList<Action>();
 
-    public RolePermission() {
-    }
-
     public RolePermission(Role role) {
         this.role = role;
     }

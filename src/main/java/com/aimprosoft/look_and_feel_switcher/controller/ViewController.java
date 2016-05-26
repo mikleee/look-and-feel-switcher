@@ -40,7 +40,6 @@ import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getThemeDisplay;
 @Controller
 @RequestMapping(value = "VIEW")
 public class ViewController extends BaseController {
-
     @Autowired
     private UserLookAndFeelBindingService userThemesBindingService;
     @Autowired

@@ -29,15 +29,8 @@ import static com.liferay.portal.util.WebKeys.COLOR_SCHEME;
  * @author Mikhail Tkachenko
  */
 public class LookAndFeelBinder extends Action {
-
     private final static Logger LOGGER = Logger.getLogger(LookAndFeelBinder.class);
-    private static DefaultLookAndFeelService defaultLookAndFeelService;
 
-    public LookAndFeelBinder() {
-        if (defaultLookAndFeelService == null) {
-            defaultLookAndFeelService = SpringUtils.getBean(DefaultLookAndFeelService.class);
-        }
-    }
 
     @Override
     @Transactional
@@ -48,6 +41,7 @@ public class LookAndFeelBinder extends Action {
             return;
         }
 
+        DefaultLookAndFeelService defaultLookAndFeelService = SpringUtils.getBean(DefaultLookAndFeelService.class);
         defaultLookAndFeelService.storeLookAndFeel(request, themeDisplay);
         LookAndFeelBinding model = getBindModel(themeDisplay);
 

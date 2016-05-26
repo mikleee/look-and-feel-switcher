@@ -12,16 +12,9 @@ import javax.servlet.http.HttpSession;
  */
 public class SessionDestroyListener extends SessionAction {
 
-    private static GuestLookAndFeelBindingService bindingService;
-
-    public SessionDestroyListener() {
-        if (bindingService == null) {
-            bindingService = SpringUtils.getBean(GuestLookAndFeelBindingService.class);
-        }
-    }
-
     @Override
     public void run(HttpSession session) throws ActionException {
+        GuestLookAndFeelBindingService bindingService = SpringUtils.getBean(GuestLookAndFeelBindingService.class);
         bindingService.removeBindings(session.getId());
     }
 
