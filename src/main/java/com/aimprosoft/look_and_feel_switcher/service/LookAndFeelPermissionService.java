@@ -11,7 +11,9 @@ import com.liferay.portal.model.User;
 import java.util.List;
 
 /**
- * crated by m.tkachenko on 04.01.16 11:44
+ * service for {@link com.liferay.portal.model.Role} and {@link ResourcePermissions} xorrespon
+ *
+ * @author Mikhail Tkachenko
  */
 public interface LookAndFeelPermissionService {
 

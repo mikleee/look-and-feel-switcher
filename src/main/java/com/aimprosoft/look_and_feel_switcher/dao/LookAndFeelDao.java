@@ -7,7 +7,9 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 /**
- * crated by m.tkachenko on 19.10.15 10:41
+ * The data access object for {@link LookAndFeel}
+ *
+ * @author Mikhail Tkachenko
  */
 public interface LookAndFeelDao extends CrudRepository<LookAndFeel, Integer> {
 

@@ -1,6 +1,7 @@
 package com.aimprosoft.look_and_feel_switcher.service;
 
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
+import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding;
 import com.liferay.portal.theme.ThemeDisplay;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +10,9 @@ import javax.portlet.PortletSession;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * crated by m.tkachenko on 10.10.15 17:23
+ * the service for {@link LookAndFeelBinding}
+ *
+ * @author Mikhail Tkachenko
  */
 @Service
 public class DefaultLookAndFeelService {

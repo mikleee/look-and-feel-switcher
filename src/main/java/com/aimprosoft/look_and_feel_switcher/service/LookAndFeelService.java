@@ -9,6 +9,8 @@ import com.liferay.portal.model.User;
 import java.util.List;
 
 /**
+ * service for {@link LookAndFeel}
+ *
  * @author Mikhail Tkachenko
  */
 public interface LookAndFeelService {

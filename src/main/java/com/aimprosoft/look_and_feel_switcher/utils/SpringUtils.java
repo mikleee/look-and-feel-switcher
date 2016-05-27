@@ -7,6 +7,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 /**
+ * the accessor to the {@link ApplicationContext}
+ *
  * @author Mikhail Tkachenko
  */
 @Component

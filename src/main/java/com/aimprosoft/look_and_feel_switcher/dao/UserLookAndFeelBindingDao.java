@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 /**
+ * The data access object for registered users' {@link LookAndFeelBinding}
+ *
  * @author Mikhail Tkachenko
  */
 public interface UserLookAndFeelBindingDao extends CrudRepository<LookAndFeelBinding, Integer> {

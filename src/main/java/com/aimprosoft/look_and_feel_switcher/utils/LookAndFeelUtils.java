@@ -1,5 +1,6 @@
 package com.aimprosoft.look_and_feel_switcher.utils;
 
+import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
 import com.liferay.portal.model.ColorScheme;
 import com.liferay.portal.model.Theme;
 import com.liferay.portal.util.PortalUtil;
@@ -10,6 +11,8 @@ import java.io.File;
 import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getFileSeparator;
 
 /**
+ * utils for {@link LookAndFeel}
+ *
  * @author Mikhail Tkachenko
  */
 public class LookAndFeelUtils {

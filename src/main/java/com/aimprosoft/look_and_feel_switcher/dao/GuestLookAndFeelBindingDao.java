@@ -5,7 +5,9 @@ import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding;
 import java.util.List;
 
 /**
- * crated by m.tkachenko on 12.10.15 12:38
+ * The data access object for guests' {@link LookAndFeelBinding}
+ *
+ * @author Mikhail Tkachenko
  */
 public interface GuestLookAndFeelBindingDao {
 

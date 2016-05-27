@@ -1,7 +1,7 @@
 package com.aimprosoft.look_and_feel_switcher.utils;
 
 /**
- * crated by m.tkachenko on 12.01.16 18:40
+ * @author Mikhail Tkachenko
  */
 public class Timer {
 

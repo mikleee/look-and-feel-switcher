@@ -1,7 +1,9 @@
 package com.aimprosoft.look_and_feel_switcher.exception;
 
 /**
- * crated by m.tkachenko on 16.10.15 12:18
+ * The exception which warps all exceptions in the application
+ *
+ * @author Mikhail Tkachenko
  */
 public class ApplicationException extends Exception {
 

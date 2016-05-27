@@ -17,7 +17,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * crated by m.tkachenko on 14.01.16 11:31
+ * service which synchronises all actual {@link Theme} and {@link ColorScheme} with registered {@link LookAndFeel}
+ *
+ * @author Mikhail Tkachenko
  */
 @Service
 public class SynchronizationService {

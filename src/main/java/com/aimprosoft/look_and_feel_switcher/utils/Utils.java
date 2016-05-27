@@ -9,6 +9,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * common utils
+ *
  * @author Mikhail Tkachenko
  */
 public class Utils {

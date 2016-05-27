@@ -5,7 +5,9 @@ import com.liferay.portal.model.ColorScheme;
 import java.util.Properties;
 
 /**
- * crated by m.tkachenko on 10.10.15 18:29
+ * the default implementation of the {@link ColorScheme}
+ *
+ * @author Mikhail Tkachenko
  */
 public class NullColorScheme implements ColorScheme {
     @Override
