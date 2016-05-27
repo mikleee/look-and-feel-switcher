@@ -3,7 +3,9 @@ package com.aimprosoft.look_and_feel_switcher.model.persist;
 import java.io.Serializable;
 
 /**
- * crated by m.tkachenko on 19.10.15 10:24
+ * The representation of the entities which could be serialized
+ *
+ * @author Mikhail Tkachenko
  */
 public interface PersistModel<T extends Serializable> extends Serializable {
 

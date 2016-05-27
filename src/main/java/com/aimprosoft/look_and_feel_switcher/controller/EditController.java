@@ -31,6 +31,8 @@ import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getCompanyId;
 import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getThemeDisplay;
 
 /**
+ * The web controller which handles theme switcher portlet requests in the EDIT mode
+ *
  * @author Mikhail Tkachenko
  */
 @Controller

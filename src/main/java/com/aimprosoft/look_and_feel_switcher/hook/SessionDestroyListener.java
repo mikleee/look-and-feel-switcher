@@ -8,7 +8,11 @@ import com.liferay.portal.kernel.events.SessionAction;
 import javax.servlet.http.HttpSession;
 
 /**
- * crated by m.tkachenko on 07.10.15 13:49
+ * The implementation of {@link com.liferay.portal.kernel.events.SessionAction}.
+ * Each time when session is expired removes guest {@link com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding}
+ * from the {@link com.aimprosoft.look_and_feel_switcher.dao.GuestLookAndFeelBindingDao}
+ *
+ * @author Mikhail Tkachenko
  */
 public class SessionDestroyListener extends SessionAction {
 

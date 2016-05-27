@@ -8,7 +8,6 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
@@ -18,9 +17,10 @@ import javax.portlet.ResourceResponse;
 import java.io.IOException;
 
 /**
- * crated by m.tkachenko on 05.01.16 17:49
+ * Contains the common functionality for all web controllers
+ *
+ * @author Mikhail Tkachenko
  */
-@Controller
 public abstract class BaseController {
 
     protected Logger logger = Logger.getLogger(this.getClass());

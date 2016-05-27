@@ -1,7 +1,9 @@
 package com.aimprosoft.look_and_feel_switcher.model.persist;
 
 /**
- * crated by m.tkachenko on 14.01.16 11:28
+ * The representation of allowed types of the {@link com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel}
+ *
+ * @author Mikhail Tkachenko
  */
 public enum LookAndFeelType {
     THEME, COLOR_SCHEME

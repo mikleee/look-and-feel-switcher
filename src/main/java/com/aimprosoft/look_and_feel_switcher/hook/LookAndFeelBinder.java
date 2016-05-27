@@ -26,6 +26,11 @@ import static com.liferay.portal.model.GroupConstants.CONTROL_PANEL;
 import static com.liferay.portal.util.WebKeys.COLOR_SCHEME;
 
 /**
+ * Each time when request is being processed the {@link LookAndFeelBinder#run(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}
+ * method replaces default {@link com.liferay.portal.model.ColorScheme} and {@link com.liferay.portal.model.Theme}
+ * in the {@link com.liferay.portal.theme.ThemeDisplay} with bind look and feel for user and community via theme switcher portlet. If user hasn't bind anything
+ * for the current community then replacing is skipped.
+ *
  * @author Mikhail Tkachenko
  */
 public class LookAndFeelBinder extends Action {

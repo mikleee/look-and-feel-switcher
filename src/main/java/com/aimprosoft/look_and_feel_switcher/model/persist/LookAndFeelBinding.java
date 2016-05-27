@@ -21,6 +21,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
+ * The representation of mapping the {@link com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding}
+ * to current {@link com.liferay.portal.model.User} and community
+ *
  * @author Mikhail Tkachenko
  */
 @Entity

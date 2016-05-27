@@ -18,7 +18,9 @@ import javax.persistence.Transient;
 import java.util.List;
 
 /**
- * crated by m.tkachenko on 19.10.15 10:34
+ * The representation of the {@link com.liferay.portal.model.ColorScheme} and {@link com.liferay.portal.model.Theme}
+ *
+ * @author Mikhail Tkachenko
  */
 @Entity
 @Table(name = "ts_look_and_feel")

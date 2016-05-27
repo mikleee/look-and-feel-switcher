@@ -35,6 +35,8 @@ import java.util.List;
 import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getThemeDisplay;
 
 /**
+ * The web controller which handles theme switcher portlet requests in the VIEW mode
+ *
  * @author Mikhail Tkachenko
  */
 @Controller
