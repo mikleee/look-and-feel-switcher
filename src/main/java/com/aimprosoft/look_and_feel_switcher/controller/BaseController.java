@@ -46,7 +46,7 @@ public abstract class BaseController {
     }
 
     @ExceptionHandler({Exception.class})
-    public void handleApplicationError(Exception e, ResourceResponse response) throws IOException {
+    void handleApplicationError(Exception e, ResourceResponse response) throws IOException {
         logger.error(e, e);
         objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.error(e.getMessage()));
     }

@@ -14,6 +14,7 @@ import com.liferay.portal.theme.ThemeDisplay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
@@ -99,6 +100,11 @@ public class EditController extends BaseController {
     private void writePermissions(ResourceRequest request, ResourceResponse response, Integer id) throws ApplicationException, IOException {
         ResourcePermissions permissions = permissionService.getPermissions(getThemeDisplay(request).getCompanyId(), id);
         objectMapper.writeValue(response.getWriter(), JsonResponse.success().put("permissions", permissions));
+    }
+
+    @ExceptionHandler({Exception.class})
+    public void handleApplicationError(Exception e, ResourceResponse response) throws IOException {
+        super.handleApplicationError(e, response);
     }
 
 }
