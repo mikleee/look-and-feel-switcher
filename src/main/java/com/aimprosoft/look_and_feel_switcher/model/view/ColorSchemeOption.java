@@ -1,9 +1,14 @@
 package com.aimprosoft.look_and_feel_switcher.model.view;
 
+import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
+import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelType;
+
 import java.io.Serializable;
 
 /**
- * crated by m.tkachenko on 09.10.15 10:41
+ * The data transfer object for the {@link LookAndFeel} with {@link LookAndFeelType#COLOR_SCHEME} type
+ *
+ * @author Mikhail Tkachenko
  */
 public class ColorSchemeOption extends LookAndFeelOption {
 

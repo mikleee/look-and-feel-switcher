@@ -3,10 +3,11 @@ package com.aimprosoft.look_and_feel_switcher.model.view;
 import com.liferay.portal.model.ResourceAction;
 
 /**
- * crated by m.tkachenko on 11.01.16 14:01
+ * The data transfer object for the {@link ResourceAction}
+ *
+ * @author Mikhail Tkachenko
  */
 public class Action implements Cloneable {
-
     private Long id;
     private String name;
     private boolean permitted;

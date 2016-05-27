@@ -3,10 +3,11 @@ package com.aimprosoft.look_and_feel_switcher.model.view;
 import java.io.Serializable;
 
 /**
- * crated by m.tkachenko on 02.10.15 20:51
+ * The data transfer object which represents the 'select > option' html element
+ *
+ * @author Mikhail Tkachenko
  */
 public class OptionViewModel implements Comparable<OptionViewModel> {
-
     private Serializable id;
     private String name;
     private Boolean selected = false;

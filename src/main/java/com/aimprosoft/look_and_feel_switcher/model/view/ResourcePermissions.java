@@ -1,13 +1,16 @@
 package com.aimprosoft.look_and_feel_switcher.model.view;
 
+import com.liferay.portal.model.ResourceAction;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * crated by m.tkachenko on 08.01.16 21:10
+ * The data transfer which represents the mapping for for the {@link ResourceAction}
+ *
+ * @author Mikhail Tkachenko
  */
 public class ResourcePermissions {
-
     private Integer id;
     private List<RolePermission> permissions = new ArrayList<RolePermission>();
     private List<Action> allowedActions = new ArrayList<Action>();

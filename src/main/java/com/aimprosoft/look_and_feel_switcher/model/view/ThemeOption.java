@@ -1,11 +1,16 @@
 package com.aimprosoft.look_and_feel_switcher.model.view;
 
+import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
+import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelType;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * crated by m.tkachenko on 09.10.15 10:45
+ * The data transfer object for the {@link LookAndFeel} with {@link LookAndFeelType#THEME} type
+ *
+ * @author Mikhail Tkachenko
  */
 public class ThemeOption extends LookAndFeelOption {
 

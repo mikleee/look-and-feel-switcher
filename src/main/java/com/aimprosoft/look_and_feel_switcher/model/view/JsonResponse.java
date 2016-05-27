@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * crated by m.tkachenko on 05.10.15 17:43
+ * The data transfer object for http response body in JSON format
+ *
+ * @author Mikhail Tkachenko
  */
 public class JsonResponse {
-
     private String status;
     private Map<String, Object> body = new HashMap<String, Object>();
     private Object meta;

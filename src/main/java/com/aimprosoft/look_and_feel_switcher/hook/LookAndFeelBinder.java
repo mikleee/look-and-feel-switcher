@@ -12,6 +12,7 @@ import com.aimprosoft.look_and_feel_switcher.utils.Utils;
 import com.liferay.portal.kernel.events.Action;
 import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.model.ColorScheme;
+import com.liferay.portal.model.Theme;
 import com.liferay.portal.theme.ThemeDisplay;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +27,9 @@ import static com.liferay.portal.model.GroupConstants.CONTROL_PANEL;
 import static com.liferay.portal.util.WebKeys.COLOR_SCHEME;
 
 /**
- * Each time when request is being processed the {@link LookAndFeelBinder#run(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}
- * method replaces default {@link com.liferay.portal.model.ColorScheme} and {@link com.liferay.portal.model.Theme}
- * in the {@link com.liferay.portal.theme.ThemeDisplay} with bind look and feel for user and community via theme switcher portlet. If user hasn't bind anything
+ * Each time when request is being processed the {@link LookAndFeelBinder#run(HttpServletRequest, HttpServletResponse)}
+ * method replaces the default {@link ColorScheme} and {@link Theme}
+ * in the {@link ThemeDisplay} with bind look and feel for user and community via theme switcher portlet. If user hasn't bind anything
  * for the current community then replacing is skipped.
  *
  * @author Mikhail Tkachenko

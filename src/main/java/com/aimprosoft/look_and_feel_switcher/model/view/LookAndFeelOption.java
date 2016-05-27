@@ -1,5 +1,6 @@
 package com.aimprosoft.look_and_feel_switcher.model.view;
 
+import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
 import com.liferay.portal.security.permission.ActionKeys;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -8,10 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * crated by m.tkachenko on 09.10.15 10:41
+ * The abstract data transfer object for the {@link LookAndFeel}
+ *
+ * @author Mikhail Tkachenko
  */
-public class LookAndFeelOption extends OptionViewModel {
-
+public abstract class LookAndFeelOption extends OptionViewModel {
     private Boolean bind = false;
     private Boolean portalDefault = false;
     private String screenShotPath;

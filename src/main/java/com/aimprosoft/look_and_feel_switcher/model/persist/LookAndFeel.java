@@ -18,7 +18,7 @@ import javax.persistence.Transient;
 import java.util.List;
 
 /**
- * The representation of the {@link com.liferay.portal.model.ColorScheme} and {@link com.liferay.portal.model.Theme}
+ * The representation of the {@link ColorScheme} and {@link Theme}
  *
  * @author Mikhail Tkachenko
  */

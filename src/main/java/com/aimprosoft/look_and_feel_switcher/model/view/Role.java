@@ -6,10 +6,11 @@ import com.liferay.portal.model.RoleConstants;
 import java.util.Locale;
 
 /**
- * crated by m.tkachenko on 08.01.16 19:23
+ * The data transfer object for the {@link com.liferay.portal.model.Role}
+ *
+ * @author Mikhail Tkachenko
  */
 public class Role {
-
     private long id;
     private String name;
     private String type;

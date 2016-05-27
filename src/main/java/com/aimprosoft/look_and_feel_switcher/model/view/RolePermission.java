@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * crated by m.tkachenko on 08.01.16 15:14
+ * The data transfer object which maps allowed {@link Action} to the {@link Role}
+ *
+ * @author Mikhail Tkachenko
  */
 public class RolePermission {
-
     private Role role;
     private List<Action> actions = new ArrayList<Action>();
+
 
     public RolePermission(Role role) {
         this.role = role;
