@@ -110,12 +110,7 @@
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>c3p0</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.1.2</version>
+            <scope>provided</scope>
         </dependency>
         <!--spring data-->
         <dependency>
@@ -124,12 +119,12 @@
             <version>1.0.2.RELEASE</version>
         </dependency>
         <!--Hibernate-->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>4.2.8.Final</version>
-            <scope>compile</scope>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.hibernate</groupId>-->
+        <!--<artifactId>hibernate-core</artifactId>-->
+        <!--<version>4.2.8.Final</version>-->
+        <!--<scope>compile</scope>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
@@ -139,26 +134,16 @@
 
         <!--OTHER-->
         <dependency>
-            <groupId>net.sf.oval</groupId>
-            <artifactId>oval</artifactId>
-            <version>1.84</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.6</version>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.16</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
 
