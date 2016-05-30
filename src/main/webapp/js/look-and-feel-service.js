@@ -154,7 +154,7 @@ function LookAndFeelService() {
                 a.permitted = perspectiveState;
             }
         });
-    }
+    };
 }
 
 /**

@@ -38,13 +38,6 @@ function SelectLookAndFeelPreferencesController($scope, $http, service, portletC
     var messageInterface = new MessageInterface($scope);
     $scope.models = service.getModels();
 
-
-    var handlers = {
-        onThemeChange: function (newVal) {
-            service.getModels().currentColorScheme = service.getPreselectedColorScheme(newVal);
-        }
-    };
-
     var callBacks = {
         onRequestFailed: function (response) {
             state = messageInterface.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
@@ -79,8 +72,17 @@ function SelectLookAndFeelPreferencesController($scope, $http, service, portletC
         state = messageInterface.showMessage('ts-loading', tsConstants.state.WAITING);
         $http.get(portletConfig.initLookAndFeelUrl).then(callBacks.onInitLookAndFeels, callBacks.onRequestFailed);
 
-        $scope.$watch('models.currentTheme', handlers.onThemeChange);
-        $scope.$watch('models.currentColorScheme', handlers.onColorSchemeChange);
+        $scope.$watch('models.currentTheme', function (t) {
+            if (t) {
+                service.getModels().currentColorScheme = service.getPreselectedColorScheme(t);
+                if (!t.hasColorSchemes()) {
+                    $scope.$emit(tsConstants.event.FETCH_PERMISSIONS_REQUESTED);
+                }
+            }
+        });
+        $scope.$watch('models.currentColorScheme', function (cs) {
+            $scope.$emit(tsConstants.event.FETCH_PERMISSIONS_REQUESTED);
+        });
     }
 
 }
