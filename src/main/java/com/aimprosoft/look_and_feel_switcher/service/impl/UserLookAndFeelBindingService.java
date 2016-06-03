@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserLookAndFeelBindingService extends AbstractLookAndFeelBindingService {
-
     @Autowired
     protected UserLookAndFeelBindingDao bindingDao;
 

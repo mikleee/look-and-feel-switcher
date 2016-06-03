@@ -30,7 +30,7 @@ public abstract class AbstractLookAndFeelBindingService implements LookAndFeelBi
         }
 
         delete(persisted);
-        LOGGER.info("Look and fill binding has been removed: " + persisted);
+        LOGGER.debug("Look and fill binding has been removed: " + persisted);
     }
 
     @Override

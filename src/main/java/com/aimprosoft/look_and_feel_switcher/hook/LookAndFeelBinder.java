@@ -25,6 +25,7 @@ import static com.liferay.portal.kernel.util.WebKeys.THEME;
 import static com.liferay.portal.kernel.util.WebKeys.THEME_DISPLAY;
 import static com.liferay.portal.model.GroupConstants.CONTROL_PANEL;
 import static com.liferay.portal.util.WebKeys.COLOR_SCHEME;
+import static java.lang.String.format;
 
 /**
  * Each time when request is being processed the {@link LookAndFeelBinder#run(HttpServletRequest, HttpServletResponse)}
@@ -41,23 +42,22 @@ public class LookAndFeelBinder extends Action {
     @Override
     @Transactional
     public void run(HttpServletRequest request, HttpServletResponse response) throws ActionException {
-        ThemeDisplay themeDisplay = getThemeDisplay(request);
+        try {
+            ThemeDisplay themeDisplay = getThemeDisplay(request);
+            if (isAjax(request) || isControlPanel(themeDisplay)) {
+                return;
+            }
 
-        if (isAjax(request) || isControlPanel(themeDisplay)) {
-            return;
-        }
+            DefaultLookAndFeelService defaultLookAndFeelService = SpringUtils.getBean(DefaultLookAndFeelService.class);
+            defaultLookAndFeelService.storeLookAndFeel(request, themeDisplay);
+            LookAndFeelBinding model = getBindModel(themeDisplay);
 
-        DefaultLookAndFeelService defaultLookAndFeelService = SpringUtils.getBean(DefaultLookAndFeelService.class);
-        defaultLookAndFeelService.storeLookAndFeel(request, themeDisplay);
-        LookAndFeelBinding model = getBindModel(themeDisplay);
-
-        if (model != null) {
-            try {
+            if (model != null) {
                 model.init();
                 registerThemeDisplay(model, themeDisplay, request);
-            } catch (Exception e) {
-                LOGGER.error(e.getMessage(), e);
             }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
@@ -93,6 +93,11 @@ public class LookAndFeelBinder extends Action {
         request.setAttribute(THEME, lookAndFeel.getTheme());
         request.setAttribute(COLOR_SCHEME, colorScheme);
         request.setAttribute(THEME_DISPLAY, themeDisplay);
+
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace(format("the default look and feel has been overridden. Theme - %s, color scheme - %s",
+                    lookAndFeel.getTheme().getName(), colorScheme.getName()));
+        }
     }
 
 }

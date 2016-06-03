@@ -16,13 +16,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.lang.String.format;
+
 /**
  * service which synchronises all actual {@link Theme} and {@link ColorScheme} with registered {@link LookAndFeel}
  *
  * @author Mikhail Tkachenko
  */
 @Service
-public class SynchronizationService {
+public final class SynchronizationService {
 
     private final static Logger LOGGER = Logger.getLogger(SynchronizationService.class);
 
@@ -67,7 +69,11 @@ public class SynchronizationService {
         if (!ids.isEmpty()) {
             invalidate(ids, companyId);
         }
-        LOGGER.trace("Look and feel synchronizing for " + companyId + " finished in " + timer.getSeconds() + " sec.");
+
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace(format("Look and feel synchronizing for company %s finished in %s sec", companyId, timer.getSeconds()));
+        }
+
     }
 
     private LookAndFeel registerTheme(Theme theme, long companyId) throws ApplicationException {

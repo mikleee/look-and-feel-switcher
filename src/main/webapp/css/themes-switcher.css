@@ -44,12 +44,6 @@ div.ts-container img.ts-screen-shot {
     max-height: 200px;
     max-width: 100%;
     box-shadow: 0 0 10px rgb(221, 221, 221);
-    transition: max-width 1.5s, max-height 1.5s;
-}
-
-div.ts-container img.ts-screen-shot:hover {
-    max-height: 300px;
-    max-width: 100%;
 }
 
 div.ts-container select.ts-select {

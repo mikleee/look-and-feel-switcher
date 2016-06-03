@@ -6,6 +6,7 @@ import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding;
 import com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse;
 import com.aimprosoft.look_and_feel_switcher.model.view.ThemeOption;
 import com.aimprosoft.look_and_feel_switcher.service.DefaultLookAndFeelService;
+import com.aimprosoft.look_and_feel_switcher.service.GuestSessionRegistry;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelBindingService;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelService;
 import com.aimprosoft.look_and_feel_switcher.service.impl.GuestLookAndFeelBindingService;
@@ -24,12 +25,7 @@ import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletRequest;
-import javax.portlet.RenderRequest;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import javax.portlet.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -49,6 +45,8 @@ public class ViewController extends BaseController {
     private GuestLookAndFeelBindingService guestThemeBindingService;
     @Autowired
     private DefaultLookAndFeelService defaultLookAndFeelService;
+    @Autowired
+    private GuestSessionRegistry guestSessionRegistry;
 
 
     @RenderMapping
@@ -75,6 +73,9 @@ public class ViewController extends BaseController {
         LookAndFeelBindingService lookAndFeelBindingService = getLookAndFeelBindingService(request);
         LookAndFeelBinding model = objectMapper.readValue(request.getPortletInputStream(), LookAndFeelBinding.class);
         lookAndFeelBindingService.applyBinding(model);
+        if (Utils.isGuest(request)) {
+            guestSessionRegistry.register(request);
+        }
         objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.success());
     }
 

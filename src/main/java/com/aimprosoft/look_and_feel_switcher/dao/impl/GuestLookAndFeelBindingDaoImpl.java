@@ -2,6 +2,7 @@ package com.aimprosoft.look_and_feel_switcher.dao.impl;
 
 import com.aimprosoft.look_and_feel_switcher.dao.GuestLookAndFeelBindingDao;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class GuestLookAndFeelBindingDaoImpl implements GuestLookAndFeelBindingDao {
+    private final static Logger LOGGER = Logger.getLogger(GuestLookAndFeelBindingDaoImpl.class);
 
     private static int idSequence = 0;
     private static Map<Integer, LookAndFeelBinding> dataSource = new ConcurrentHashMap<Integer, LookAndFeelBinding>();
@@ -42,7 +44,10 @@ public class GuestLookAndFeelBindingDaoImpl implements GuestLookAndFeelBindingDa
 
     @Override
     public void delete(Integer id) {
-        dataSource.remove(id);
+        LookAndFeelBinding removed = dataSource.remove(id);
+        if (removed != null) {
+            LOGGER.debug("guest binding " + id + " has been removed");
+        }
     }
 
     private LookAndFeelBinding findByUserAndGroup(long userId, long groupId, long companyId, String sessionId) {

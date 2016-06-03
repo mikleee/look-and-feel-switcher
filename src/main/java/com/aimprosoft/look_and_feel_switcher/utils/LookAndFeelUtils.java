@@ -57,7 +57,7 @@ public class LookAndFeelUtils {
         if (new File(screenShot).exists()) {
             return SCREENSHOT_NAME;
         } else {
-            LOGGER.warn("No screenshot found by path " + screenShot + ". returning the thumbnail " + concatPath(root, THUMBNAIL_NAME));
+            LOGGER.debug("No screenshot found by path " + screenShot + ". returning the thumbnail " + concatPath(root, THUMBNAIL_NAME));
             return THUMBNAIL_NAME;
         }
     }

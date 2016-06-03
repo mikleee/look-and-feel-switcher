@@ -16,9 +16,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Service
 public class DefaultLookAndFeelService {
-
-    public static final String DEFAULT_THEME = "LIFERAY_SHARED_ts-default-theme";
-    public static final String DEFAULT_COLOR_SCHEME = "LIFERAY_SHARED_ts-default-color-scheme";
+    private static final String
+            DEFAULT_THEME = "LIFERAY_SHARED_ts-default-theme",
+            DEFAULT_COLOR_SCHEME = "LIFERAY_SHARED_ts-default-color-scheme";
 
     public void storeLookAndFeel(HttpServletRequest request, ThemeDisplay themeDisplay) {
         request.getSession().setAttribute(DEFAULT_THEME, themeDisplay.getTheme().getThemeId());
@@ -32,11 +32,11 @@ public class DefaultLookAndFeelService {
         return result;
     }
 
-    public String getThemeId(PortletRequest request) {
+    private String getThemeId(PortletRequest request) {
         return (String) request.getPortletSession().getAttribute(DEFAULT_THEME, PortletSession.APPLICATION_SCOPE);
     }
 
-    public String getColorSchemeId(PortletRequest request) {
+    private String getColorSchemeId(PortletRequest request) {
         return (String) request.getPortletSession().getAttribute(DEFAULT_COLOR_SCHEME, PortletSession.APPLICATION_SCOPE);
     }
 
