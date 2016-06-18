@@ -21,17 +21,17 @@ public interface LookAndFeelPermissionService {
     int SCOPE = ResourceConstants.SCOPE_COMPANY;
 
 
+    long count(long companyId) throws ApplicationException;
+
     ResourcePermissions getPermissions(long companyId, Integer lookAndFeelId) throws ApplicationException;
+
+    ResourcePermissions getPermissions(long companyId, Integer lookAndFeelId, int pageNo, int pageSize) throws ApplicationException;
 
     void applyPermissions(ResourcePermissions resourcePermissions, long companyId) throws ApplicationException;
 
     List<Action> getAllowedActions(LookAndFeel lookAndFeel, User user) throws ApplicationException;
 
     void addDefaultPermissions(LookAndFeel lookAndFeel) throws ApplicationException;
-
-    List<Action> getLookAndFeelActions() throws ApplicationException;
-
-    List<Role> getCompanyRoles(long companyId) throws ApplicationException;
 
     void updatePermissions(long companyId, Role role, List<Action> actions, String lookAndFeelId) throws ApplicationException;
 

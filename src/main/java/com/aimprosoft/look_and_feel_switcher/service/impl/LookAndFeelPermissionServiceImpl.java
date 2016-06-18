@@ -9,6 +9,7 @@ import com.aimprosoft.look_and_feel_switcher.model.view.RolePermission;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelPermissionService;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.OrderFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.ResourceAction;
@@ -24,30 +25,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * crated by m.tkachenko on 04.01.16 11:48
+ * @author Mikhail Tkachenko
  */
 @Service
 public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionService {
 
+    @Override
+    public long count(long companyId) throws ApplicationException {
+        try {
+            DynamicQuery query = companyRolesQueryTemplate(companyId);
+            return RoleLocalServiceUtil.dynamicQueryCount(query);
+        } catch (SystemException e) {
+            throw new ApplicationException(e.getMessage());
+        }
+    }
 
     @Override
     public ResourcePermissions getPermissions(long companyId, Integer lookAndFeelId) throws ApplicationException {
-        ResourcePermissions permissions = new ResourcePermissions();
-        List<Action> actions = getLookAndFeelActions();
-        permissions.setAllowedActions(actions);
-        for (Role role : getCompanyRoles(companyId)) {
-            RolePermission rolePermission = new RolePermission(role);
-            for (Action item : getLookAndFeelActions()) {
-                Action action = item.clone();
-                boolean permitted = hasPermission(companyId, role, lookAndFeelId.toString(), action);
-                action.setPermitted(permitted);
-                rolePermission.put(action);
-            }
-            permissions.getPermissions().add(rolePermission);
-        }
+        List<Role> roles = getCompanyRoles(companyId);
+        return getPermissions(companyId, lookAndFeelId, roles);
+    }
 
-        permissions.setId(lookAndFeelId);
-        return permissions;
+    @Override
+    public ResourcePermissions getPermissions(long companyId, Integer lookAndFeelId, int pageNo, int pageSize) throws ApplicationException {
+        List<Role> roles = getCompanyRoles(companyId, pageNo, pageSize);
+        return getPermissions(companyId, lookAndFeelId, roles);
     }
 
     @Override
@@ -88,34 +90,6 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
     }
 
     @Override
-    public List<Action> getLookAndFeelActions() throws ApplicationException {
-        try {
-            ArrayList<Action> actions = new ArrayList<Action>();
-            for (ResourceAction resourceAction : ResourceActionLocalServiceUtil.getResourceActions(RESOURCE_NAME)) {
-                if (!ActionKeys.PERMISSIONS.equals(resourceAction.getActionId())) {
-                    actions.add(new Action(resourceAction));
-                }
-            }
-            return actions;
-        } catch (SystemException e) {
-            throw new ApplicationException(e.getMessage());
-        }
-    }
-
-    @Override
-    public List<Role> getCompanyRoles(long companyId) throws ApplicationException {
-        try {
-            List<Role> result = new ArrayList<Role>();
-            for (com.liferay.portal.model.Role role : RoleLocalServiceUtil.getRoles(companyId)) {
-                result.add(new Role(role));
-            }
-            return result;
-        } catch (SystemException e) {
-            throw new ApplicationException();
-        }
-    }
-
-    @Override
     public void updatePermissions(long companyId, Role role, List<Action> actions, String lookAndFeelId) throws ApplicationException {
         ResourcePermission resourcePermission = fetchResourcePermission(companyId, role, lookAndFeelId);
         try {
@@ -140,6 +114,77 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
         }
     }
 
+    private ResourcePermissions getPermissions(long companyId, Integer lookAndFeelId, List<Role> roles) throws ApplicationException {
+        ResourcePermissions permissions = new ResourcePermissions();
+        List<Action> actions = getLookAndFeelActions();
+        permissions.setAllowedActions(actions);
+        for (Role role : roles) {
+            RolePermission rolePermission = new RolePermission(role);
+            for (Action item : getLookAndFeelActions()) {
+                Action action = item.clone();
+                boolean permitted = hasPermission(companyId, role, String.valueOf(lookAndFeelId), action);
+                action.setPermitted(permitted);
+                rolePermission.put(action);
+            }
+            permissions.getPermissions().add(rolePermission);
+        }
+
+        permissions.setId(lookAndFeelId);
+        return permissions;
+    }
+
+    private List<Action> getLookAndFeelActions() throws ApplicationException {
+        try {
+            ArrayList<Action> actions = new ArrayList<Action>();
+            for (ResourceAction resourceAction : ResourceActionLocalServiceUtil.getResourceActions(RESOURCE_NAME)) {
+                if (!ActionKeys.PERMISSIONS.equals(resourceAction.getActionId())) {
+                    actions.add(new Action(resourceAction));
+                }
+            }
+            return actions;
+        } catch (SystemException e) {
+            throw new ApplicationException(e.getMessage());
+        }
+    }
+
+    private List<Role> getCompanyRoles(long companyId) throws ApplicationException {
+        try {
+            List<com.liferay.portal.model.Role> roles = RoleLocalServiceUtil.getRoles(companyId);
+            return toViewRoles(roles);
+        } catch (SystemException e) {
+            throw new ApplicationException();
+        }
+    }
+
+
+    private List<Role> getCompanyRoles(long companyId, int pageNo, int pageSize) throws ApplicationException {
+        final int start = (pageNo - 1) * pageSize;
+        final int end = start + pageSize - 1;
+
+        DynamicQuery query = companyRolesQueryTemplate(companyId).addOrder(OrderFactoryUtil.asc("name"));
+
+        try {
+            //noinspection unchecked
+            List<com.liferay.portal.model.Role> roles = RoleLocalServiceUtil.dynamicQuery(query, start, end);
+            return toViewRoles(roles);
+        } catch (SystemException e) {
+            throw new ApplicationException();
+        }
+    }
+
+    private DynamicQuery companyRolesQueryTemplate(long companyId) {
+        return DynamicQueryFactoryUtil.forClass(com.liferay.portal.model.Role.class)
+                .add(PropertyFactoryUtil.forName("companyId").eq(companyId));
+    }
+
+
+    private List<Role> toViewRoles(List<com.liferay.portal.model.Role> roles) throws ApplicationException {
+        List<Role> result = new ArrayList<Role>();
+        for (com.liferay.portal.model.Role role : roles) {
+            result.add(new Role(role));
+        }
+        return result;
+    }
 
     private List<Role> getUserRoles(User user) throws ApplicationException {
         try {
@@ -153,7 +198,7 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
         }
     }
 
-    public boolean hasPermission(long companyId, Role role, String resourceId, Action action) throws ApplicationException {
+    private boolean hasPermission(long companyId, Role role, String resourceId, Action action) throws ApplicationException {
         ResourcePermission resourcePermission = fetchResourcePermission(companyId, role, resourceId);
         return resourcePermission != null && resourcePermission.hasActionId(action.getName());
     }
@@ -166,6 +211,7 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
                 .add(PropertyFactoryUtil.forName("primKey").eq(resourceId))
                 .add(PropertyFactoryUtil.forName("roleId").eq(role.getId()));
         try {
+            //noinspection unchecked
             List<ResourcePermission> list = (List<ResourcePermission>) ResourcePermissionLocalServiceUtil.dynamicQuery(query);
             return list.isEmpty() ? null : list.get(0);
         } catch (Exception e) {
