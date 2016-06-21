@@ -9,16 +9,7 @@ import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 /**
  * The representation of mapping the {@link LookAndFeelBinding}
@@ -28,14 +19,9 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "ts_look_and_feel_binding")
-public class LookAndFeelBinding implements PersistModel<Integer> {
-
+public class LookAndFeelBinding extends PersistModel<Integer> {
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Integer id;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "look_and_feel_id")
     private LookAndFeel lookAndFeel;

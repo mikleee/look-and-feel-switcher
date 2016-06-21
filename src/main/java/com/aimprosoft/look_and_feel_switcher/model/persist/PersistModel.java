@@ -1,5 +1,6 @@
 package com.aimprosoft.look_and_feel_switcher.model.persist;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -7,10 +8,19 @@ import java.io.Serializable;
  *
  * @author Mikhail Tkachenko
  */
-public interface PersistModel<T extends Serializable> extends Serializable {
+@MappedSuperclass
+public abstract class PersistModel<T extends Serializable> implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    T id;
 
-    T getId();
+    public T getId() {
+        return id;
+    }
 
-    void setId(T id);
+    public void setId(T id) {
+        this.id = id;
+    }
 
 }

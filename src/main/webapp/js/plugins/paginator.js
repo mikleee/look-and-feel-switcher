@@ -62,13 +62,14 @@
     function DynamicPaginationService(http) {
         const me = this, delegate = new PaginatorDelegate();
 
+
         var callback = {success: null, error: null, beforeRequest: null};
         var state = {totalCount: 0, pageContent: []};
         var ns = '';
         var requestUrl = null;
 
-
-        this.pageSize = delegate.getDefaultPageSize();
+        this.pageSizes = [5, 10, 20, 50];
+        this.pageSize = me.pageSizes[0];
         this.pageNo = 1;
         this.sortOptions = new SortOptions();
 
@@ -80,6 +81,7 @@
         this.isPagesLineActual = isPagesLineActual;
         this.setPageSize = setPageSize;
         this.getPageSize = getPageSize;
+        this.setPageNo = setPageNo;
         this.sort = sort;
         this.onPageChange = onPageChange;
 
@@ -121,6 +123,11 @@
             return me.pageSize;
         }
 
+        function setPageNo(pNo) {
+            me.pageNo = pNo;
+            sendRequest();
+        }
+
         function sort(sortOptions) {
             me.sortOptions = sortOptions;
             sendRequest();
@@ -129,7 +136,6 @@
         function onPageChange() {
             sendRequest();
         }
-
 
         function sendRequest() {
             if (callback.beforeRequest) {
@@ -157,15 +163,11 @@
         }
     }
 
-    function PaginatorController(scope, interval) {
-        scope.totalCount = 0;
-        scope.currentPage = 1;
-        scope.pageSize = getPageSizes()[0];
-
+    function PaginatorController(scope) {
         scope.setPageSize = setPageSize;
         scope.getPageSizes = getPageSizes;
-        scope.setCurrentPage = setCurrentPage;
-        scope.getPageCount = getPageCount;
+        scope.setPageNo = setPageNo;
+        scope.getPageLine = getPageLine;
 
         scope.getPageSizeTitle = getPageSizeTitle;
         scope.getPageNoTitle = getPageNoTitle;
@@ -175,42 +177,55 @@
 
 
         function setPageSize(ps) {
-            scope.pageSize = ps;
+            scope.paginator.setPageSize(ps);
         }
 
         function getPageSizes() {
-            return [5, 10, 50, 75]
+            return scope.paginator.pageSizes;
         }
 
-        function setCurrentPage(pNo) {
+        function setPageNo(pNo) {
             if (getLastPageNo() >= pNo && pNo >= 1) {
-                scope.currentPage = pNo;
+                scope.paginator.setPageNo(pNo);
             }
         }
 
         function getPageSizeTitle() {
-            return scope.pageSize + ' Items per Page';
+            return ThemesSwitcher.getMessage('ts-pagination-items-per-page', [scope.paginator.pageSize]);
         }
 
         function getPageNoTitle() {
-            return 'Page ' + scope.currentPage + ' of ' + getLastPageNo();
+            return ThemesSwitcher.getMessage('ts-pagination-page', [scope.paginator.pageNo, getPageCount()]);
         }
 
         function getResultsTitle() {
-            return 'Showing ' + scope.pageSize + ' results';
+            if (getPageCount() > 1) {
+                return ThemesSwitcher.getMessage('ts-pagination-results-full',
+                    [
+                        (scope.paginator.pageNo - 1) * scope.paginator.pageSize + 1,
+                        (scope.paginator.pageNo - 1) * scope.paginator.pageSize + scope.paginator.getPageContent().length,
+                        scope.paginator.getTotalCount()
+                    ]);
+            } else {
+                return ThemesSwitcher.getMessage('ts-pagination-results-short', [scope.paginator.getPageContent().length]);
+            }
         }
 
-        function getPageCount() {
+        function getPageLine() {
             var result = [];
-            for (var i = 1; i < 10; i++) {
+            for (var i = 1; i <= getPageCount(); i++) {
                 result.push(i);
             }
             return result;
         }
 
         function getLastPageNo() {
-            var pageCount = getPageCount();
+            var pageCount = getPageLine();
             return pageCount[pageCount.length - 1];
+        }
+
+        function getPageCount() {
+            return Math.ceil(scope.paginator.getTotalCount() / scope.paginator.pageSize);
         }
 
 
@@ -223,14 +238,9 @@
             scope: {
                 paginator: '=paginatorService'
             },
-            templateUrl: templateUrl,
+            templateUrl: ThemesSwitcher.staticUrl.paginatorTemplate,
             link: link
         };
-
-
-        function templateUrl(elem, attr) {
-            return attr['url'];
-        }
 
         function link(scope, elem, attr) {
             var ns = scope.$id;

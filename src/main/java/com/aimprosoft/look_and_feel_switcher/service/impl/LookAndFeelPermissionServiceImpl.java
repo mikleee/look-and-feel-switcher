@@ -159,7 +159,7 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
 
     private List<Role> getCompanyRoles(long companyId, int pageNo, int pageSize) throws ApplicationException {
         final int start = (pageNo - 1) * pageSize;
-        final int end = start + pageSize - 1;
+        final int end = start + pageSize;
 
         DynamicQuery query = companyRolesQueryTemplate(companyId).addOrder(OrderFactoryUtil.asc("name"));
 

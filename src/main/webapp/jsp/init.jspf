@@ -7,3 +7,21 @@
 
 <c:set var="ns"><portlet:namespace/></c:set>
 <portlet:renderURL var="startPage"/>
+
+
+<%-- static URLs --%>
+<portlet:resourceURL var="paginatorTemplateUrl" id="getTemplate">
+    <portlet:param name="template" value="/directives/paginator"/>
+</portlet:resourceURL>
+
+
+<script>
+    (function () {
+        if (!ThemesSwitcher.staticUrl) {
+            ThemesSwitcher.staticUrl = {
+                paginatorTemplate: '${paginatorTemplateUrl}',
+                paginatorConfig: '<portlet:resourceURL  id="getPaginatorConfig"/>'
+            };
+        }
+    })()
+</script>

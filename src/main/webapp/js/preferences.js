@@ -10,20 +10,21 @@
             messageService.hideMessage();
             scope.tab = t;
         }
-
     }
+
 })();
 
 
 (function () {
     angular.module('ts-preferencesPermissions', ['ts-preferences', 'ts-lookAndFeelList', 'ts-message', 'ts-pagination'])
         .controller('preferencesPermissionsController', ['$scope', 'lookAndFeelListService', 'preferencesPermissionsService', 'ts-messageService', PreferencesPermissionsController])
-        .service('preferencesPermissionsService', ['$http', 'paginatorServiceFactory', 'config', PreferencesPermissionsService]);
+        .service('preferencesPermissionsService', ['$http', 'paginatorServiceFactory', '$q', 'config', PreferencesPermissionsService]);
 
     function PreferencesPermissionsController(scope, lookAndFeelService, permissionService, messageService) {
         var state;
         scope.lookAndFeelService = lookAndFeelService;
         scope.permissionService = permissionService;
+        scope.onActionPermissionChange = onActionPermissionChange;
 
 
         scope.$watch('lookAndFeelService.getModels().currentTheme', onThemeChanged);
@@ -47,6 +48,10 @@
             if (cs) {
                 permissionService.fetchPermissions(lookAndFeelService.getActiveLookAndFeel());
             }
+        }
+
+        function onActionPermissionChange(action) {
+            permissionService.initActionToggler(action);
         }
 
 
@@ -105,8 +110,9 @@
 
     }
 
-    function PreferencesPermissionsService(http, paginatorServiceFactory, config) {
+    function PreferencesPermissionsService(http, paginatorServiceFactory, $q, config) {
         const me = this;
+        var init = false;
 
         /** @type {ResourcePermissions} */
         this.resourcePermissions = null;
@@ -114,25 +120,39 @@
         this.fetchPermissions = fetchPermissions;
         this.submitPermissions = submitPermissions;
         this.setDefaultPermissions = setDefaultPermissions;
+        this.toggleAction = toggleAction;
+        this.initActionToggler = initActionToggler;
 
 
         function fetchPermissions(activeLookAndFeel) {
+            if (init) {
+                return doFetchPermissions(activeLookAndFeel);
+            } else {
+                var deferred = $q.defer();
+                getPaginatorConfig().then(function (response) {
+                    me.paginator.pageSizes = response.data.body.deltas;
+                    me.paginator.pageSize = response.data.body.delta;
+                    doFetchPermissions(activeLookAndFeel).then(deferred.resolve, deferred.reject);
+                });
+                return deferred.promise;
+            }
+        }
+
+        function getPaginatorConfig() {
+            return http.get(ThemesSwitcher.staticUrl.paginatorConfig);
+        }
+
+        function doFetchPermissions(activeLookAndFeel) {
             var rConfig = {
                 ns: config.ns,
                 success: function (data) {
-                    me.resourcePermissions = onPermissionsFetched(data);
+                    onPermissionsFetched(data);
                     return {totalCount: data.body.totalCount, pageContent: me.resourcePermissions.permissions};
                 }
             };
 
             return me.paginator.initPaginator(config.fetchPermissionsUrl + '&' + config.ns + 'id=' + activeLookAndFeel.id, rConfig);
         }
-
-        // function fetchPermissions(activeLookAndFeel) {
-        //     var promise = http.get(config.fetchPermissionsUrl + '&id=activeLookAndFeel.id');
-        //     promise.then(onPermissionsFetched);
-        //     return promise;
-        // }
 
         function submitPermissions() {
             var promise = http.post(config.applyPermissionsUrl, resourcePermissions);
@@ -152,7 +172,49 @@
             angular.forEach(result.allowedActions, function (v) {
                 v.name = ThemesSwitcher.getMessage(v.name);
             });
-            return result;
+            me.resourcePermissions = result;
+            initActionTogglers();
+        }
+
+        function toggleAction(action) {
+            angular.forEach(me.resourcePermissions.permissions, function (v) {
+                var a = getAction(action, v.actions);
+                if (a) {
+                    a.permitted = action.allSelected;
+                }
+            });
+        }
+
+        function initActionTogglers() {
+            angular.forEach(me.resourcePermissions.allowedActions, function (a) {
+                initActionToggler(a);
+            });
+        }
+
+        function initActionToggler(action) {
+            var result = true;
+            for (var i = 0; i < me.resourcePermissions.permissions.length; i++) {
+                var a = getAction(action, me.resourcePermissions.permissions[i].actions);
+                if (a && a.permitted === false) {
+                    result = false;
+                    break
+                }
+            }
+
+            var allowedAction = getAction(action, me.resourcePermissions.allowedActions);
+            allowedAction.allSelected = result;
+        }
+
+        /**
+         * @param action {Action}
+         * @param actions {Action[]}
+         */
+        function getAction(action, actions) {
+            for (var i = 0; i < actions.length; i++) {
+                if (action.id == actions[i].id) {
+                    return actions[i];
+                }
+            }
         }
 
     }

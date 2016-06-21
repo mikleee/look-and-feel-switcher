@@ -21,6 +21,12 @@ public class JsonResponse {
         return new JsonResponse("success");
     }
 
+    public static JsonResponse success(Map<String, Object> map) {
+        JsonResponse success = success();
+        success.getBody().putAll(map);
+        return success;
+    }
+
     public static JsonResponse error(String error) {
         return new JsonResponse("error").put("error", error);
     }

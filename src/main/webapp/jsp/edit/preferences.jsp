@@ -17,9 +17,6 @@
 <portlet:resourceURL var="initLookAndFeelUrl" id="getLookAndFeelMap">
     <portlet:param name="companyId" value="${themeDisplay.companyId}"/>
 </portlet:resourceURL>
-<portlet:resourceURL var="paginatorTemplateUrl" id="getTemplate">
-    <portlet:param name="template" value="/directives/paginator"/>
-</portlet:resourceURL>
 
 <c:set var="module" value="lookAndFeelPreferences${ns}"/>
 

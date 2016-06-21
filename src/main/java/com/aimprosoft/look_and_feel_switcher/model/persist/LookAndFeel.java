@@ -5,16 +5,7 @@ import com.liferay.portal.model.Theme;
 import com.liferay.portal.service.ThemeLocalServiceUtil;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -24,12 +15,9 @@ import java.util.List;
  */
 @Entity
 @Table(name = "ts_look_and_feel")
-public class LookAndFeel implements PersistModel<Integer> {
+public class LookAndFeel extends PersistModel<Integer> {
+    private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Integer id;
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private LookAndFeelType type;
@@ -48,16 +36,6 @@ public class LookAndFeel implements PersistModel<Integer> {
     @Transient
     private ColorScheme colorScheme;
 
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public LookAndFeelType getType() {
         return type;

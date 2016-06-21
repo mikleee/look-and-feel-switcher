@@ -1,9 +1,9 @@
 package com.aimprosoft.look_and_feel_switcher.controller;
 
 import com.aimprosoft.look_and_feel_switcher.exception.ApplicationException;
-import com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelPermissionService;
 import com.aimprosoft.look_and_feel_switcher.service.LookAndFeelService;
+import com.aimprosoft.look_and_feel_switcher.service.UserConfigService;
 import com.liferay.portal.kernel.util.ParamUtil;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -15,6 +15,10 @@ import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import java.io.IOException;
+import java.util.Map;
+
+import static com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse.error;
+import static com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse.success;
 
 /**
  * Contains the common functionality for all web controllers
@@ -22,8 +26,7 @@ import java.io.IOException;
  * @author Mikhail Tkachenko
  */
 public abstract class BaseController {
-
-    protected Logger logger = Logger.getLogger(this.getClass());
+    protected Logger logger = Logger.getLogger(getClass());
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -31,6 +34,8 @@ public abstract class BaseController {
     protected LookAndFeelService lookAndFeelService;
     @Autowired
     protected LookAndFeelPermissionService permissionService;
+    @Autowired
+    private UserConfigService configService;
 
 
     @ResourceMapping("getTemplate")
@@ -39,16 +44,22 @@ public abstract class BaseController {
         return new ModelAndView(ParamUtil.getString(request, "template"));
     }
 
+    @ResourceMapping("getPaginatorConfig")
+    public void getPaginatorConfig(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
+        Map<String, Object> searchContainerConfig = configService.getSearchContainerConfig(0);
+        objectMapper.writeValue(response.getPortletOutputStream(), success(searchContainerConfig));
+    }
+
     @ExceptionHandler({ApplicationException.class})
     public void handleApplicationException(ApplicationException e, ResourceResponse response) throws IOException {
         logger.warn(e.getMessage(), e);
-        objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.error(e.getMessage()));
+        objectMapper.writeValue(response.getPortletOutputStream(), error(e.getMessage()));
     }
 
     @ExceptionHandler({Exception.class})
     void handleApplicationError(Exception e, ResourceResponse response) throws IOException {
         logger.error(e, e);
-        objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.error(e.getMessage()));
+        objectMapper.writeValue(response.getPortletOutputStream(), error(e.getMessage()));
     }
 
 }
