@@ -26,7 +26,7 @@ import static com.aimprosoft.lfs.model.view.JsonResponse.success;
  * @author Mikhail Tkachenko
  */
 public abstract class BaseController {
-    protected Logger logger = Logger.getLogger(getClass());
+    private Logger logger = Logger.getLogger(getClass());
 
     @Autowired
     protected ObjectMapper objectMapper;

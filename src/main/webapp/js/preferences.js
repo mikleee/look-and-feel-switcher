@@ -25,33 +25,63 @@
         scope.lookAndFeelService = lookAndFeelService;
         scope.permissionService = permissionService;
         scope.onActionPermissionChange = onActionPermissionChange;
+        scope.submitPermissions = submitPermissions;
+        scope.setDefaultPermissions = setDefaultPermissions;
+        scope.isLocked = isLocked;
 
 
         scope.$watch('lookAndFeelService.getModels().currentTheme', onThemeChanged);
         scope.$watch('lookAndFeelService.getModels().currentColorScheme', onColorSchemeChanged);
 
+        const paginatorCallback = {
+            success: function () {
+                state = ThemesSwitcher.state.SUCCESS;
+            },
+            error: onRequestFailed,
+            before: function () {
+                state = ThemesSwitcher.state.WAITING;
+            }
+        };
+
 
         function fetchPermissions() {
             var activeLookAndFeel = lookAndFeelService.getActiveLookAndFeel();
             if (activeLookAndFeel) {
-                permissionService.fetchPermissions(activeLookAndFeel);
+                permissionService.fetchPermissions(activeLookAndFeel, paginatorCallback);
             }
         }
 
         function onThemeChanged(theme) {
             if (theme && !theme.hasColorSchemes()) {
-                permissionService.fetchPermissions(lookAndFeelService.getActiveLookAndFeel());
+                permissionService.fetchPermissions(lookAndFeelService.getActiveLookAndFeel(), paginatorCallback);
             }
         }
 
         function onColorSchemeChanged(cs) {
             if (cs) {
-                permissionService.fetchPermissions(lookAndFeelService.getActiveLookAndFeel());
+                permissionService.fetchPermissions(lookAndFeelService.getActiveLookAndFeel(), paginatorCallback);
             }
         }
 
         function onActionPermissionChange(action) {
             permissionService.initActionToggler(action);
+        }
+
+        function submitPermissions(action) {
+            state = ThemesSwitcher.state.WAITING;
+            permissionService.initActionToggler(action);
+        }
+
+        function setDefaultPermissions(action) {
+            permissionService.initActionToggler(action);
+        }
+
+        function onRequestFailed(response) {
+            state = messageService.showMessage('ts-internal-server-error', ThemesSwitcher.state.ERROR);
+        }
+
+        function isLocked() {
+            return state === ThemesSwitcher.state.WAITING;
         }
 
 
@@ -124,15 +154,15 @@
         this.initActionToggler = initActionToggler;
 
 
-        function fetchPermissions(activeLookAndFeel) {
+        function fetchPermissions(activeLookAndFeel, callback) {
             if (init) {
-                return doFetchPermissions(activeLookAndFeel);
+                return doFetchPermissions(activeLookAndFeel, callback);
             } else {
                 var deferred = $q.defer();
                 getPaginatorConfig().then(function (response) {
                     me.paginator.pageSizes = response.data.body.deltas;
                     me.paginator.pageSize = response.data.body.delta;
-                    doFetchPermissions(activeLookAndFeel).then(deferred.resolve, deferred.reject);
+                    doFetchPermissions(activeLookAndFeel, callback).then(deferred.resolve, deferred.reject);
                 });
                 return deferred.promise;
             }
@@ -142,13 +172,16 @@
             return http.get(ThemesSwitcher.staticUrl.paginatorConfig);
         }
 
-        function doFetchPermissions(activeLookAndFeel) {
+        function doFetchPermissions(activeLookAndFeel, callback) {
             var rConfig = {
                 ns: config.ns,
                 success: function (data) {
+                    callback.success();
                     onPermissionsFetched(data);
                     return {totalCount: data.body.totalCount, pageContent: me.resourcePermissions.permissions};
-                }
+                },
+                error: callback.error,
+                before: callback.before
             };
 
             return me.paginator.initPaginator(config.fetchPermissionsUrl + '&' + config.ns + 'id=' + activeLookAndFeel.id, rConfig);

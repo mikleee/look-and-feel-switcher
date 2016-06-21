@@ -63,7 +63,7 @@
         const me = this, delegate = new PaginatorDelegate();
 
 
-        var callback = {success: null, error: null, beforeRequest: null};
+        var callback = {success: null, error: null, before: null};
         var state = {totalCount: 0, pageContent: []};
         var ns = '';
         var requestUrl = null;
@@ -138,8 +138,8 @@
         }
 
         function sendRequest() {
-            if (callback.beforeRequest) {
-                callback.beforeRequest();
+            if (callback.before) {
+                callback.before();
             }
 
             var url = requestUrl + '&' + ns + 'dir=' + me.sortOptions.dir + '&' + ns + 'field=' + me.sortOptions.key + '&' + ns + 'page=' + me.pageNo + '&' + ns + 'size=' + me.pageSize;

@@ -1,4 +1,4 @@
-<div>
+<div ng-controller="preferencesPermissionsController">
 
     <div class="ts-row">
 
@@ -8,18 +8,18 @@
             </div>
             <div>
                 <label for="${ns}themes"><liferay-ui:message key="ts-themes"/></label>
-                <select id="${ns}themes" class="ts-select" ng-disabled="isLocked()" ng-options="theme as theme.name for theme in models.lookAndFeels track by theme.id" ng-model="models.currentTheme"></select>
+                <select id="${ns}themes" class="ts-select" ng-disabled="isLocked() && $parent.isLocked()" ng-options="theme as theme.name for theme in models.lookAndFeels track by theme.id" ng-model="models.currentTheme"></select>
             </div>
             <div ng-if="models.currentTheme && models.currentTheme.hasColorSchemes()">
                 <label for="${ns}color-schemes"><liferay-ui:message key="ts-color-schemes"/></label>
-                <select id="${ns}color-schemes" class="ts-select" ng-disabled="isLocked()" ng-options="cs as cs.name for cs in models.currentTheme.colorSchemes track by cs.id" ng-model="models.currentColorScheme"></select>
+                <select id="${ns}color-schemes" class="ts-select" ng-disabled="isLocked() && $parent.isLocked()" ng-options="cs as cs.name for cs in models.currentTheme.colorSchemes track by cs.id" ng-model="models.currentColorScheme"></select>
             </div>
             <div>
                 <ts-screenshot src="getScreenshotPath()" alt="<liferay-ui:message key="ts-screenshot-is-not-available"/>"></ts-screenshot>
             </div>
         </div>
 
-        <div ng-controller="preferencesPermissionsController">
+        <div>
             <h3><liferay-ui:message key="ts-define-permissions"/></h3>
             <table id="${ns}permissions" class="table table-bordered table-hover table-striped role-permission-table">
                 <thead class="table-columns">
@@ -46,8 +46,8 @@
     </div>
 
     <div class="row-fluid button-footer">
-        <button type="button" class="btn btn-primary" ng-click="listeners.submitPermissions()" ng-disabled="expressions.disableCondition()"><liferay-ui:message key="save"/></button>
-        <button type="button" class="btn btn-default" ng-click="listeners.setDefaultPermissions()"><liferay-ui:message key="ts-set-default-permissions"/></button>
+        <button type="button" class="btn btn-primary" ng-click="submitPermissions()" ng-disabled="isLocked()"><liferay-ui:message key="save"/></button>
+        <button type="button" class="btn btn-default" ng-click="setDefaultPermissions()" ng-disabled="isLocked()"><liferay-ui:message key="ts-set-default-permissions"/></button>
     </div>
 
 </div>

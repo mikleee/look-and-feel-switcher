@@ -1,8 +1,10 @@
 (function () {
     if (!window.ThemesSwitcher) {
+        const messageService = new MessageService();
+
         window.ThemesSwitcher = {};
 
-        window.ThemesSwitcher.getMessage = getMessage;
+        window.ThemesSwitcher.getMessage = messageService.getMessage;
         window.ThemesSwitcher.sequence = new Sequence();
         window.ThemesSwitcher.state = {
             ERROR: 'error',
@@ -12,16 +14,41 @@
         };
 
 
-        function getMessage(key, args) {
-            var template = Liferay.Language.get(key);
-            if (args && args.length > 0) {
-                var result = template;
-                for (var i = 0; i < args.length; i++) {
-                    result = result.replace('%s', args[i]);
+        function MessageService() {
+            var cache = [];
+
+            this.getMessage = function (key, args) {
+                var template = getFromCache(key);
+                if (template == null) {
+                    template = getFromServer(key);
+                    cache.push({key: key, value: template});
                 }
-                return result;
-            } else {
-                return template;
+                return populate(template, args);
+
+            };
+
+            function getFromCache(key) {
+                for (var i = 0; i < cache.length; i++) {
+                    if (cache[i].key === key) {
+                        return cache[i].value;
+                    }
+                }
+            }
+
+            function getFromServer(key) {
+                return Liferay.Language.get(key);
+            }
+
+            function populate(template, args) {
+                if (args && args.length > 0) {
+                    var result = template;
+                    for (var i = 0; i < args.length; i++) {
+                        result = result.replace('%s', args[i]);
+                    }
+                    return result;
+                } else {
+                    return template;
+                }
             }
         }
 
