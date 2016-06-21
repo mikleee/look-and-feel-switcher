@@ -8,7 +8,7 @@
 <%--@elvariable id="themeDisplay" type="com.liferay.portal.theme.ThemeDisplay"--%>
 <%--@elvariable id="screenShotPath" type="java.lang.String"--%>
 <%--@elvariable id="colorSchemes" type="java.util.List<com.liferay.portal.model.ColorScheme>"--%>
-<%--@elvariable id="lookAndFeelBinding" type="com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding"--%>
+<%--@elvariable id="lookAndFeelBinding" type="com.aimprosoft.lfs.model.persist.LookAndFeelBinding"--%>
 
 <portlet:actionURL var="resetBindingUrl">
     <portlet:param name="action" value="resetBinding"/>

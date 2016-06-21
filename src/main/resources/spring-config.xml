@@ -15,7 +15,7 @@
 
     <context:annotation-config/>
 
-    <context:component-scan base-package="com.aimprosoft.look_and_feel_switcher"/>
+    <context:component-scan base-package="com.aimprosoft.lfs"/>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
@@ -23,7 +23,7 @@
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <jpa:repositories base-package="com.aimprosoft.look_and_feel_switcher.dao" transaction-manager-ref="transactionManager"/>
+    <jpa:repositories base-package="com.aimprosoft.lfs.dao" transaction-manager-ref="transactionManager"/>
 
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 

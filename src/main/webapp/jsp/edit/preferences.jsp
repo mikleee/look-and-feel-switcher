@@ -11,7 +11,7 @@
 <%--@elvariable id="themeDisplay" type="com.liferay.portal.theme.ThemeDisplay"--%>
 <%--@elvariable id="screenShotPath" type="java.lang.String"--%>
 <%--@elvariable id="colorSchemes" type="java.util.List<com.liferay.portal.model.ColorScheme>"--%>
-<%--@elvariable id="actions" type="java.util.List<com.aimprosoft.look_and_feel_switcher.model.view.Action>"--%>
+<%--@elvariable id="actions" type="java.util.List<com.aimprosoft.lfs.model.view.Action>"--%>
 
 
 <portlet:resourceURL var="initLookAndFeelUrl" id="getLookAndFeelMap">
