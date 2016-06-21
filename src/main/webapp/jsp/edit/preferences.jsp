@@ -1,10 +1,11 @@
 <%@ include file="../init.jspf" %>
 
-<script src="<c:url value="/js/models.js"/>"></script>
-<script src="<c:url value="/js/directives.js"/>"></script>
-<script src="<c:url value="/js/message-controller.js"/>"></script>
-<script src="<c:url value="/js/look-and-feel-service.js"/>"></script>
+<link rel="stylesheet" href="<c:url value="/css/paginator.css"/>">
+<script src="<c:url value="/js/plugins/directives.js"/>"></script>
+<script src="<c:url value="/js/plugins/message.js"/>"></script>
+<script src="<c:url value="/js/look-and-feel-list.js"/>"></script>
 <script src="<c:url value="/js/preferences.js"/>"></script>
+<script src="<c:url value="/js/plugins/paginator.js"/>"></script>
 
 <%--@elvariable id="themes" type="java.util.List<com.liferay.portal.model.Theme>"--%>
 <%--@elvariable id="themeDisplay" type="com.liferay.portal.theme.ThemeDisplay"--%>
@@ -12,72 +13,64 @@
 <%--@elvariable id="colorSchemes" type="java.util.List<com.liferay.portal.model.ColorScheme>"--%>
 <%--@elvariable id="actions" type="java.util.List<com.aimprosoft.look_and_feel_switcher.model.view.Action>"--%>
 
-<portlet:defineObjects/>
 
 <portlet:resourceURL var="initLookAndFeelUrl" id="getLookAndFeelMap">
     <portlet:param name="companyId" value="${themeDisplay.companyId}"/>
 </portlet:resourceURL>
-
-<portlet:resourceURL var="permissionsTemplateUrl" id="getTemplate">
-    <portlet:param name="template" value="edit/look-and-feel-permissions"/>
-</portlet:resourceURL>
-<portlet:resourceURL var="administrationTemplateUrl" id="getTemplate">
-    <portlet:param name="template" value="edit/administration"/>
+<portlet:resourceURL var="paginatorTemplateUrl" id="getTemplate">
+    <portlet:param name="template" value="/directives/paginator"/>
 </portlet:resourceURL>
 
-<script>
+<c:set var="module" value="lookAndFeelPreferences${ns}"/>
 
-    /**
-     * @constructor
-     */
-    var ${ns}PortletConfig = function PortletConfig() {
-        this.ns = '${ns}';
-        this.initLookAndFeelUrl = '${initLookAndFeelUrl}';
-        this.fetchPermissionsUrl = '<portlet:resourceURL id="fetchPermissions"/>';
-        this.applyPermissionsUrl = '<portlet:resourceURL id="applyPermissions"/>';
-        this.setDefaultPermissionsUrl = '<portlet:resourceURL id="setDefaultPermissions"/>';
-        this.removeAllBindingsUrl = '<portlet:resourceURL id="removeAllBindings"/>';
-        this.bindingsStatUrl = '<portlet:resourceURL id="bindingsStatUrl"/>';
-    };
 
-    angular.module('${ns}lookAndFeelAdministration', ['lookAndFeelServices', 'ngRoute', 'tsDirectives'])
-            .controller('preferencesController', ['$scope', '$location', PreferencesController])
-            .controller('messageController', ['$scope', MessageController])
-            .controller('selectLookAndFeelPreferencesController', ['$scope', '$http', 'lookAndFeelService', 'portletConfig', SelectLookAndFeelPreferencesController])
-            .controller('lookAndFeelPermissionsController', ['$scope', '$http', 'lookAndFeelService', 'portletConfig', LookAndFeelPermissionsController])
-            .controller('adminController', ['$scope', '$http', 'portletConfig', LookAndFeelAdministrationController])
-            .service('portletConfig', ${ns}PortletConfig)
-            .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
-                $routeProvider
-                        .when('/permissions', {
-                            templateUrl: '${permissionsTemplateUrl}'
-                        }).when('/administration', {
-                            templateUrl: '${administrationTemplateUrl}'
-                        }).otherwise({
-                            templateUrl: '${permissionsTemplateUrl}'
-                        });
-            }]);
-</script>
-
-<div ng-app="${ns}lookAndFeelAdministration" class="aui" ng-cloak>
+<div id="${module}" class="aui" ng-cloak>
     <div class="ts-container">
         <div ng-controller="preferencesController">
             <div>
                 <ul class="nav nav-tabs">
-                    <li class="tab" ng-class="{active : tab == 'permissions'}" ng-click="listeners.onTabChange('permissions')">
-                        <a href="#permissions"><liferay-ui:message key="ts-permissions"/></a>
+                    <li class="tab" ng-class="{active : tab == 'permissions'}" ng-click="setTab('permissions')">
+                        <a href="javascript:void(0)"><liferay-ui:message key="ts-permissions"/></a>
                     </li>
-                    <li class="tab" ng-class="{active : tab == 'administration'}" ng-click="listeners.onTabChange('administration')">
-                        <a href="#administration"><liferay-ui:message key="ts-administration"/></a>
+                    <li class="tab" ng-class="{active : tab == 'administration'}" ng-click="setTab('administration')">
+                        <a href="javascript:void(0)"><liferay-ui:message key="ts-administration"/></a>
                     </li>
                 </ul>
             </div>
             <div>
-                <div class="ts-container" ng-controller="messageController">
-                    <div ng-show="message" class="alert" ng-class="messageStyle + ' ts-message'" ng-bind="message"></div>
-                    <ng-view></ng-view>
+                <ts-global-message></ts-global-message>
+                <div ng-switch="tab">
+                    <div ng-switch-when="permissions">
+                        <div class="alert alert-danger">not implemented yet</div>
+                        <%@ include file="./look-and-feel-permissions.jsp" %>
+                    </div>
+                    <div ng-switch-when="administration">
+                        <%@ include file="./administration.jsp" %>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+<script>
+    (function () {
+        var config = {
+            ns: '${ns}',
+            initLookAndFeelUrl: '${initLookAndFeelUrl}',
+            fetchPermissionsUrl: '<portlet:resourceURL id="fetchPermissions"/>',
+            applyPermissionsUrl: '<portlet:resourceURL id="applyPermissions"/>',
+            setDefaultPermissionsUrl: '<portlet:resourceURL id="setDefaultPermissions"/>',
+            removeAllBindingsUrl: '<portlet:resourceURL id="removeAllBindings"/>',
+            bindingsStatUrl: '<portlet:resourceURL id="bindingsStatUrl"/>'
+        };
+
+        angular.module('ts-lookAndFeelList').constant('config', config);
+        angular.module('ts-preferencesAdministration').constant('config', config);
+        angular.module('ts-preferencesPermissions').constant('config', config);
+
+        angular.module('${module}', ['ts-directives', 'ts-lookAndFeelList', 'ts-preferences', 'ui.bootstrap']);
+        angular.bootstrap(document.getElementById('${module}'), ['${module}']);
+    })();
+</script>

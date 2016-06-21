@@ -2,7 +2,7 @@ package com.aimprosoft.look_and_feel_switcher.controller;
 
 import com.aimprosoft.look_and_feel_switcher.exception.ApplicationException;
 import com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel;
-import com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse;
+import com.aimprosoft.look_and_feel_switcher.model.view.PagedRequest;
 import com.aimprosoft.look_and_feel_switcher.model.view.ResourcePermissions;
 import com.aimprosoft.look_and_feel_switcher.model.view.ThemeOption;
 import com.aimprosoft.look_and_feel_switcher.service.impl.GuestLookAndFeelBindingService;
@@ -10,12 +10,14 @@ import com.aimprosoft.look_and_feel_switcher.service.impl.UserLookAndFeelBinding
 import com.aimprosoft.look_and_feel_switcher.utils.ResourcePermissionTypeReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.security.auth.CompanyThreadLocal;
 import com.liferay.portal.theme.ThemeDisplay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.portlet.ModelAndView;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
@@ -28,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.aimprosoft.look_and_feel_switcher.model.view.JsonResponse.success;
 import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getCompanyId;
 import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getThemeDisplay;
 
@@ -39,11 +42,11 @@ import static com.aimprosoft.look_and_feel_switcher.utils.Utils.getThemeDisplay;
 @Controller
 @RequestMapping(value = "EDIT")
 public class EditController extends BaseController {
-
     @Autowired
     private GuestLookAndFeelBindingService guestLookAndFeelBindingService;
     @Autowired
     private UserLookAndFeelBindingService userLookAndFeelBindingService;
+
 
     @RenderMapping
     public ModelAndView renderPreferences(RenderRequest request, ModelMap map) throws SystemException, PortalException, ApplicationException {
@@ -54,13 +57,18 @@ public class EditController extends BaseController {
     @ResourceMapping("getLookAndFeelMap")
     public void getLookAndFellMap(ResourceRequest request, ResourceResponse response, Long companyId) throws ApplicationException, IOException {
         List<ThemeOption> lookAndFeels = lookAndFeelService.getAllLookAndFeels(companyId);
-        objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.success().put("lookAndFeels", lookAndFeels));
+        objectMapper.writeValue(response.getPortletOutputStream(), success().put("lookAndFeels", lookAndFeels));
     }
 
     @ResourceMapping("fetchPermissions")
-    public void fetchPermissions(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
-        LookAndFeel model = objectMapper.readValue(request.getPortletInputStream(), LookAndFeel.class);
-        writePermissions(request, response, model.getId());
+    public void fetchPermissions(@RequestParam("id") Integer lookAndFeelId, PagedRequest request, ResourceResponse response) throws ApplicationException, IOException {
+        Long companyId = CompanyThreadLocal.getCompanyId();
+        ResourcePermissions permissions = permissionService.getPermissions(companyId, lookAndFeelId, request.getPage(), request.getSize());
+        long count = permissionService.count(companyId);
+
+        objectMapper.writeValue(response.getWriter(), success()
+                .put("permissions", permissions)
+                .put("totalCount", count));
     }
 
     @ResourceMapping("applyPermissions")
@@ -86,7 +94,7 @@ public class EditController extends BaseController {
         Map<String, Object> user = new HashMap<String, Object>();
         user.put("count", userLookAndFeelBindingService.count());
 
-        objectMapper.writeValue(response.getWriter(), JsonResponse.success().put("guest", guest).put("user", user));
+        objectMapper.writeValue(response.getWriter(), success().put("guest", guest).put("user", user));
     }
 
     @ResourceMapping("removeAllBindings")
@@ -99,7 +107,7 @@ public class EditController extends BaseController {
 
     private void writePermissions(ResourceRequest request, ResourceResponse response, Integer id) throws ApplicationException, IOException {
         ResourcePermissions permissions = permissionService.getPermissions(getThemeDisplay(request).getCompanyId(), id);
-        objectMapper.writeValue(response.getWriter(), JsonResponse.success().put("permissions", permissions));
+        objectMapper.writeValue(response.getWriter(), success().put("permissions", permissions));
     }
 
     @ExceptionHandler({Exception.class})

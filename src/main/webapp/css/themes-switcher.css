@@ -1,3 +1,9 @@
+.aui div.ts-container input[type=checkbox] {
+    display: inline-block;
+    margin: 0;
+    vertical-align: middle;
+}
+
 div.ts-container {
     padding: 10px;
 }
@@ -32,6 +38,12 @@ div.ts-container h3 {
 div.ts-container .ts-tooltip,
 div.ts-container .ts-action-label {
     cursor: pointer;
+}
+
+div.ts-container .ts-toggle-all-actions {
+    display: inline-block;
+    margin: 0 0 0 1em;
+    vertical-align: middle;
 }
 
 div.ts-container .ts-message {
@@ -71,6 +83,6 @@ div.ts-container .ts-display-none {
         opacity: 0.3;
     }
     to {
-        opacity: initial;
+        opacity: 1;
     }
 }

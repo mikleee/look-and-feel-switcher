@@ -1,10 +1,6 @@
-<%@ include file="../init.jspf" %>
-
-<div ng-controller="adminController">
+<div ng-controller="preferencesAdministrationController">
     <div>
-        <button class="btn btn-danger" ng-click="listener.removeAllBindings()" ng-disabled="expressions.disableFormCondition() || stat.isEmpty()">
-            <liferay-ui:message key="ts-remove-all-bindings"/>
-        </button>
-        <span class="label">{{expressions.statMessage()}}</span>
+        <button class="btn btn-danger" ng-click="removeAllBindings()" ng-disabled="isLocked()"><liferay-ui:message key="ts-remove-all-bindings"/></button>
+        <span class="label" ng-bind="getStatMessage()"></span>
     </div>
 </div>
