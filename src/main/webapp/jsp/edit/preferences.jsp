@@ -7,11 +7,8 @@
 <script src="<c:url value="/js/preferences.js"/>"></script>
 <script src="<c:url value="/js/plugins/paginator.js"/>"></script>
 
-<%--@elvariable id="themes" type="java.util.List<com.liferay.portal.model.Theme>"--%>
+<%--@elvariable id="allowedActions" type="java.lang.String"--%>
 <%--@elvariable id="themeDisplay" type="com.liferay.portal.theme.ThemeDisplay"--%>
-<%--@elvariable id="screenShotPath" type="java.lang.String"--%>
-<%--@elvariable id="colorSchemes" type="java.util.List<com.liferay.portal.model.ColorScheme>"--%>
-<%--@elvariable id="actions" type="java.util.List<com.aimprosoft.lfs.model.view.Action>"--%>
 
 
 <portlet:resourceURL var="initLookAndFeelUrl" id="getLookAndFeelMap">
@@ -38,7 +35,6 @@
                 <ts-global-message></ts-global-message>
                 <div ng-switch="tab">
                     <div ng-switch-when="permissions">
-                        <div class="alert alert-danger">not implemented yet</div>
                         <%@ include file="./look-and-feel-permissions.jsp" %>
                     </div>
                     <div ng-switch-when="administration">
@@ -60,7 +56,8 @@
             applyPermissionsUrl: '<portlet:resourceURL id="applyPermissions"/>',
             setDefaultPermissionsUrl: '<portlet:resourceURL id="setDefaultPermissions"/>',
             removeAllBindingsUrl: '<portlet:resourceURL id="removeAllBindings"/>',
-            bindingsStatUrl: '<portlet:resourceURL id="bindingsStatUrl"/>'
+            bindingsStatUrl: '<portlet:resourceURL id="bindingsStatUrl"/>',
+            allowedActions: angular.fromJson('${allowedActions}')
         };
 
         angular.module('ts-lookAndFeelList').constant('config', config);

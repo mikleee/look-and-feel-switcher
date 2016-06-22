@@ -60,7 +60,7 @@
      * @constructor
      */
     function DynamicPaginationService(http) {
-        const me = this, delegate = new PaginatorDelegate();
+        const me = this, listenerRegistry = new PaginatorEventListenerRegistry();
 
 
         var callback = {success: null, error: null, before: null};
@@ -68,6 +68,7 @@
         var ns = '';
         var requestUrl = null;
 
+        this.id = null;
         this.pageSizes = [5, 10, 20, 50];
         this.pageSize = me.pageSizes[0];
         this.pageNo = 1;
@@ -75,16 +76,13 @@
 
         this.initPaginator = initPaginator;
         this.getTotalCount = getTotalCount;
-        this.isActual = isActual;
-        this.getApplicablePageSizes = getApplicablePageSizes;
         this.getPageContent = getPageContent;
-        this.isPagesLineActual = isPagesLineActual;
         this.setPageSize = setPageSize;
-        this.getPageSize = getPageSize;
         this.setPageNo = setPageNo;
         this.sort = sort;
-        this.onPageChange = onPageChange;
+        this.sendRequest = sendRequest;
 
+        this.onPageSizeChange = onPageSizeChange;
 
         function initPaginator(url, config) {
             ns = config.ns || '';
@@ -97,30 +95,21 @@
             return state.totalCount;
         }
 
-        function isActual() {
-            return delegate.isActual(getTotalCount());
-        }
-
-        function getApplicablePageSizes() {
-            return delegate.getApplicablePageSizes(getTotalCount());
-        }
-
         function getPageContent() {
             return state.pageContent;
-        }
-
-        function isPagesLineActual() {
-            return getTotalCount() / me.pageSize >= 2;
         }
 
         function setPageSize(pSize) {
             me.pageNo = 1;
             me.pageSize = pSize;
             sendRequest();
-        }
-
-        function getPageSize() {
-            return me.pageSize;
+            angular.forEach(listenerRegistry.pageSizeChangeListeners(), function (fn) {
+                try {
+                    fn(pSize)
+                } catch (e) {
+                    console.error(e);
+                }
+            })
         }
 
         function setPageNo(pNo) {
@@ -133,10 +122,6 @@
             sendRequest();
         }
 
-        function onPageChange() {
-            sendRequest();
-        }
-
         function sendRequest() {
             if (callback.before) {
                 callback.before();
@@ -146,7 +131,6 @@
             var promise = http.get(url);
             promise.then(function (response) {
                 state = callback.success(response.data);
-                state.pageContent = delegate.prepareData(state.pageContent);
             }, function (response) {
                 if (callback.error) {
                     callback.error(response)
@@ -154,6 +138,24 @@
             });
             return promise;
         }
+
+        function onPageSizeChange(fn) {
+            listenerRegistry.registerOnPageSizeChange(fn);
+            return me;
+        }
+
+    }
+
+    function PaginatorEventListenerRegistry() {
+        var onPageSizeChange = [];
+
+        this.registerOnPageSizeChange = function (fn) {
+            onPageSizeChange.push(fn);
+        };
+
+        this.pageSizeChangeListeners = function () {
+            return onPageSizeChange;
+        };
 
     }
 

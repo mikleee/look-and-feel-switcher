@@ -2,9 +2,9 @@
 
     <div class="ts-row">
 
-        <div ng-controller="lookAndFeelListController">
+        <div ng-controller="lookAndFeelListController" class="ts-column look-and-feel-list-control">
             <div>
-                <h3><liferay-ui:message key="ts-select-theme"/></h3>
+                <h3><span><liferay-ui:message key="ts-select-theme"/></span> <ts-spinner ng-show="isLocked()"></ts-spinner></h3>
             </div>
             <div>
                 <label for="${ns}themes"><liferay-ui:message key="ts-themes"/></label>
@@ -19,14 +19,14 @@
             </div>
         </div>
 
-        <div>
-            <h3><liferay-ui:message key="ts-define-permissions"/></h3>
+        <div class="ts-column">
+            <h3><span><liferay-ui:message key="ts-define-permissions"/></span><ts-spinner ng-show="isLocked()"></ts-spinner></h3>
             <table id="${ns}permissions" class="table table-bordered table-hover table-striped role-permission-table">
                 <thead class="table-columns">
                     <tr>
                         <th><liferay-ui:message key="ts-role"/></th>
-                        <th ng-repeat="a in permissionService.resourcePermissions.allowedActions">
-                            <input id="${ns}toggleActions" type="checkbox" ng-change="permissionService.toggleAction(a)" ng-model="a.allSelected"/>
+                        <th ng-repeat="a in permissionService.allowedActions">
+                            <input id="${ns}toggleActions" type="checkbox" ng-change="permissionService.toggleAction(a)" ng-model="a.allSelected" ng-disabled="isLocked()"/>
                             <label for="${ns}toggleActions" ng-bind="a.name" class="ts-toggle-all-actions"></label>
                         </th>
                     </tr>
@@ -34,8 +34,8 @@
                 <tbody class="table-data">
                     <tr ng-repeat="p in permissionService.resourcePermissions.permissions" class="{{'lfr-role lfr-role-' + p.role.type}}">
                         <td class="first"><span class="ts-tooltip" uib-popover="{{p.role.description}}" popover-trigger="mouseenter">{{p.role.name}}</span></td>
-                        <td ng-repeat="a in permissionService.resourcePermissions.allowedActions">
-                            <input type="checkbox" ng-model="permissionService.resourcePermissions.permissions[$parent.$index].actions[$index].permitted" ng-change="onActionPermissionChange(a)"<%--ng-disabled="expressions.disableCondition()"--%>/>
+                        <td ng-repeat="a in permissionService.allowedActions">
+                            <input type="checkbox" ng-change="onActionPermissionChange(a)" ng-disabled="isLocked()" ng-model="permissionService.resourcePermissions.permissions[$parent.$index].actions[$index].permitted"/>
                         </td>
                     </tr>
                 </tbody>

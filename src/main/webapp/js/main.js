@@ -152,3 +152,23 @@
     }
 })();
 
+(function () {
+    angular.module('ts-main', [])
+        .service('configurationService', ['$http', ConfigurationService]);
+
+    function ConfigurationService(http) {
+        this.getPaginatorConfig = getPaginatorConfig;
+        this.setUserConfig = setUserConfig;
+
+        function getPaginatorConfig() {
+            return http.get(ThemesSwitcher.staticUrl.paginatorConfig);
+        }
+
+        function setUserConfig(userConfig) {
+            return http.post(ThemesSwitcher.staticUrl.setUserConfig, userConfig);
+        }
+
+    }
+
+})();
+

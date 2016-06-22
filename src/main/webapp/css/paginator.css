@@ -25,6 +25,11 @@
     display: inline-block;
 }
 
+/*.ts-pagination .ts-page-config .ts-page-number,*/
+/*.ts-pagination .ts-page-config .ts-page-size {*/
+/*display: inline-block;*/
+/*}*/
+
 .ts-pagination .ts-page-config .ts-page-size {
     float: left;
 }

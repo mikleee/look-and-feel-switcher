@@ -49,15 +49,17 @@ public class EditController extends BaseController {
 
 
     @RenderMapping
-    public ModelAndView renderPreferences(RenderRequest request, ModelMap map) throws SystemException, PortalException, ApplicationException {
+    public ModelAndView renderPreferences(RenderRequest request, ModelMap map) throws SystemException, PortalException, ApplicationException, IOException {
         ThemeDisplay themeDisplay = getThemeDisplay(request);
-        return new ModelAndView("edit/preferences", map).addObject("themeDisplay", themeDisplay);
+        return new ModelAndView("edit/preferences", map)
+                .addObject("themeDisplay", themeDisplay)
+                .addObject("allowedActions", objectMapper.writeValueAsString(permissionService.getLookAndFeelActions()));
     }
 
     @ResourceMapping("getLookAndFeelMap")
     public void getLookAndFellMap(ResourceRequest request, ResourceResponse response, Long companyId) throws ApplicationException, IOException {
         List<ThemeOption> lookAndFeels = lookAndFeelService.getAllLookAndFeels(companyId);
-        objectMapper.writeValue(response.getPortletOutputStream(), success().put("lookAndFeels", lookAndFeels));
+        respond(response, success().put("lookAndFeels", lookAndFeels));
     }
 
     @ResourceMapping("fetchPermissions")
@@ -66,24 +68,24 @@ public class EditController extends BaseController {
         ResourcePermissions permissions = permissionService.getPermissions(companyId, lookAndFeelId, request.getPage(), request.getSize());
         long count = permissionService.count(companyId);
 
-        objectMapper.writeValue(response.getWriter(), success()
+        respond(response, success()
                 .put("permissions", permissions)
                 .put("totalCount", count));
     }
 
     @ResourceMapping("applyPermissions")
     public void applyPermissions(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
-        ResourcePermissions resourcePermissions = objectMapper.readValue(request.getPortletInputStream(), new ResourcePermissionTypeReference());
+        ResourcePermissions resourcePermissions = objectMapper.readValue(request, new ResourcePermissionTypeReference());
         permissionService.applyPermissions(resourcePermissions, getCompanyId(request));
-        writePermissions(request, response, resourcePermissions.getId());
+        respond(response, success());
     }
 
     @ResourceMapping("setDefaultPermissions")
     public void setDefaultPermissions(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
-        ResourcePermissions resourcePermissions = objectMapper.readValue(request.getPortletInputStream(), new ResourcePermissionTypeReference());
+        ResourcePermissions resourcePermissions = objectMapper.readValue(request, new ResourcePermissionTypeReference());
         LookAndFeel lookAndFeel = lookAndFeelService.find(resourcePermissions.getId());
         permissionService.addDefaultPermissions(lookAndFeel);
-        writePermissions(request, response, resourcePermissions.getId());
+        respond(response, success());
     }
 
     @ResourceMapping("bindingsStatUrl")
@@ -94,7 +96,9 @@ public class EditController extends BaseController {
         Map<String, Object> user = new HashMap<String, Object>();
         user.put("count", userLookAndFeelBindingService.count());
 
-        objectMapper.writeValue(response.getWriter(), success().put("guest", guest).put("user", user));
+        respond(response, success()
+                .put("guest", guest)
+                .put("user", user));
     }
 
     @ResourceMapping("removeAllBindings")
@@ -104,11 +108,6 @@ public class EditController extends BaseController {
         bindingsStat(request, response);
     }
 
-
-    private void writePermissions(ResourceRequest request, ResourceResponse response, Integer id) throws ApplicationException, IOException {
-        ResourcePermissions permissions = permissionService.getPermissions(getThemeDisplay(request).getCompanyId(), id);
-        objectMapper.writeValue(response.getWriter(), success().put("permissions", permissions));
-    }
 
     @ExceptionHandler({Exception.class})
     public void handleApplicationError(Exception e, ResourceResponse response) throws IOException {

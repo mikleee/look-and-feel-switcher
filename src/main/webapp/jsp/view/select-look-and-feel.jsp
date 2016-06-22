@@ -37,13 +37,13 @@
 <c:set var="module" value="selectLookAndFeel${ns}"/>
 
 
-<div id="${module}">
-    <div class="ts-container" ng-cloak>
+<div id="${module}" ng-cloak>
+    <div class="ts-container ts-look-and-feel-list" ng-controller="lookAndFeelListController">
         <ts-global-message></ts-global-message>
-        <div ng-controller="lookAndFeelListController">
-            <h3><liferay-ui:message key="ts-select-theme"/></h3>
+        <div>
+            <h3><span><liferay-ui:message key="ts-select-theme"/></span><ts-spinner ng-show="isLocked()"></ts-spinner></h3>
             <div class="ts-row">
-                <div>
+                <div class="ts-column look-and-feel-list-control">
                     <div>
                         <label for="${ns}themes"><liferay-ui:message key="ts-themes"/></label>
                         <select id="${ns}themes" class="ts-select" ng-disabled="isLocked()" ng-options="theme as theme.name for theme in models.lookAndFeels track by theme.id" ng-model="models.currentTheme"></select>
@@ -53,7 +53,7 @@
                         <select id="${ns}color-schemes" class="ts-select" ng-disabled="isLocked()" ng-options="cs as cs.name for cs in models.currentTheme.colorSchemes track by cs.id" ng-model="models.currentColorScheme"></select>
                     </div>
                 </div>
-                <div>
+                <div class="ts-column">
                     <ts-screenshot src="getScreenshotPath()" alt="<liferay-ui:message key="ts-screenshot-is-not-available"/>"></ts-screenshot>
                 </div>
             </div>
@@ -75,7 +75,7 @@
         };
 
         angular.module('ts-lookAndFeelList').constant('config', config);
-        angular.module('${module}', ['ts-directives', 'ts-lookAndFeelList']);
+        angular.module('${module}', ['ts-directives', 'ts-lookAndFeelList', 'ui.bootstrap']);
         angular.bootstrap(document.getElementById('${module}'), ['${module}']);
     })();
 </script>

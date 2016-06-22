@@ -117,7 +117,6 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
     private ResourcePermissions getPermissions(long companyId, Integer lookAndFeelId, List<Role> roles) throws ApplicationException {
         ResourcePermissions permissions = new ResourcePermissions();
         List<Action> actions = getLookAndFeelActions();
-        permissions.setAllowedActions(actions);
         for (Role role : roles) {
             RolePermission rolePermission = new RolePermission(role);
             for (Action item : getLookAndFeelActions()) {
@@ -133,7 +132,8 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
         return permissions;
     }
 
-    private List<Action> getLookAndFeelActions() throws ApplicationException {
+    @Override
+    public List<Action> getLookAndFeelActions() throws ApplicationException {
         try {
             ArrayList<Action> actions = new ArrayList<Action>();
             for (ResourceAction resourceAction : ResourceActionLocalServiceUtil.getResourceActions(RESOURCE_NAME)) {

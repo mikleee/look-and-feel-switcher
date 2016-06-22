@@ -8,21 +8,22 @@ div.ts-container {
     padding: 10px;
 }
 
+div.ts-container span {
+    vertical-align: middle;
+}
+
 div.ts-container div.ts-row {
 
 }
 
-div.ts-container div.ts-row > div {
+div.ts-container div.ts-row > div.ts-column {
     display: inline-block;
     vertical-align: top;
 }
 
-div.ts-container div.ts-row > div:nth-child(1) {
-    min-width: 40%;
-}
-
-div.ts-container div.ts-row > div:nth-child(2) {
-    min-width: 58%;
+div.ts-row div.look-and-feel-list-control {
+    /*min-width: 40%;*/
+    margin-right: 3%;
 }
 
 div.ts-container div.button-footer {
@@ -76,6 +77,15 @@ div.ts-container .ts-display-none {
     display: none;
 }
 
+div.ts-container div.ts-spinner {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+div.ts-container div.ts-spinner > img {
+    height: 1em;
+}
+
 /* animations */
 
 @keyframes ts-message {
@@ -85,4 +95,32 @@ div.ts-container .ts-display-none {
     to {
         opacity: 1;
     }
+}
+
+@keyframes ts-locker {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 0.3;
+    }
+}
+
+div.ts-locker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 3px;
+    opacity: 0;
+    display: none;
+    background-color: white;
+    transition: opacity 1000ms ease-out;
+}
+
+div.ts-locker.ts-locked {
+    display: block;
+    z-index: 20;
+    opacity: 0.3;
 }

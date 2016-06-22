@@ -14,14 +14,16 @@
     <portlet:param name="template" value="/directives/paginator"/>
 </portlet:resourceURL>
 
-
 <script>
     (function () {
         if (!ThemesSwitcher.staticUrl) {
             ThemesSwitcher.staticUrl = {
                 paginatorTemplate: '${paginatorTemplateUrl}',
-                paginatorConfig: '<portlet:resourceURL  id="getPaginatorConfig"/>'
+                paginatorConfig: '<portlet:resourceURL  id="getPaginatorConfig"/>',
+                setUserConfig: '<portlet:resourceURL  id="setUserConfig"/>'
             };
+
+            ThemesSwitcher.contextPath = '${pageContext.request.contextPath}'
         }
     })()
 </script>

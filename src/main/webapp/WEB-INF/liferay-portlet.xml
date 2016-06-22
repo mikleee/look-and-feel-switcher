@@ -10,10 +10,10 @@
         <friendly-url-mapping>themes-switcher</friendly-url-mapping>
         <friendly-url-routes>/themes-switcher-routes.xml</friendly-url-routes>
         <header-portlet-css>/css/themes-switcher.css</header-portlet-css>
-        <header-portlet-javascript>/js/main.js</header-portlet-javascript>
         <header-portlet-javascript>/js/lib/angular.min.js</header-portlet-javascript>
         <header-portlet-javascript>/js/lib/angular-route.min.js</header-portlet-javascript>
         <header-portlet-javascript>/js/lib/ui-bootstrap-tpls-1.3.3.min.js</header-portlet-javascript>
+        <header-portlet-javascript>/js/main.js</header-portlet-javascript>
     </portlet>
 
 

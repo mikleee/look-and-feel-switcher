@@ -3,7 +3,6 @@ package com.aimprosoft.lfs.controller;
 import com.aimprosoft.lfs.exception.ApplicationException;
 import com.aimprosoft.lfs.model.persist.LookAndFeel;
 import com.aimprosoft.lfs.model.persist.LookAndFeelBinding;
-import com.aimprosoft.lfs.model.view.JsonResponse;
 import com.aimprosoft.lfs.model.view.ThemeOption;
 import com.aimprosoft.lfs.service.DefaultLookAndFeelService;
 import com.aimprosoft.lfs.service.GuestSessionRegistry;
@@ -29,6 +28,7 @@ import javax.portlet.*;
 import java.io.IOException;
 import java.util.List;
 
+import static com.aimprosoft.lfs.model.view.JsonResponse.success;
 import static com.aimprosoft.lfs.utils.Utils.getThemeDisplay;
 
 /**
@@ -71,12 +71,12 @@ public class ViewController extends BaseController {
     @ResourceMapping(value = "applyBinding")
     public void applyBinding(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
         LookAndFeelBindingService lookAndFeelBindingService = getLookAndFeelBindingService(request);
-        LookAndFeelBinding model = objectMapper.readValue(request.getPortletInputStream(), LookAndFeelBinding.class);
+        LookAndFeelBinding model = objectMapper.readValue(request, LookAndFeelBinding.class);
         lookAndFeelBindingService.applyBinding(model);
         if (Utils.isGuest(request)) {
             guestSessionRegistry.register(request);
         }
-        objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.success());
+        respond(response, success());
     }
 
     @ResourceMapping(value = "initLookAndFeel")
@@ -89,7 +89,7 @@ public class ViewController extends BaseController {
 
         List<ThemeOption> lookAndFeels = lookAndFeelService.getAvailableLookAndFeels(fromView, persisted, portalDefault, getThemeDisplay(request).getUser());
 
-        objectMapper.writeValue(response.getPortletOutputStream(), JsonResponse.success()
+        respond(response, success()
                 .put("currentBinding", persisted.getId())
                 .put("lookAndFeels", lookAndFeels));
     }

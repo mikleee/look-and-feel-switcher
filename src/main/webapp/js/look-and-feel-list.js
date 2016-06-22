@@ -12,7 +12,7 @@
      */
     function LookAndFeelListController(scope, service, messageService) {
         scope.models = service.getModels();
-        scope.state = messageService.showMessage('ts-loading', ThemesSwitcher.state.WAITING);
+        scope.state = ThemesSwitcher.state.WAITING;
         scope.getScreenshotPath = getScreenshotPath;
         scope.resetBinding = resetBinding;
         scope.applyBinding = applyBinding;

@@ -1,7 +1,9 @@
 DELETE FROM ts_look_and_feel_binding;
 DELETE FROM ts_look_and_feel;
+DELETE FROM ts_user_config;
 DROP TABLE ts_look_and_feel_binding;
 DROP TABLE ts_look_and_feel;
+DROP TABLE ts_user_config;
 DELETE FROM resourcepermission
 WHERE
   name = 'com.aimprosoft.lfs.model.persist.LookAndFeel'

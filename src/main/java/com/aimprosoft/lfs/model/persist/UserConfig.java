@@ -13,9 +13,9 @@ public class UserConfig extends PersistModel {
     @Column(name = "user_id")
     private Long userId;
     @Enumerated(EnumType.STRING)
-    @Column(name = "key")
+    @Column(name = "config_key")
     private ConfigKey key;
-    @Column(name = "value")
+    @Column(name = "config_value")
     private String value;
 
 

@@ -36,4 +36,6 @@ public interface LookAndFeelPermissionService {
     void updatePermissions(long companyId, Role role, List<Action> actions, String lookAndFeelId) throws ApplicationException;
 
     void deletePermissions(long companyId, String lookAndFeelId) throws ApplicationException;
+
+    List<Action> getLookAndFeelActions() throws ApplicationException;
 }
