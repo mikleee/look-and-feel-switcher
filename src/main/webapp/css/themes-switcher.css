@@ -22,7 +22,6 @@ div.ts-container div.ts-row > div.ts-column {
 }
 
 div.ts-row div.look-and-feel-list-control {
-    /*min-width: 40%;*/
     margin-right: 3%;
 }
 
@@ -45,6 +44,7 @@ div.ts-container .ts-toggle-all-actions {
     display: inline-block;
     margin: 0 0 0 1em;
     vertical-align: middle;
+    font-weight: inherit;
 }
 
 div.ts-container .ts-message {
@@ -61,7 +61,7 @@ div.ts-container img.ts-screen-shot {
 
 div.ts-container select.ts-select {
     width: 220px;
-    max-width: 70%;
+    max-width: 90%;
     transition: border 1s;
 }
 

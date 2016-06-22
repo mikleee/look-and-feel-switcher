@@ -9,6 +9,7 @@
         <friendly-url-mapper-class>com.liferay.portal.kernel.portlet.DefaultFriendlyURLMapper</friendly-url-mapper-class>
         <friendly-url-mapping>themes-switcher</friendly-url-mapping>
         <friendly-url-routes>/themes-switcher-routes.xml</friendly-url-routes>
+        <instanceable>false</instanceable>
         <header-portlet-css>/css/themes-switcher.css</header-portlet-css>
         <header-portlet-javascript>/js/lib/angular.min.js</header-portlet-javascript>
         <header-portlet-javascript>/js/lib/angular-route.min.js</header-portlet-javascript>
