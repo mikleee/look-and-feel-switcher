@@ -40,6 +40,7 @@
 <div id="${module}" ng-cloak>
     <div class="ts-container ts-look-and-feel-list" ng-controller="lookAndFeelListController">
         <ts-global-message></ts-global-message>
+
         <div>
             <h3><span><liferay-ui:message key="ts-select-theme"/></span><ts-spinner ng-show="isLocked()"></ts-spinner></h3>
             <div class="ts-row">

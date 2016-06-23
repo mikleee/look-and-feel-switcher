@@ -1,6 +1,5 @@
 <%@ include file="../init.jspf" %>
 
-<link rel="stylesheet" href="<c:url value="/css/paginator.css"/>">
 <script src="<c:url value="/js/plugins/directives.js"/>"></script>
 <script src="<c:url value="/js/plugins/message.js"/>"></script>
 <script src="<c:url value="/js/look-and-feel-list.js"/>"></script>

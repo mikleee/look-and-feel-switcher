@@ -51,14 +51,6 @@ div.ts-container .ts-message {
     animation: ts-message 0.5s;
 }
 
-div.ts-container img.ts-screen-shot {
-    border: 1px #DDD solid;
-    border-radius: 3px;
-    max-height: 200px;
-    max-width: 100%;
-    box-shadow: 0 0 10px rgb(221, 221, 221);
-}
-
 div.ts-container select.ts-select {
     width: 220px;
     max-width: 90%;

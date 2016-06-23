@@ -13,12 +13,16 @@
 <portlet:resourceURL var="paginatorTemplateUrl" id="getTemplate">
     <portlet:param name="template" value="/directives/paginator"/>
 </portlet:resourceURL>
+<portlet:resourceURL var="screenshotTemplateUrl" id="getTemplate">
+    <portlet:param name="template" value="/directives/screenshot"/>
+</portlet:resourceURL>
 
 <script>
     (function () {
         if (!ThemesSwitcher.staticUrl) {
             ThemesSwitcher.staticUrl = {
                 paginatorTemplate: '${paginatorTemplateUrl}',
+                screenshotTemplate: '${screenshotTemplateUrl}',
                 paginatorConfig: '<portlet:resourceURL  id="getPaginatorConfig"/>',
                 setUserConfig: '<portlet:resourceURL  id="setUserConfig"/>'
             };

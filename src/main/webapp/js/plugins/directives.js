@@ -1,5 +1,5 @@
 (function () {
-    angular.module('ts-directives', [])
+    angular.module('ts-directives', ['ui.bootstrap'])
         .directive('tsScreenshot', [Screenshot])
         .directive('tsSpinner', [Spinner])
         .directive('tsLockedOn', [LockedOn]);
@@ -13,26 +13,18 @@
                 alt: '@'
             },
             link: link,
-            template: template
+            templateUrl: ThemesSwitcher.staticUrl.screenshotTemplate
         };
 
         function link(scope, element) {
-            scope.state = 'loading';
+            scope.scrState = 'loading';
             var img = element.find('img');
             img.on('error', function () {
-                scope.state = 'failed';
+                scope.scrState = 'failed';
             });
             img.on('load', function () {
-                scope.state = 'success';
+                scope.scrState = 'success';
             })
-        }
-
-        function template() {
-            var $ = angular.element;
-            var root = $('<span>')
-                .append('<span ng-show="state == \'loading\' || state == \'success\'"><img ng-src="{{src}}" class="ts-screen-shot"></span>')
-                .append('<span ng-show="screenshot.state == \'failed\'" class="alert alert-warning"><liferay-ui:message key="ts-screenshot-is-not-available"/></span>');
-            return root[0].outerHTML;
         }
     }
 

@@ -1,4 +1,4 @@
-<%@ include file="../init.jspf" %>
+<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 <div id="ts-pagination-{{$id}}" class="ts-pagination">
     <div id="ts-pagination-page-config-{{$id}}" class="ts-page-config">
