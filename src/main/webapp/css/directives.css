@@ -14,12 +14,29 @@ img.ts-screen-shot {
 /*          SORTER
 /***************************************/
 
-img.ts-screen-shot {
-    border: 1px #DDD solid;
-    border-radius: 3px;
-    max-height: 200px;
-    max-width: 100%;
-    box-shadow: 0 0 10px rgb(221, 221, 221);
+span.ts-sorter-title {
+    text-decoration: underline;
+    font-weight: inherit;
+    cursor: pointer;
+}
+
+span.ts-sorter {
+    height: 10px;
+    width: 7px;
+    _background: url(/html/js/aui/aui-datatable-core/assets/skins/sam/sort-arrow-sprite-ie.png) no-repeat 0 0;
+    background: url(/html/js/aui/aui-datatable-core/assets/skins/sam/sort-arrow-sprite.png) no-repeat 0 0;
+    display: inline-block;
+    float: right;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+span.ts-sorter-asc {
+    background-position: 0 -10px;
+}
+
+span.ts-sorter-desc {
+    background-position: 0 -20px;
 }
 
 /***************************************/

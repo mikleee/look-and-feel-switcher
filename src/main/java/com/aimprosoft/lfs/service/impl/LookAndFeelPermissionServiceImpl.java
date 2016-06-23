@@ -2,15 +2,9 @@ package com.aimprosoft.lfs.service.impl;
 
 import com.aimprosoft.lfs.exception.ApplicationException;
 import com.aimprosoft.lfs.model.persist.LookAndFeel;
-import com.aimprosoft.lfs.model.view.Action;
-import com.aimprosoft.lfs.model.view.ResourcePermissions;
-import com.aimprosoft.lfs.model.view.Role;
-import com.aimprosoft.lfs.model.view.RolePermission;
+import com.aimprosoft.lfs.model.view.*;
 import com.aimprosoft.lfs.service.LookAndFeelPermissionService;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.OrderFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.*;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.ResourceAction;
 import com.liferay.portal.model.ResourcePermission;
@@ -47,8 +41,8 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
     }
 
     @Override
-    public ResourcePermissions getPermissions(long companyId, Integer lookAndFeelId, int pageNo, int pageSize) throws ApplicationException {
-        List<Role> roles = getCompanyRoles(companyId, pageNo, pageSize);
+    public ResourcePermissions getPermissions(long companyId, Integer lookAndFeelId, PagedRequest request) throws ApplicationException {
+        List<Role> roles = getCompanyRoles(companyId, request);
         return getPermissions(companyId, lookAndFeelId, roles);
     }
 
@@ -157,11 +151,16 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
     }
 
 
-    private List<Role> getCompanyRoles(long companyId, int pageNo, int pageSize) throws ApplicationException {
-        final int start = (pageNo - 1) * pageSize;
-        final int end = start + pageSize;
+    private List<Role> getCompanyRoles(long companyId, PagedRequest request) throws ApplicationException {
+        int start = (request.getPage() - 1) * request.getSize();
+        int end = start + request.getSize();
 
-        DynamicQuery query = companyRolesQueryTemplate(companyId).addOrder(OrderFactoryUtil.asc("name"));
+
+        DynamicQuery query = companyRolesQueryTemplate(companyId);
+        Order order = defineRoleSortOrder(request);
+        if (order != null) {
+            query.addOrder(order);
+        }
 
         try {
             //noinspection unchecked
@@ -169,6 +168,25 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
             return toViewRoles(roles);
         } catch (SystemException e) {
             throw new ApplicationException();
+        }
+    }
+
+    private Order defineRoleSortOrder(PagedRequest request) {
+        String field = request.getField();
+        if ("roleName".equals(field)) {
+            return defineSortOrder("name", request.getDir());
+        } else {
+            return null;
+        }
+    }
+
+    private Order defineSortOrder(String field, String dir) {
+        if ("asc".equals(dir)) {
+            return OrderFactoryUtil.asc(field);
+        } else if ("desc".equals(dir)) {
+            return OrderFactoryUtil.desc(field);
+        } else {
+            return null;
         }
     }
 

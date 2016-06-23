@@ -5,7 +5,7 @@
         .directive('tsPaginator', ['$interval', Paginator])
 
         .controller('sorterController', ['$scope', SorterController])
-        .directive('sorter', [Sorter]);
+        .directive('tsSorter', [Sorter]);
 
 
     function PaginatorDelegate() {
@@ -62,7 +62,6 @@
     function DynamicPaginationService(http) {
         const me = this, listenerRegistry = new PaginatorEventListenerRegistry();
 
-
         var callback = {success: null, error: null, before: null};
         var state = {totalCount: 0, pageContent: []};
         var ns = '';
@@ -83,6 +82,7 @@
         this.sendRequest = sendRequest;
 
         this.onPageSizeChange = onPageSizeChange;
+
 
         function initPaginator(url, config) {
             ns = config.ns || '';
@@ -319,20 +319,20 @@
             controller: 'sorterController',
             scope: {
                 sortKey: '@field',
+                title: '@',
                 paginator: '=paginatorService'
             },
             restrict: 'E',
-            template: '<span class="sorter glyphicon" ng-click="sort()" ng-class="styleClass()"></span>'
+            template: '<span ng-click="sort()" ng-bind="title" class="ts-sorter-title"></span><span class="ts-sorter" ng-click="sort()" ng-class="styleClass()"></span>'
         };
     }
 
 
     function SorterController(scope) {
-        scope.sortOptions = new SortOptions(scope.sortKey);
+        scope.sortOptions = initSortOptions();
         scope.isActive = isActive;
         scope.sort = sort;
         scope.styleClass = styleClass;
-
 
         function sort() {
             if (isActive()) {
@@ -340,7 +340,7 @@
             } else {
                 scope.sortOptions.dir = 'asc'
             }
-
+            
             scope.paginator.sort(scope.sortOptions);
         }
 
@@ -350,20 +350,28 @@
 
         function styleClass() {
             if (isActive() && scope.sortOptions.dir == 'asc') {
-                return 'glyphicon-sort-by-attributes active-sorter';
+                return 'ts-sorter-asc';
             } else if (isActive() && scope.sortOptions.dir == 'desc') {
-                return 'glyphicon-sort-by-attributes-alt active-sorter'
+                return 'ts-sorter-desc'
             } else if (!isActive() || !scope.sortOptions.dir) {
-                return 'glyphicon-sort'
+                return ''
             } else {
                 return ''
             }
+        }
+
+        function initSortOptions() {
+            var result = new SortOptions(scope.sortKey);
+            if (scope.paginator && scope.paginator.sortOptions && scope.paginator.sortOptions.key == scope.sortKey) {
+                result.dir = scope.paginator.sortOptions.dir;
+            }
+            return result;
         }
     }
 
     function SortOptions(key) {
         const me = this;
-        this.dir = null;
+        this.dir = 'asc';
         this.key = key;
 
         this.toggle = function () {

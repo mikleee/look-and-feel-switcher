@@ -3,6 +3,7 @@ package com.aimprosoft.lfs.service;
 import com.aimprosoft.lfs.exception.ApplicationException;
 import com.aimprosoft.lfs.model.persist.LookAndFeel;
 import com.aimprosoft.lfs.model.view.Action;
+import com.aimprosoft.lfs.model.view.PagedRequest;
 import com.aimprosoft.lfs.model.view.ResourcePermissions;
 import com.aimprosoft.lfs.model.view.Role;
 import com.liferay.portal.model.ResourceConstants;
@@ -25,7 +26,7 @@ public interface LookAndFeelPermissionService {
 
     ResourcePermissions getPermissions(long companyId, Integer lookAndFeelId) throws ApplicationException;
 
-    ResourcePermissions getPermissions(long companyId, Integer lookAndFeelId, int pageNo, int pageSize) throws ApplicationException;
+    ResourcePermissions getPermissions(long companyId, Integer lookAndFeelId, PagedRequest request) throws ApplicationException;
 
     void applyPermissions(ResourcePermissions resourcePermissions, long companyId) throws ApplicationException;
 

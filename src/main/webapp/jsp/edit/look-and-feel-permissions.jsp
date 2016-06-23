@@ -24,7 +24,10 @@
             <table id="${ns}permissions" class="table table-bordered table-hover table-striped role-permission-table">
                 <thead class="table-columns">
                     <tr>
-                        <th><span><liferay-ui:message key="ts-role"/></span><span class="table-sort-indicator"></span></th>
+                        <th>
+                            <%--<span><liferay-ui:message key="ts-role"/></span>--%>
+                            <ts-sorter title="<liferay-ui:message key="ts-role"/>" field="roleName" paginator-service="permissionService.paginator"></ts-sorter>
+                        </th>
                         <th ng-repeat="a in permissionService.allowedActions">
                             <input id="${ns}toggleActions" type="checkbox" ng-change="permissionService.toggleAction(a)" ng-model="a.allSelected" ng-disabled="isLocked()"/>
                             <label for="${ns}toggleActions" ng-bind="a.name" class="ts-toggle-all-actions"></label>

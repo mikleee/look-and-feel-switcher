@@ -65,7 +65,7 @@ public class EditController extends BaseController {
     @ResourceMapping("fetchPermissions")
     public void fetchPermissions(@RequestParam("id") Integer lookAndFeelId, PagedRequest request, ResourceResponse response) throws ApplicationException, IOException {
         Long companyId = CompanyThreadLocal.getCompanyId();
-        ResourcePermissions permissions = permissionService.getPermissions(companyId, lookAndFeelId, request.getPage(), request.getSize());
+        ResourcePermissions permissions = permissionService.getPermissions(companyId, lookAndFeelId, request);
         long count = permissionService.count(companyId);
 
         respond(response, success()
