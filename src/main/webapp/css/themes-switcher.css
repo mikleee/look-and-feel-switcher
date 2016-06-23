@@ -29,8 +29,14 @@ div.ts-container div.button-footer {
     padding: 10px 0;
 }
 
+div.ts-container h3,
+div.ts-container label {
+    background-color: inherit;
+    color: inherit;
+}
+
 div.ts-container h3 {
-    color: #8D8D8D;
+    /*color: #8D8D8D;*/
     font-size: 20px;
     font-weight: normal;
 }
