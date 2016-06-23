@@ -1,209 +1,383 @@
-/**
- * @param $scope
- * @param $location
- * @constructor
- */
-function PreferencesController($scope, $location) {
-    $scope.tab = null;
-    var hash = $location.path();
+(function () {
+    angular.module('ts-preferences', ['ts-message', 'ts-preferencesPermissions', 'ts-preferencesAdministration'])
+        .controller('preferencesController', ['$scope', 'ts-messageService', PreferencesController]);
 
-    if (hash == '/permissions') {
-        $scope.tab = 'permissions';
-    } else if (hash == '/administration') {
-        $scope.tab = 'administration';
-    } else {
-        $scope.tab = 'permissions';
+    function PreferencesController(scope, messageService) {
+        scope.tab = 'permissions';
+        scope.setTab = setTab;
+
+        function setTab(t) {
+            messageService.hideMessage();
+            scope.tab = t;
+        }
     }
 
-    $scope.expressions = {};
+})();
 
-    $scope.listeners = {
-        onTabChange: function (tab) {
-            $scope.tab = tab;
-            $scope.$broadcast(tsConstants.event.HIDE_MESSAGE);
-        }
-    };
 
-}
+(function () {
+    angular.module('ts-preferencesPermissions', ['ts-lookAndFeelList', 'ts-message', 'ts-pagination', 'ts-main'])
+        .controller('preferencesPermissionsController', ['$scope', 'lookAndFeelListService', 'preferencesPermissionsService', 'ts-messageService', PreferencesPermissionsController])
+        .service('preferencesPermissionsService', ['$http', 'paginatorServiceFactory', '$q', 'configurationService', 'config', PreferencesPermissionsService]);
 
-/**
- * @param $scope
- * @param $http
- * @param service
- * @param portletConfig {PortletConfig}
- * @constructor
- */
-function SelectLookAndFeelPreferencesController($scope, $http, service, portletConfig) {
-    var state;
-    var messageInterface = new MessageInterface($scope);
-    $scope.models = service.getModels();
+    function PreferencesPermissionsController(scope, lookAndFeelService, permissionService, messageService) {
+        var state;
+        scope.lookAndFeelService = lookAndFeelService;
+        scope.permissionService = permissionService;
+        scope.onActionPermissionChange = onActionPermissionChange;
+        scope.submitPermissions = submitPermissions;
+        scope.setDefaultPermissions = setDefaultPermissions;
+        scope.isLocked = isLocked;
 
-    var callBacks = {
-        onRequestFailed: function (response) {
-            state = messageInterface.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
-        },
-        onInitLookAndFeels: function (response) {
-            service.setLookAndFeels(response.data.body['lookAndFeels']);
-            if (service.isNoData()) {
-                state = messageInterface.showMessage('ts-no-themes-found', tsConstants.state.WARNING);
-            } else {
-                state = messageInterface.hideMessage(tsConstants.state.SUCCESS);
-                $scope.$emit(tsConstants.event.FETCH_PERMISSIONS_REQUESTED);
+        scope.$watch('lookAndFeelService.getModels().currentTheme', onThemeChanged);
+        scope.$watch('lookAndFeelService.getModels().currentColorScheme', onColorSchemeChanged);
+
+
+        function fetchPermissions() {
+            var activeLookAndFeel = lookAndFeelService.getActiveLookAndFeel();
+            if (activeLookAndFeel) {
+                permissionService.fetchPermissions(activeLookAndFeel, {
+                    success: onRequestSucceed,
+                    error: onRequestFailed,
+                    before: beforeRequest
+                });
             }
         }
-    };
 
-    $scope.expressions = {
-        screenShotPath: function () {
-            return service.getScreenshotPath();
-        },
-        disableFormCondition: function () {
-            return state == tsConstants.state.WAITING || service.isNoData();
+        function onThemeChanged(theme) {
+            if (theme && !theme.hasColorSchemes()) {
+                fetchPermissions()
+            }
         }
-    };
 
-    $scope.listeners = {
-        onLookAndFeelChange: function () {
-            return $scope.$emit(tsConstants.event.FETCH_PERMISSIONS_REQUESTED);
+        function onColorSchemeChanged(cs) {
+            if (cs) {
+                fetchPermissions()
+            }
         }
-    };
 
-    {   //init
-        state = messageInterface.showMessage('ts-loading', tsConstants.state.WAITING);
-        $http.get(portletConfig.initLookAndFeelUrl).then(callBacks.onInitLookAndFeels, callBacks.onRequestFailed);
+        function onActionPermissionChange(action) {
+            permissionService.initActionToggler(action);
+        }
 
-        $scope.$watch('models.currentTheme', function (t) {
-            if (t) {
-                service.getModels().currentColorScheme = service.getPreselectedColorScheme(t);
-                if (!t.hasColorSchemes()) {
-                    $scope.$emit(tsConstants.event.FETCH_PERMISSIONS_REQUESTED);
+        function submitPermissions() {
+            beforeRequest();
+            permissionService.submitPermissions().then(onRequestSucceed, onRequestFailed);
+        }
+
+        function setDefaultPermissions() {
+            beforeRequest();
+            permissionService.setDefaultPermissions().then(onRequestSucceed, onRequestFailed);
+        }
+
+        function beforeRequest() {
+            state = ThemesSwitcher.state.WAITING;
+        }
+
+        function onRequestSucceed() {
+            state = ThemesSwitcher.state.SUCCESS;
+        }
+
+        function onRequestFailed() {
+            state = messageService.showMessage('ts-internal-server-error', ThemesSwitcher.state.ERROR);
+        }
+
+        function isLocked() {
+            return state === ThemesSwitcher.state.WAITING;
+        }
+
+    }
+
+    function PreferencesPermissionsService(http, paginatorServiceFactory, $q, configurationService, config) {
+        const me = this;
+        var init = false;
+
+        /** @type {ResourcePermissions} */
+        this.resourcePermissions = null;
+        this.allowedActions = initAllowedActions(config.allowedActions);
+        this.paginator = paginatorServiceFactory.dynamicPaginator().onPageSizeChange(updateUserPaginatorDelta);
+        this.fetchPermissions = fetchPermissions;
+        this.submitPermissions = submitPermissions;
+        this.setDefaultPermissions = setDefaultPermissions;
+        this.toggleAction = toggleAction;
+        this.initActionToggler = initActionToggler;
+
+
+        function fetchPermissions(activeLookAndFeel, callback) {
+            if (init) {
+                return doFetchPermissions(activeLookAndFeel, callback);
+            } else {
+                var deferred = $q.defer();
+                configurationService.getPaginatorConfig().then(function (response) {
+                    me.paginator.pageSizes = response.data.body.deltas;
+                    me.paginator.pageSize = response.data.body.delta;
+                    doFetchPermissions(activeLookAndFeel, callback).then(deferred.resolve, deferred.reject);
+                });
+                return deferred.promise;
+            }
+        }
+
+        function doFetchPermissions(activeLookAndFeel, callback) {
+            var rConfig = {
+                ns: config.ns,
+                success: function (data) {
+                    callback.success();
+                    onPermissionsFetched(data);
+                    return {totalCount: data.body.totalCount, pageContent: me.resourcePermissions.permissions};
+                },
+                error: callback.error,
+                before: callback.before
+            };
+
+            return me.paginator.initPaginator(config.fetchPermissionsUrl + '&' + config.ns + 'id=' + activeLookAndFeel.id, rConfig);
+        }
+
+        function submitPermissions() {
+            var promise = http.post(config.applyPermissionsUrl, me.resourcePermissions);
+            promise.then(me.paginator.sendRequest);
+            return promise;
+        }
+
+        function setDefaultPermissions() {
+            var promise = http.post(config.setDefaultPermissionsUrl, me.resourcePermissions);
+            promise.then(me.paginator.sendRequest);
+            return promise;
+        }
+
+        function updateUserPaginatorDelta(pSize) {
+            configurationService.setUserConfig({userId: Liferay.ThemeDisplay.getUserId(), key: 'SEARCH_CONTAINER_DELTA', value: pSize});
+        }
+
+        function onPermissionsFetched(data) {
+            me.resourcePermissions = data.body['permissions'];
+            initActionTogglers();
+        }
+
+        function initAllowedActions(allowedActions) {
+            var result = [];
+            angular.forEach(allowedActions, function (v) {
+                var action = angular.copy(v);
+                action.name = ThemesSwitcher.getMessage(action.name);
+                result.push(action);
+            });
+            return result;
+        }
+
+        function toggleAction(action) {
+            angular.forEach(me.resourcePermissions.permissions, function (v) {
+                var a = getAction(action, v.actions);
+                if (a) {
+                    a.permitted = action.allSelected;
+                }
+            });
+        }
+
+        function initActionTogglers() {
+            angular.forEach(me.allowedActions, function (a) {
+                initActionToggler(a);
+            });
+        }
+
+        function initActionToggler(action) {
+            var result = true;
+            for (var i = 0; i < me.resourcePermissions.permissions.length; i++) {
+                var a = getAction(action, me.resourcePermissions.permissions[i].actions);
+                if (a && a.permitted === false) {
+                    result = false;
+                    break
                 }
             }
-        });
-        $scope.$watch('models.currentColorScheme', function (cs) {
-            $scope.$emit(tsConstants.event.FETCH_PERMISSIONS_REQUESTED);
-        });
-    }
 
-}
-
-
-/**
- * @param $scope
- * @param $http
- * @param lookAndFeelService{LookAndFeelService}
- * @param portletConfig {PortletConfig}
- * @constructor
- */
-function LookAndFeelPermissionsController($scope, $http, lookAndFeelService, portletConfig) {
-    var state;
-    var messageInterface = new MessageInterface($scope);
-    $scope.models = lookAndFeelService.getModels();
-    /**
-     * @type {PaggedTable}
-     */
-    $scope.permissionsTable = new PaggedTable();
-
-    var callBacks = {
-        onRequestFailed: function (response) {
-            state = messageInterface.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
-        },
-        onPermissionsFetched: function (response) {
-            lookAndFeelService.setResourcePermissions(response.data.body['permissions']);
-            $scope.permissionsTable.init({
-                collection: lookAndFeelService.getModels().resourcePermissions.permissions,
-                page: 1,
-                pageSize: 5,
-                pageSizes: [5, 10, 20]
-            });
-            state = messageInterface.hideMessage('ts-internal-server-error', tsConstants.state.SUCCESS);
+            var allowedAction = getAction(action, me.allowedActions);
+            allowedAction.allSelected = result;
         }
-    };
 
-    var listeners = {
-        fetchPermissions: function () {
-            var activeLookAndFeel = lookAndFeelService.getActiveLookAndFeelOption();
-            if (activeLookAndFeel) {
-                state = messageInterface.showMessage('ts-loading', tsConstants.state.WAITING);
-                $http.post(portletConfig.fetchPermissionsUrl, {id: activeLookAndFeel.id}).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
+        /**
+         * @param action {Action}
+         * @param actions {Action[]}
+         */
+        function getAction(action, actions) {
+            for (var i = 0; i < actions.length; i++) {
+                if (action.id == actions[i].id) {
+                    return actions[i];
+                }
             }
         }
-    };
 
-    $scope.expressions = {
-        disableCondition: function () {
-            return state == tsConstants.state.WAITING;
-        }
-    };
-
-    $scope.$on(tsConstants.event.FETCH_PERMISSIONS_REQUESTED, listeners.fetchPermissions);
-
-    $scope.listeners = {
-        submitPermissions: function () {
-            state = tsConstants.state.WAITING;
-            $http.post(portletConfig.applyPermissionsUrl, lookAndFeelService.getModels().resourcePermissions).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
-        },
-        setDefaultPermissions: function () {
-            state = tsConstants.state.WAITING;
-            $http.post(portletConfig.setDefaultPermissionsUrl, lookAndFeelService.getModels().resourcePermissions).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
-        },
-        toggleAction: function (actionId) {
-            lookAndFeelService.toggleAction(actionId, $scope.permissionsTable.getCurrentPage());
-        }
-    };
-
-}
-
-/**
- * @param $scope
- * @param $http
- * @param portletConfig {PortletConfig}
- * @constructor
- */
-function LookAndFeelAdministrationController($scope, $http, portletConfig) {
-    var state;
-    var messageInterface = new MessageInterface($scope);
-    $scope.stat = new BindingsStats();
-
-    var callBacks = {
-        onRequestFailed: function (response) {
-            state = messageInterface.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
-        },
-        onBindingsRemoved: function (response) {
-            var count = response.data.body['count'];
-            $scope.stat.guest = response.data.body['guest'];
-            $scope.stat.user = response.data.body['user'];
-            state = messageInterface.showMessage('ts-all-bindings-has-been-removed', tsConstants.state.SUCCESS);
-        },
-        onStatFetched: function (response) {
-            $scope.stat.guest = response.data.body['guest'];
-            $scope.stat.user = response.data.body['user'];
-            state = messageInterface.hideMessage(tsConstants.state.SUCCESS);
-        }
-    };
-
-    $scope.expressions = {
-        disableFormCondition: function () {
-            return state == tsConstants.state.WAITING;
-        },
-        statMessage: function () {
-            return tsConstants.getMessage('ts-bindings-stat-message', [$scope.stat.user.count, $scope.stat.guest.count]);
-        }
-    };
-
-    $scope.listener = {
-        fetchStats: function () {
-            state = messageInterface.showMessage('ts-loading', tsConstants.state.WAITING);
-            $http.get(portletConfig.bindingsStatUrl).then(callBacks.onStatFetched, callBacks.onRequestFailed);
-        },
-        removeAllBindings: function () {
-            state = messageInterface.showMessage('ts-remove-bindings', tsConstants.state.WAITING);
-            $http.post(portletConfig.removeAllBindingsUrl).then(callBacks.onBindingsRemoved, callBacks.onRequestFailed);
-        }
-    };
-
-    {
-        $scope.listener.fetchStats();
     }
 
-}
+
+    /** @constructor */
+    function ResourcePermissions() {
+        this.id = null;
+        /** @type {[Action]} */
+        this.allowedActions = [];
+        /** @type {[RolePermissions]} */
+        this.permissions = [];
+    }
+
+    /** @constructor */
+    function RolePermissions() {
+        /** @type {{name: String, type: String, description: String, id: Number}} */
+        this.role = {};
+        /** @type {[Action]} */
+        this.actions = [];
+    }
+
+    /** @constructor */
+    function Action() {
+        this.id = null;
+        this.name = null;
+        this.permitted = false;
+    }
+
+
+})();
+
+
+(function () {
+    angular.module('ts-preferencesAdministration', ['ts-message'])
+        .controller('preferencesAdministrationController', ['$scope', 'preferencesAdministrationService', 'ts-messageService', PreferencesAdministrationController])
+        .service('preferencesAdministrationService', ['$http', 'config', PreferencesAdministrationService]);
+
+    function PreferencesAdministrationController(scope, service, messageService) {
+        var state = messageService.showMessage('ts-loading', ThemesSwitcher.state.WAITING);
+
+        scope.stat = service.getStats();
+        scope.isLocked = isLocked;
+        scope.getStatMessage = getStatMessage;
+        scope.removeAllBindings = removeAllBindings;
+
+
+        service.fetchStats().then(onStatFetched, onRequestFailed);
+
+
+        function isLocked() {
+            return state == ThemesSwitcher.state.WAITING || scope.stat.isEmpty();
+        }
+
+        function getStatMessage() {
+            return ThemesSwitcher.getMessage('ts-bindings-stat-message', [scope.stat.user.count, scope.stat.guest.count]);
+        }
+
+        function removeAllBindings() {
+            state = messageService.showMessage('ts-remove-bindings', ThemesSwitcher.state.WAITING);
+            return service.removeAllBindings(onBindingsRemoved, onRequestFailed)
+        }
+
+        function onStatFetched() {
+            state = messageService.hideMessage(ThemesSwitcher.state.SUCCESS);
+        }
+
+        function onBindingsRemoved() {
+            state = messageService.showMessage('ts-all-bindings-has-been-removed', ThemesSwitcher.state.SUCCESS);
+        }
+
+        function onRequestFailed() {
+            state = messageService.showMessage('ts-internal-server-error', ThemesSwitcher.state.ERROR);
+        }
+
+    }
+
+    function PreferencesAdministrationService(http, config) {
+        var stat = new BindingsStats();
+        this.getStats = getStats;
+        this.fetchStats = fetchStats;
+        this.removeAllBindings = removeAllBindings;
+
+        function getStats() {
+            return stat;
+        }
+
+        function fetchStats() {
+            var promise = http.get(config.bindingsStatUrl);
+            promise.then(onStatFetched);
+            return promise;
+        }
+
+        function removeAllBindings() {
+            var promise = http.post(config.removeAllBindingsUrl);
+            promise.then(onBindingsRemoved);
+            return promise;
+        }
+
+        function onStatFetched(response) {
+            stat.guest = response.data.body['guest'];
+            stat.user = response.data.body['user'];
+        }
+
+        function onBindingsRemoved(response) {
+            stat.guest = response.data.body['guest'];
+            stat.user = response.data.body['user'];
+        }
+
+    }
+
+    /** @constructor */
+    function BindingsStats() {
+        this.guest = new BindingStat();
+        this.user = new BindingStat();
+        this.isEmpty = function () {
+            return this.guest.count + this.user.count == 0;
+        }
+    }
+
+    /** @constructor */
+    function BindingStat() {
+        this.count = 0;
+    }
+})();
+
+
+// /**
+//  * @type {PaggedTable}
+//  */
+// scope.permissionsTable = new PaggedTable();
+//
+// var callBacks = {
+//     onRequestFailed: function (response) {
+//         state = messageService.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
+//     },
+//     onPermissionsFetched: function (response) {
+//         lookAndFeelService.setResourcePermissions(response.data.body['permissions']);
+//         scope.permissionsTable.init({
+//             collection: lookAndFeelService.getModels().resourcePermissions.permissions,
+//             page: 1,
+//             pageSize: 5,
+//             pageSizes: [5, 10, 20]
+//         });
+//         state = messageService.hideMessage('ts-internal-server-error', tsConstants.state.SUCCESS);
+//     }
+// };
+//
+// var listeners = {
+//     fetchPermissions: function () {
+//         var activeLookAndFeel = lookAndFeelService.getActiveLookAndFeelOption();
+//         if (activeLookAndFeel) {
+//             state = messageService.showMessage('ts-loading', tsConstants.state.WAITING);
+//             $http.post(portletConfig.fetchPermissionsUrl, {id: activeLookAndFeel.id}).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
+//         }
+//     }
+// };
+//
+// scope.expressions = {
+//     disableCondition: function () {
+//         return state == tsConstants.state.WAITING;
+//     }
+// };
+//
+// scope.$on(tsConstants.event.FETCH_PERMISSIONS_REQUESTED, listeners.fetchPermissions);
+//
+// scope.listeners = {
+//     submitPermissions: function () {
+//         state = tsConstants.state.WAITING;
+//         $http.post(portletConfig.applyPermissionsUrl, lookAndFeelService.getModels().resourcePermissions).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
+//     },
+//     setDefaultPermissions: function () {
+//         state = tsConstants.state.WAITING;
+//         $http.post(portletConfig.setDefaultPermissionsUrl, lookAndFeelService.getModels().resourcePermissions).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
+//     },
+//     toggleAction: function (actionId) {
+//         lookAndFeelService.toggleAction(actionId, scope.permissionsTable.getCurrentPage());
+//     }
+// };

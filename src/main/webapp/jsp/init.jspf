@@ -3,13 +3,31 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
-
-<%--@elvariable id="themes" type="java.util.List<com.liferay.portal.model.Theme>"--%>
-<%--@elvariable id="themeDisplay" type="com.liferay.portal.theme.ThemeDisplay"--%>
-<%--@elvariable id="currentBindModel" type="com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeelBinding"--%>
-<%--@elvariable id="screenShotPath" type="java.lang.String"--%>
-<%--@elvariable id="colorSchemes" type="java.util.List<com.liferay.portal.model.ColorScheme>"--%>
+<portlet:defineObjects/>
 
 <c:set var="ns"><portlet:namespace/></c:set>
-
 <portlet:renderURL var="startPage"/>
+
+
+<%-- static URLs --%>
+<portlet:resourceURL var="paginatorTemplateUrl" id="getTemplate">
+    <portlet:param name="template" value="/directives/paginator"/>
+</portlet:resourceURL>
+<portlet:resourceURL var="screenshotTemplateUrl" id="getTemplate">
+    <portlet:param name="template" value="/directives/screenshot"/>
+</portlet:resourceURL>
+
+<script>
+    (function () {
+        if (!ThemesSwitcher.staticUrl) {
+            ThemesSwitcher.staticUrl = {
+                paginatorTemplate: '${paginatorTemplateUrl}',
+                screenshotTemplate: '${screenshotTemplateUrl}',
+                paginatorConfig: '<portlet:resourceURL  id="getPaginatorConfig"/>',
+                setUserConfig: '<portlet:resourceURL  id="setUserConfig"/>'
+            };
+
+            ThemesSwitcher.contextPath = '${pageContext.request.contextPath}'
+        }
+    })()
+</script>

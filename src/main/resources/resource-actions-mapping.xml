@@ -28,7 +28,7 @@
     </portlet-resource>
 
     <model-resource>
-        <model-name>com.aimprosoft.look_and_feel_switcher.model.persist.LookAndFeel</model-name>
+        <model-name>com.aimprosoft.lfs.model.persist.LookAndFeel</model-name>
         <portlet-ref>
             <portlet-name>themes-switcher</portlet-name>
         </portlet-ref>

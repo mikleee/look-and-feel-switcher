@@ -1,75 +1,53 @@
-<%@ include file="../init.jspf" %>
-
-<div ng-controller="lookAndFeelPermissionsController">
+<div ng-controller="preferencesPermissionsController">
 
     <div class="ts-row">
-
-        <div ng-controller="selectLookAndFeelPreferencesController">
+        <div ng-controller="lookAndFeelListController" class="ts-column look-and-feel-list-control">
             <div>
-                <h3><liferay-ui:message key="ts-select-theme"/></h3>
+                <h3><span><liferay-ui:message key="ts-select-theme"/></span> <ts-spinner ng-show="isLocked()"></ts-spinner></h3>
             </div>
             <div>
                 <label for="${ns}themes"><liferay-ui:message key="ts-themes"/></label>
-                <select id="${ns}themes" class="ts-select" ng-disabled="expressions.disableFormCondition()"
-                        ng-options="theme as theme.name for theme in models.lookAndFeels track by theme.id" ng-model="models.currentTheme"
-                        ng-change="listeners.onLookAndFeelChange()"></select>
+                <select id="${ns}themes" class="ts-select" ng-disabled="isLocked() && $parent.isLocked()" ng-options="theme as theme.name for theme in models.lookAndFeels track by theme.id" ng-model="models.currentTheme"></select>
             </div>
             <div ng-if="models.currentTheme && models.currentTheme.hasColorSchemes()">
                 <label for="${ns}color-schemes"><liferay-ui:message key="ts-color-schemes"/></label>
-                <select id="${ns}color-schemes" class="ts-select" ng-disabled="expressions.disableFormCondition()"
-                        ng-options="cs as cs.name for cs in models.currentTheme.colorSchemes track by cs.id" ng-model="models.currentColorScheme"
-                        ng-change="listeners.onLookAndFeelChange()"></select>
+                <select id="${ns}color-schemes" class="ts-select" ng-disabled="isLocked() && $parent.isLocked()" ng-options="cs as cs.name for cs in models.currentTheme.colorSchemes track by cs.id" ng-model="models.currentColorScheme"></select>
             </div>
             <div>
-                <span ng-show="screenshot.state == 'loading' || screenshot.state == 'success'"><img ng-src="{{expressions.screenShotPath()}}" class="ts-screen-shot" ng-model="screenshot"></span>
-                <span ng-show="screenshot.state == 'failed'" class="alert alert-warning"><liferay-ui:message key="ts-screenshot-is-not-available"/></span>
+                <ts-screenshot src="getScreenshotPath()" alt="<liferay-ui:message key="ts-screenshot-is-not-available"/>"></ts-screenshot>
             </div>
         </div>
-        <div>
-            <h3><liferay-ui:message key="ts-define-permissions"/></h3>
-            <table class="table table-bordered table-hover table-striped role-permission-table">
+
+        <div class="ts-column role-permissions-control">
+            <h3><span><liferay-ui:message key="ts-define-permissions"/></span><ts-spinner ng-show="isLocked()"></ts-spinner></h3>
+            <table id="${ns}permissions" class="table table-bordered table-hover table-striped role-permission-table">
                 <thead class="table-columns">
                     <tr>
-                        <th><liferay-ui:message key="ts-role"/></th>
-                        <th class="ts-action-label" ng-click="listeners.toggleAction(a.id)" ng-repeat="a in models.resourcePermissions.allowedActions track by a.id">
-                            {{a.name}}
+                        <th>
+                            <ts-sorter title="<liferay-ui:message key="ts-role"/>" field="roleName" paginator-service="permissionService.paginator"></ts-sorter>
+                        </th>
+                        <th ng-repeat="a in permissionService.allowedActions">
+                            <input id="${ns}toggleActions" type="checkbox" ng-change="permissionService.toggleAction(a)" ng-model="a.allSelected" ng-disabled="isLocked()"/>
+                            <label for="${ns}toggleActions" ng-bind="a.name" class="ts-toggle-all-actions"></label>
                         </th>
                     </tr>
                 </thead>
                 <tbody class="table-data">
-                    <tr ng-repeat="p in permissionsTable.getCurrentPage() track by p.role.name" class="{{'lfr-role lfr-role-' + p.role.type}}">
-                        <td class="first"><span class="ts-tooltip" title="{{p.role.description}}">{{p.role.name}}</span></td>
-                        <td ng-repeat="a in p.actions track by a.id">
-                            <input type="checkbox" ng-model="permissionsTable.getCurrentPage()[$parent.$index].actions[$index].permitted" ng-disabled="expressions.disableCondition()"/>
+                    <tr ng-repeat="p in permissionService.resourcePermissions.permissions" class="{{'lfr-role lfr-role-' + p.role.type}}">
+                        <td class="first"><span class="ts-tooltip" uib-popover="{{p.role.description}}" popover-trigger="mouseenter">{{p.role.name}}</span></td>
+                        <td ng-repeat="a in permissionService.allowedActions">
+                            <input type="checkbox" ng-change="onActionPermissionChange(a)" ng-disabled="isLocked()" ng-model="permissionService.resourcePermissions.permissions[$parent.$index].actions[$index].permitted"/>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <div ng-show="permissionsTable.isApplicable()">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{permissionsTable.getPageSize()}} <liferay-ui:message key="items-per-page"/> <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li ng-repeat="p in permissionsTable.getPageSizes()"><a href="" ng-click="permissionsTable.setPageSize(p)">{{p}}</a></li>
-                    </ul>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <liferay-ui:message key="page"/> {{permissionsTable.getPage()}} <liferay-ui:message key="of"/> {{permissionsTable.getPages().length}} <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li ng-repeat="p in permissionsTable.getPages() track by $index"><a href="" ng-click="permissionsTable.setPage($index+1)">{{$index + 1}}</a></li>
-                    </ul>
-                </div>
-            </div>
+            <ts-paginator container="${ns}permissions" paginator-service="permissionService.paginator"></ts-paginator>
         </div>
-
     </div>
 
     <div class="row-fluid button-footer">
-        <button type="button" class="btn btn-primary" ng-click="listeners.submitPermissions()" ng-disabled="expressions.disableCondition()"><liferay-ui:message key="save"/></button>
-        <button type="button" class="btn btn-default" ng-click="listeners.setDefaultPermissions()"><liferay-ui:message key="ts-set-default-permissions"/></button>
+        <button type="button" class="btn btn-primary" ng-click="submitPermissions()" ng-disabled="isLocked()"><liferay-ui:message key="save"/></button>
+        <button type="button" class="btn btn-default" ng-click="setDefaultPermissions()" ng-disabled="isLocked()"><liferay-ui:message key="ts-set-default-permissions"/></button>
     </div>
 
 </div>
