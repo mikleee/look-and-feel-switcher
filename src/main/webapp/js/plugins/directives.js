@@ -39,7 +39,7 @@
             var $ = angular.element;
             var root = $('<div class="ts-spinner">')
                 .append(
-                    $('<img>').attr('src', ThemesSwitcher.contextPath + '/img/spinner.gif')
+                    $('<img>').attr('src', Liferay.ThemeDisplay.getPathThemeImages() + '/aui/loading_indicator.gif')
                 );
             return root[0].outerHTML;
         }
@@ -65,4 +65,5 @@
             });
         }
     }
+
 })();

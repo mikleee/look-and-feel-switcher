@@ -1,7 +1,6 @@
 <div ng-controller="preferencesPermissionsController">
 
     <div class="ts-row">
-
         <div ng-controller="lookAndFeelListController" class="ts-column look-and-feel-list-control">
             <div>
                 <h3><span><liferay-ui:message key="ts-select-theme"/></span> <ts-spinner ng-show="isLocked()"></ts-spinner></h3>
@@ -19,7 +18,7 @@
             </div>
         </div>
 
-        <div class="ts-column">
+        <div class="ts-column role-permissions-control">
             <h3><span><liferay-ui:message key="ts-define-permissions"/></span><ts-spinner ng-show="isLocked()"></ts-spinner></h3>
             <table id="${ns}permissions" class="table table-bordered table-hover table-striped role-permission-table">
                 <thead class="table-columns">
@@ -45,7 +44,6 @@
             </table>
             <ts-paginator container="${ns}permissions" paginator-service="permissionService.paginator"></ts-paginator>
         </div>
-
     </div>
 
     <div class="row-fluid button-footer">

@@ -2,7 +2,7 @@
 
 <div id="ts-pagination-{{$id}}" class="ts-pagination">
     <div id="ts-pagination-page-config-{{$id}}" class="ts-page-config">
-        <div class="ts-page-number">
+        <div class="ts-page-number" ng-show="isPageNoControlActual()">
             <div class="btn-group lfr-icon-menu current-page-menu" uib-dropdown>
                 <button class="btn" uib-dropdown-toggle>
                     <span class="lfr-icon-menu-text"><span ng-bind="getPageNoTitle()"></span><i class="caret"></i></span>
@@ -32,7 +32,7 @@
         </div>
     </div>
     <small id="ts-pagination-results-count-{{$id}}" class="ts-results-count" ng-bind="getResultsTitle()"></small>
-    <div id="ts-pagination-buttons-{{$id}}" class="ts-pagination-buttons">
+    <div id="ts-pagination-buttons-{{$id}}" class="ts-pagination-buttons" ng-show="isPageNoControlActual()">
         <ul class="lfr-pagination-buttons pager">
             <li class="first" ng-class="{'disabled' : paginator.pageNo == 1}"><a href="javascript:void(0);" ng-click="setPageNo(1)"> &#8592; <liferay-ui:message key="first"/> </a></li>
             <li ng-class="{'disabled' : paginator.pageNo == 1}"><a href="javascript:void(0);" ng-click="setPageNo(paginator.pageNo - 1)"> <liferay-ui:message key="previous"/> </a></li>

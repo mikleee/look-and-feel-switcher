@@ -7,55 +7,6 @@
         .controller('sorterController', ['$scope', SorterController])
         .directive('tsSorter', [Sorter]);
 
-
-    function PaginatorDelegate() {
-        var pageSizes = [5, 10, 20, 75];
-
-        this.prepareData = prepareData;
-        this.isActual = isActual;
-        this.getApplicablePageSizes = getApplicablePageSizes;
-        this.getDefaultPageSize = getDefaultPageSize;
-
-
-        function prepareData(d) {
-            angular.forEach(d, function (v) {
-                if (v['_pid'] == null) {
-                    v['_pid'] = ThemesSwitcher.sequence.getUnique();
-                }
-            });
-            return d;
-        }
-
-        function isActual(totalCount) {
-            return isPageSizeApplicable(totalCount, pageSizes[0]);
-        }
-
-        function getApplicablePageSizes(totalCount) {
-            var result = [];
-            for (var i = 0; i < pageSizes.length; i++) {
-                var pSize = pageSizes[i];
-                if (isPageSizeApplicable(totalCount, pSize)) {
-                    result.push(pSize);
-                } else {
-                    break;
-                }
-            }
-            if (totalCount > result[result.length - 1]) {
-                result.push(totalCount);
-            }
-            return result;
-        }
-
-        function getDefaultPageSize() {
-            return pageSizes[0];
-        }
-
-        function isPageSizeApplicable(totalCount, pSize) {
-            return totalCount / pSize > 1;
-        }
-    }
-
-
     /**
      * @constructor
      */
@@ -177,6 +128,10 @@
 
         scope.getLastPageNo = getLastPageNo;
 
+        scope.isPageNoControlActual = isPageNoControlActual;
+        scope.isPageSizeControlActual = isPageSizeControlActual;
+        ;
+
 
         function setPageSize(ps) {
             scope.paginator.setPageSize(ps);
@@ -230,6 +185,14 @@
             return Math.ceil(scope.paginator.getTotalCount() / scope.paginator.pageSize);
         }
 
+        function isPageNoControlActual() {
+            return getPageCount() >= 2;
+        }
+
+        function isPageSizeControlActual() {
+            var minPSize = Math.min.apply(this, scope.paginator.pageSizes);
+            return scope.paginator.getPageContent().length > minPSize;
+        }
 
     }
 
@@ -340,7 +303,7 @@
             } else {
                 scope.sortOptions.dir = 'asc'
             }
-            
+
             scope.paginator.sort(scope.sortOptions);
         }
 

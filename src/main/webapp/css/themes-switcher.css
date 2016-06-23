@@ -69,15 +69,6 @@ div.ts-container .ts-display-none {
     display: none;
 }
 
-div.ts-container div.ts-spinner {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-div.ts-container div.ts-spinner > img {
-    height: 1em;
-}
-
 /* animations */
 
 @keyframes ts-message {
