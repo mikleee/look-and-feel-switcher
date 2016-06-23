@@ -130,7 +130,6 @@
 
         scope.isPageNoControlActual = isPageNoControlActual;
         scope.isPageSizeControlActual = isPageSizeControlActual;
-        ;
 
 
         function setPageSize(ps) {
@@ -210,6 +209,9 @@
         function link(scope, elem, attr) {
             var ns = scope.$id;
             var container = attr['container'];
+            scope.containerWidth = function () {
+                return document.getElementById(container).offsetWidth;
+            };
 
             // init
             var initChecker = setInterval(function () {
@@ -224,6 +226,7 @@
                 window.onresize = renderGrid;
                 Liferay.on('portletMoved', onPortletMoved);
                 scope.$on('$destroy', onScopeDestroy);
+                scope.$watch('containerWidth()', renderGrid)
             }
 
             function onPortletMoved() {

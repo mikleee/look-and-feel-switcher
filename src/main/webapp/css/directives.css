@@ -87,42 +87,42 @@ span.ts-sorter-desc {
     margin: 0;
 }
 
-@media (max-width: 979px) {
-    .ts-pagination .ts-pagination-buttons {
-        float: none;
-        margin-top: 20px;
-        width: 100%;
-    }
+/*@media (max-width: 979px) {*/
+/*.ts-pagination .ts-pagination-buttons {*/
+/*float: none;*/
+/*margin-top: 20px;*/
+/*width: 100%;*/
+/*}*/
 
-    .ts-pagination .ts-pagination-buttons ul,
-    .ts-pagination .ts-page-config,
-    .ts-pagination .ts-page-config .ts-page-number,
-    .ts-pagination .ts-page-config .ts-page-number button,
-    .ts-pagination .ts-page-config .ts-page-number div.btn-group,
-    .ts-pagination .ts-page-config .open ul.dropdown-menu {
-        display: block;
-        width: 100%;
-    }
+/*.ts-pagination .ts-pagination-buttons ul,*/
+/*.ts-pagination .ts-page-config,*/
+/*.ts-pagination .ts-page-config .ts-page-number,*/
+/*.ts-pagination .ts-page-config .ts-page-number button,*/
+/*.ts-pagination .ts-page-config .ts-page-number div.btn-group,*/
+/*.ts-pagination .ts-page-config .open ul.dropdown-menu {*/
+/*display: block;*/
+/*width: 100%;*/
+/*}*/
 
-    .ts-pagination .ts-pagination-buttons li {
-        display: inline-block;
-        float: left;
-        width: 50%;
-    }
+/*.ts-pagination .ts-pagination-buttons li {*/
+/*display: inline-block;*/
+/*float: left;*/
+/*width: 50%;*/
+/*}*/
 
-    .ts-pagination .ts-page-config .ts-page-size,
-    .ts-pagination .ts-results-count,
-    .ts-pagination .ts-pagination-buttons li.first,
-    .ts-pagination .ts-pagination-buttons li.last {
-        display: none;
-    }
+/*.ts-pagination .ts-page-config .ts-page-size,*/
+/*.ts-pagination .ts-results-count,*/
+/*.ts-pagination .ts-pagination-buttons li.first,*/
+/*.ts-pagination .ts-pagination-buttons li.last {*/
+/*display: none;*/
+/*}*/
 
-    .ts-pagination .ts-pagination-buttons li > a {
-        line-height: 20px;
-        padding: 11px 19px;
-        width: 50%;
-    }
-}
+/*.ts-pagination .ts-pagination-buttons li > a {*/
+/*line-height: 20px;*/
+/*padding: 11px 19px;*/
+/*width: 50%;*/
+/*}*/
+/*}*/
 
 .ts-pagination.short .ts-pagination-buttons {
     float: none;
@@ -130,14 +130,18 @@ span.ts-sorter-desc {
     width: 100%;
 }
 
-.ts-pagination.short .ts-pagination-buttons ul,
 .ts-pagination.short .ts-page-config,
+.ts-pagination.short .ts-page-config .ts-page-size,
+.ts-pagination.short .ts-page-config .ts-page-size button,
+.ts-pagination.short .ts-page-config .ts-page-size div.btn-group,
 .ts-pagination.short .ts-page-config .ts-page-number,
 .ts-pagination.short .ts-page-config .ts-page-number button,
 .ts-pagination.short .ts-page-config .ts-page-number div.btn-group,
+.ts-pagination.short .ts-pagination-buttons ul,
 .ts-pagination.short .ts-page-config .open ul.dropdown-menu {
     display: block;
     width: 100%;
+    float: none;
 }
 
 .ts-pagination.short .ts-pagination-buttons li {
@@ -146,7 +150,7 @@ span.ts-sorter-desc {
     width: 50%;
 }
 
-.ts-pagination.short .ts-page-config .ts-page-size,
+/*.ts-pagination.short .ts-page-config .ts-page-size,*/
 .ts-pagination.short .ts-results-count,
 .ts-pagination.short .ts-pagination-buttons li.first,
 .ts-pagination.short .ts-pagination-buttons li.last {

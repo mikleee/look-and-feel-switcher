@@ -24,7 +24,6 @@
                 <thead class="table-columns">
                     <tr>
                         <th>
-                            <%--<span><liferay-ui:message key="ts-role"/></span>--%>
                             <ts-sorter title="<liferay-ui:message key="ts-role"/>" field="roleName" paginator-service="permissionService.paginator"></ts-sorter>
                         </th>
                         <th ng-repeat="a in permissionService.allowedActions">

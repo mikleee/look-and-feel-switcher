@@ -2,18 +2,6 @@
 
 <div id="ts-pagination-{{$id}}" class="ts-pagination">
     <div id="ts-pagination-page-config-{{$id}}" class="ts-page-config">
-        <div class="ts-page-number" ng-show="isPageNoControlActual()">
-            <div class="btn-group lfr-icon-menu current-page-menu" uib-dropdown>
-                <button class="btn" uib-dropdown-toggle>
-                    <span class="lfr-icon-menu-text"><span ng-bind="getPageNoTitle()"></span><i class="caret"></i></span>
-                </button>
-                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                    <li role="menuitem" ng-repeat="pno in getPageLine()">
-                        <a href="javascript:void(0);" class="taglib-icon focus" ng-click="setPageNo(pno)"><span class="taglib-text-icon" ng-bind="pno"></span></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
         <div class="ts-page-size">
             <div class="btn-group lfr-icon-menu">
                 <div class="btn-group lfr-icon-menu current-page-menu" uib-dropdown>
@@ -28,6 +16,18 @@
                         </li>
                     </ul>
                 </div>
+            </div>
+        </div>
+        <div class="ts-page-number" ng-show="isPageNoControlActual()">
+            <div class="btn-group lfr-icon-menu current-page-menu" uib-dropdown>
+                <button class="btn" uib-dropdown-toggle>
+                    <span class="lfr-icon-menu-text"><span ng-bind="getPageNoTitle()"></span><i class="caret"></i></span>
+                </button>
+                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                    <li role="menuitem" ng-repeat="pno in getPageLine()">
+                        <a href="javascript:void(0);" class="taglib-icon focus" ng-click="setPageNo(pno)"><span class="taglib-text-icon" ng-bind="pno"></span></a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
