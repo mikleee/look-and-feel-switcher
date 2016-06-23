@@ -30,6 +30,8 @@ div.ts-container div.button-footer {
 }
 
 div.ts-container h3,
+div.ts-container table td,
+div.ts-container table th,
 div.ts-container label {
     background-color: inherit;
     color: inherit;
