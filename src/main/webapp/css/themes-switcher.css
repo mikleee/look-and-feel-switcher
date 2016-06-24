@@ -55,10 +55,6 @@ div.ts-container .ts-toggle-all-actions {
     font-weight: inherit;
 }
 
-div.ts-container .ts-message {
-    animation: ts-message 0.5s;
-}
-
 div.ts-container select.ts-select {
     width: 220px;
     max-width: 90%;
@@ -78,15 +74,6 @@ div.ts-container .ts-display-none {
 }
 
 /* animations */
-
-@keyframes ts-message {
-    from {
-        opacity: 0.3;
-    }
-    to {
-        opacity: 1;
-    }
-}
 
 @keyframes ts-locker {
     from {

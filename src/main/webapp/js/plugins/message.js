@@ -1,7 +1,7 @@
 (function () {
-    angular.module('ts-message', [])
+    angular.module('ts-message', ['ui.bootstrap'])
         .controller('ts-messageController', ['$scope', 'ts-messageService', MessageController])
-        .service('ts-messageService', [MessageService])
+        .service('ts-messageService', ['$timeout', MessageService])
         .directive('tsGlobalMessage', [Message]);
 
 
@@ -9,30 +9,51 @@
         scope.service = service;
     }
 
-    function MessageService() {
+    function MessageService(timeout) {
+        const DELAY = 3000;
         var me = this, status = null;
 
-        this.message = null;
+        this.message = '';
         this.messageStyle = '';
+        this.containerStyle = 'ts-message-closed';
         this.showMessage = showMessage;
+        this.showSuccessMessage = showSuccessMessage;
+        this.showErrorMessage = showErrorMessage;
         this.hideMessage = hideMessage;
 
 
         function showMessage(message, messageStatus) {
             status = messageStatus;
-            me.messageStyle = defineStyle();
+            me.messageStyle = messageStyle();
             me.message = ThemesSwitcher.getMessage(message);
+            me.containerStyle = '';
+            if (messageStatus == ThemesSwitcher.state.SUCCESS) {
+                waitAndHide();
+            }
             return status;
+        }
+
+        function showSuccessMessage() {
+            return showMessage('your-request-processed-successfully', ThemesSwitcher.state.SUCCESS);
+        }
+
+        function showErrorMessage() {
+            return showMessage('ts-internal-server-error', ThemesSwitcher.state.ERROR);
         }
 
         function hideMessage(messageStatus) {
             status = messageStatus;
-            me.message = '';
-            me.messageStyle = '';
+            me.containerStyle = 'ts-message-closed';
             return status;
         }
 
-        function defineStyle() {
+        function waitAndHide() {
+            timeout(function () {
+                me.containerStyle = 'ts-message-closed ts-message-fade';
+            }, DELAY);
+        }
+
+        function messageStyle() {
             switch (status) {
                 case ThemesSwitcher.state.ERROR:
                     return 'alert-danger';
@@ -57,7 +78,7 @@
         };
 
         function template() {
-            var root = angular.element('<div ng-show="service.message" class="alert ts-message" ng-class="service.messageStyle" ng-bind="service.message"></div>');
+            var root = angular.element('<div class="ts-message-container" ng-class="service.containerStyle"><div class="alert ts-message" ng-class="service.messageStyle" ng-bind="service.message"></div></div>');
             return root[0].outerHTML;
         }
     }
