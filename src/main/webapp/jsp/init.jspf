@@ -17,6 +17,7 @@
     <portlet:param name="template" value="/directives/screenshot"/>
 </portlet:resourceURL>
 
+
 <script>
     (function () {
         if (!ThemesSwitcher.staticUrl) {

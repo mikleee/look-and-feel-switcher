@@ -145,7 +145,7 @@
         }
 
         function updateUserPaginatorDelta(pSize) {
-            configurationService.setUserConfig({userId: Liferay.ThemeDisplay.getUserId(), key: 'SEARCH_CONTAINER_DELTA', value: pSize});
+            configurationService.setUserConfig('SEARCH_CONTAINER_DELTA', pSize);
         }
 
         function onPermissionsFetched(data) {
