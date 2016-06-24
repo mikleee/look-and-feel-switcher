@@ -164,8 +164,12 @@
             return http.get(ThemesSwitcher.staticUrl.paginatorConfig);
         }
 
-        function setUserConfig(userConfig) {
-            return http.post(ThemesSwitcher.staticUrl.setUserConfig, userConfig);
+        /**
+         * @param key {String}
+         * @param value {String}
+         */
+        function setUserConfig(key, value) {
+            return http.post(ThemesSwitcher.staticUrl.setUserConfig, {key: key, value: value});
         }
 
     }

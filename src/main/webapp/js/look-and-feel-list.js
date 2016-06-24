@@ -43,7 +43,7 @@
         }
 
         function onRequestFailed() {
-            scope.state = messageService.showMessage('ts-internal-server-error', ThemesSwitcher.state.ERROR);
+            scope.state = messageService.showErrorMessage();
         }
 
         function onInitLookAndFeels() {

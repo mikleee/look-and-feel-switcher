@@ -8,7 +8,6 @@
 <c:set var="ns"><portlet:namespace/></c:set>
 <portlet:renderURL var="startPage"/>
 
-
 <%-- static URLs --%>
 <portlet:resourceURL var="paginatorTemplateUrl" id="getTemplate">
     <portlet:param name="template" value="/directives/paginator"/>
@@ -16,6 +15,7 @@
 <portlet:resourceURL var="screenshotTemplateUrl" id="getTemplate">
     <portlet:param name="template" value="/directives/screenshot"/>
 </portlet:resourceURL>
+
 
 <script>
     (function () {

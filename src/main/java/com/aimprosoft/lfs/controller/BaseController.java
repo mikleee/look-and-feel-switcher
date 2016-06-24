@@ -1,11 +1,11 @@
 package com.aimprosoft.lfs.controller;
 
 import com.aimprosoft.lfs.exception.ApplicationException;
-import com.aimprosoft.lfs.model.persist.UserConfig;
+import com.aimprosoft.lfs.model.view.Config;
+import com.aimprosoft.lfs.service.ConfigService;
 import com.aimprosoft.lfs.service.LookAndFeelPermissionService;
 import com.aimprosoft.lfs.service.LookAndFeelService;
 import com.aimprosoft.lfs.service.ObjectMapper;
-import com.aimprosoft.lfs.service.UserConfigService;
 import com.liferay.portal.kernel.util.ParamUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,6 @@ import java.util.Map;
 
 import static com.aimprosoft.lfs.model.view.JsonResponse.error;
 import static com.aimprosoft.lfs.model.view.JsonResponse.success;
-import static com.liferay.portal.util.PortalUtil.getUserId;
 
 /**
  * Contains the common functionality for all web controllers
@@ -37,7 +36,7 @@ public abstract class BaseController {
     @Autowired
     protected LookAndFeelPermissionService permissionService;
     @Autowired
-    private UserConfigService configService;
+    private ConfigService configService;
 
 
     @ResourceMapping("getTemplate")
@@ -48,30 +47,27 @@ public abstract class BaseController {
 
     @ResourceMapping("getPaginatorConfig")
     public void getPaginatorConfig(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
-        Map<String, Object> searchContainerConfig = configService.getSearchContainerConfig(getUserId(request));
+        Map<String, Object> searchContainerConfig = configService.getSearchContainerConfig(request.getPreferences());
         objectMapper.writeValue(response, success(searchContainerConfig));
     }
 
     @ResourceMapping("setUserConfig")
     public void setUserConfig(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
-        UserConfig userConfig = objectMapper.readValue(request, UserConfig.class);
-        respond(response, configService.saveOrUpdate(userConfig));
-    }
-
-    void respond(ResourceResponse response, Object o) throws IOException {
-        objectMapper.writeValue(response.getPortletOutputStream(), o);
+        Config config = objectMapper.readValue(request, Config.class);
+        configService.saveOrUpdate(config.getKey(), config.getValue(), request.getPreferences());
+        objectMapper.writeValue(response, success());
     }
 
     @ExceptionHandler({ApplicationException.class})
     public void handleApplicationException(ApplicationException e, ResourceResponse response) throws IOException {
         logger.warn(e.getMessage(), e);
-        respond(response, error(e.getMessage()));
+        objectMapper.writeValue(response, error(e.getMessage()));
     }
 
-    @ExceptionHandler({Exception.class})
+
     void handleApplicationError(Exception e, ResourceResponse response) throws IOException {
         logger.error(e, e);
-        respond(response, error(e.getMessage()));
+        objectMapper.writeValue(response, error(e.getMessage()));
     }
 
 }

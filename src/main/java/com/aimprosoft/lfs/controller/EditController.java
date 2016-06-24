@@ -59,7 +59,7 @@ public class EditController extends BaseController {
     @ResourceMapping("getLookAndFeelMap")
     public void getLookAndFellMap(ResourceRequest request, ResourceResponse response, Long companyId) throws ApplicationException, IOException {
         List<ThemeOption> lookAndFeels = lookAndFeelService.getAllLookAndFeels(companyId);
-        respond(response, success().put("lookAndFeels", lookAndFeels));
+        objectMapper.writeValue(response, success().put("lookAndFeels", lookAndFeels));
     }
 
     @ResourceMapping("fetchPermissions")
@@ -68,7 +68,7 @@ public class EditController extends BaseController {
         ResourcePermissions permissions = permissionService.getPermissions(companyId, lookAndFeelId, request);
         long count = permissionService.count(companyId);
 
-        respond(response, success()
+        objectMapper.writeValue(response, success()
                 .put("permissions", permissions)
                 .put("totalCount", count));
     }
@@ -77,7 +77,7 @@ public class EditController extends BaseController {
     public void applyPermissions(ResourceRequest request, ResourceResponse response) throws ApplicationException, IOException {
         ResourcePermissions resourcePermissions = objectMapper.readValue(request, new ResourcePermissionTypeReference());
         permissionService.applyPermissions(resourcePermissions, getCompanyId(request));
-        respond(response, success());
+        objectMapper.writeValue(response, success());
     }
 
     @ResourceMapping("setDefaultPermissions")
@@ -85,7 +85,7 @@ public class EditController extends BaseController {
         ResourcePermissions resourcePermissions = objectMapper.readValue(request, new ResourcePermissionTypeReference());
         LookAndFeel lookAndFeel = lookAndFeelService.find(resourcePermissions.getId());
         permissionService.addDefaultPermissions(lookAndFeel);
-        respond(response, success());
+        objectMapper.writeValue(response, success());
     }
 
     @ResourceMapping("bindingsStatUrl")
@@ -96,7 +96,7 @@ public class EditController extends BaseController {
         Map<String, Object> user = new HashMap<String, Object>();
         user.put("count", userLookAndFeelBindingService.count());
 
-        respond(response, success()
+        objectMapper.writeValue(response, success()
                 .put("guest", guest)
                 .put("user", user));
     }
