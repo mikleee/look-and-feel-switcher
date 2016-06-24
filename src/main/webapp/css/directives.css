@@ -1,4 +1,34 @@
 /***************************************/
+/*          MESSAGE
+/***************************************/
+
+div.ts-message-container {
+    max-height: 5em;
+}
+
+div.ts-message-container.ts-message-closed {
+    max-height: 0;
+    overflow: hidden;
+}
+
+div.ts-message-container.ts-message-closed.ts-message-fade {
+    -moz-transition: max-height .5s;
+    -ms-transition: max-height .5s;
+    -o-transition: max-height .5s;
+    -webkit-transition: max-height .5s;
+    transition: max-height .5s;
+}
+
+@keyframes ts-message {
+    from {
+        opacity: 0.3;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/***************************************/
 /*          SPINNER
 /***************************************/
 

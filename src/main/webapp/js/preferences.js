@@ -62,12 +62,12 @@
 
         function submitPermissions() {
             beforeRequest();
-            permissionService.submitPermissions().then(onRequestSucceed, onRequestFailed);
+            permissionService.submitPermissions().then(showSucceedMessage, onRequestFailed);
         }
 
         function setDefaultPermissions() {
             beforeRequest();
-            permissionService.setDefaultPermissions().then(onRequestSucceed, onRequestFailed);
+            permissionService.setDefaultPermissions().then(showSucceedMessage, onRequestFailed);
         }
 
         function beforeRequest() {
@@ -76,6 +76,10 @@
 
         function onRequestSucceed() {
             state = ThemesSwitcher.state.SUCCESS;
+        }
+
+        function showSucceedMessage() {
+            state = messageService.showSuccessMessage();
         }
 
         function onRequestFailed() {
@@ -112,6 +116,8 @@
                     me.paginator.pageSizes = response.data.body.deltas;
                     me.paginator.pageSize = response.data.body.delta;
                     doFetchPermissions(activeLookAndFeel, callback).then(deferred.resolve, deferred.reject);
+                }, function () {
+                    doFetchPermissions(activeLookAndFeel, callback).then(deferred.resolve, deferred.reject);
                 });
                 return deferred.promise;
             }
@@ -145,7 +151,7 @@
         }
 
         function updateUserPaginatorDelta(pSize) {
-            configurationService.setUserConfig({userId: Liferay.ThemeDisplay.getUserId(), key: 'SEARCH_CONTAINER_DELTA', value: pSize});
+            configurationService.setUserConfig('SEARCH_CONTAINER_DELTA', pSize);
         }
 
         function onPermissionsFetched(data) {
@@ -262,7 +268,7 @@
 
         function removeAllBindings() {
             state = messageService.showMessage('ts-remove-bindings', ThemesSwitcher.state.WAITING);
-            return service.removeAllBindings(onBindingsRemoved, onRequestFailed)
+            return service.removeAllBindings().then(onBindingsRemoved, onRequestFailed);
         }
 
         function onStatFetched() {
@@ -327,57 +333,3 @@
         this.count = 0;
     }
 })();
-
-
-// /**
-//  * @type {PaggedTable}
-//  */
-// scope.permissionsTable = new PaggedTable();
-//
-// var callBacks = {
-//     onRequestFailed: function (response) {
-//         state = messageService.showMessage('ts-internal-server-error', tsConstants.state.ERROR);
-//     },
-//     onPermissionsFetched: function (response) {
-//         lookAndFeelService.setResourcePermissions(response.data.body['permissions']);
-//         scope.permissionsTable.init({
-//             collection: lookAndFeelService.getModels().resourcePermissions.permissions,
-//             page: 1,
-//             pageSize: 5,
-//             pageSizes: [5, 10, 20]
-//         });
-//         state = messageService.hideMessage('ts-internal-server-error', tsConstants.state.SUCCESS);
-//     }
-// };
-//
-// var listeners = {
-//     fetchPermissions: function () {
-//         var activeLookAndFeel = lookAndFeelService.getActiveLookAndFeelOption();
-//         if (activeLookAndFeel) {
-//             state = messageService.showMessage('ts-loading', tsConstants.state.WAITING);
-//             $http.post(portletConfig.fetchPermissionsUrl, {id: activeLookAndFeel.id}).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
-//         }
-//     }
-// };
-//
-// scope.expressions = {
-//     disableCondition: function () {
-//         return state == tsConstants.state.WAITING;
-//     }
-// };
-//
-// scope.$on(tsConstants.event.FETCH_PERMISSIONS_REQUESTED, listeners.fetchPermissions);
-//
-// scope.listeners = {
-//     submitPermissions: function () {
-//         state = tsConstants.state.WAITING;
-//         $http.post(portletConfig.applyPermissionsUrl, lookAndFeelService.getModels().resourcePermissions).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
-//     },
-//     setDefaultPermissions: function () {
-//         state = tsConstants.state.WAITING;
-//         $http.post(portletConfig.setDefaultPermissionsUrl, lookAndFeelService.getModels().resourcePermissions).then(callBacks.onPermissionsFetched, callBacks.onRequestFailed);
-//     },
-//     toggleAction: function (actionId) {
-//         lookAndFeelService.toggleAction(actionId, scope.permissionsTable.getCurrentPage());
-//     }
-// };

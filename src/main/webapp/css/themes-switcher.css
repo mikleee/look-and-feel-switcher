@@ -29,9 +29,6 @@ div.ts-container div.button-footer {
     padding: 10px 0;
 }
 
-.test {
-}
-
 div.ts-container h3,
 div.ts-container table td,
 div.ts-container table th,
@@ -58,10 +55,6 @@ div.ts-container .ts-toggle-all-actions {
     font-weight: inherit;
 }
 
-div.ts-container .ts-message {
-    animation: ts-message 0.5s;
-}
-
 div.ts-container select.ts-select {
     width: 220px;
     max-width: 90%;
@@ -81,15 +74,6 @@ div.ts-container .ts-display-none {
 }
 
 /* animations */
-
-@keyframes ts-message {
-    from {
-        opacity: 0.3;
-    }
-    to {
-        opacity: 1;
-    }
-}
 
 @keyframes ts-locker {
     from {

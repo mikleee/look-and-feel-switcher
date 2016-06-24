@@ -76,7 +76,7 @@ public class ViewController extends BaseController {
         if (Utils.isGuest(request)) {
             guestSessionRegistry.register(request);
         }
-        respond(response, success());
+        objectMapper.writeValue(response, success());
     }
 
     @ResourceMapping(value = "initLookAndFeel")
@@ -89,7 +89,7 @@ public class ViewController extends BaseController {
 
         List<ThemeOption> lookAndFeels = lookAndFeelService.getAvailableLookAndFeels(fromView, persisted, portalDefault, getThemeDisplay(request).getUser());
 
-        respond(response, success()
+        objectMapper.writeValue(response, success()
                 .put("currentBinding", persisted.getId())
                 .put("lookAndFeels", lookAndFeels));
     }

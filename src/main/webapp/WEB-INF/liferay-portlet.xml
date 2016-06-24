@@ -13,6 +13,8 @@
         <header-portlet-css>/css/themes-switcher.css</header-portlet-css>
         <header-portlet-css>/css/directives.css</header-portlet-css>
         <header-portlet-javascript>/js/lib/angular.min.js</header-portlet-javascript>
+        <header-portlet-javascript>/js/lib/angular-animate.min.js</header-portlet-javascript>
+        <!--<header-portlet-javascript>/js/lib/angular-touch.min.js</header-portlet-javascript>-->
         <header-portlet-javascript>/js/lib/angular-route.min.js</header-portlet-javascript>
         <header-portlet-javascript>/js/lib/ui-bootstrap-tpls-1.3.3.min.js</header-portlet-javascript>
         <header-portlet-javascript>/js/main.js</header-portlet-javascript>
