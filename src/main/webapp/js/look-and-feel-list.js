@@ -162,7 +162,7 @@
         function markPortalDefaultColorScheme(theme, prefix) {
             for (var i = 0; i < theme.colorSchemes.length; i++) {
                 var cs = theme.colorSchemes[i];
-                if (theme.portalDefault === true) {
+                if (cs.portalDefault === true) {
                     cs.name += prefix;
                     return;
                 }
