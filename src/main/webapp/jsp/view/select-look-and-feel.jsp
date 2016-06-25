@@ -10,15 +10,24 @@
 <%--@elvariable id="colorSchemes" type="java.util.List<com.liferay.portal.model.ColorScheme>"--%>
 <%--@elvariable id="lookAndFeelBinding" type="com.aimprosoft.lfs.model.persist.LookAndFeelBinding"--%>
 
-<portlet:actionURL var="resetBindingUrl">
+<%--<portlet:actionURL var="resetBindingUrl">--%>
+<%--<portlet:param name="action" value="resetBinding"/>--%>
+<%--<portlet:param name="redirectURL" value="${startPage}"/>--%>
+<%--<portlet:param name="userId" value="${themeDisplay.userId}"/>--%>
+<%--<portlet:param name="groupId" value="${themeDisplay.scopeGroupId}"/>--%>
+<%--<portlet:param name="lookAndFeel.companyId" value="${themeDisplay.companyId}"/>--%>
+<%--<portlet:param name="companyId" value="${themeDisplay.companyId}"/>--%>
+<%--<portlet:param name="sessionId" value="${themeDisplay.sessionId}"/>--%>
+<%--</portlet:actionURL>--%>
+
+<portlet:resourceURL var="resetBindingUrl" id="resetBinding">
     <portlet:param name="action" value="resetBinding"/>
-    <portlet:param name="redirectURL" value="${startPage}"/>
     <portlet:param name="userId" value="${themeDisplay.userId}"/>
     <portlet:param name="groupId" value="${themeDisplay.scopeGroupId}"/>
     <portlet:param name="lookAndFeel.companyId" value="${themeDisplay.companyId}"/>
     <portlet:param name="companyId" value="${themeDisplay.companyId}"/>
     <portlet:param name="sessionId" value="${themeDisplay.sessionId}"/>
-</portlet:actionURL>
+</portlet:resourceURL>
 <portlet:resourceURL var="applyBindingUrl" id="applyBinding">
     <portlet:param name="userId" value="${themeDisplay.userId}"/>
     <portlet:param name="groupId" value="${themeDisplay.scopeGroupId}"/>

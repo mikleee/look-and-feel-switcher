@@ -20,11 +20,13 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.portlet.ModelAndView;
-import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import org.springframework.web.portlet.bind.annotation.ResourceMapping;
 
-import javax.portlet.*;
+import javax.portlet.PortletRequest;
+import javax.portlet.RenderRequest;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -61,11 +63,11 @@ public class ViewController extends BaseController {
                 .addObject("lookAndFeelBinding", objectMapper.writeValueAsString(currentBinding != null ? currentBinding : emptyBinding));
     }
 
-    @ActionMapping(params = "action=resetBinding")
-    public void resetBinding(ActionRequest request, ActionResponse response, String redirectURL, LookAndFeelBinding binding) throws ApplicationException, IOException {
+    @ResourceMapping(value = "resetBinding")
+    public void resetBinding(ResourceRequest request, ResourceResponse response, LookAndFeelBinding binding) throws ApplicationException, IOException {
         LookAndFeelBindingService lookAndFeelBindingService = getLookAndFeelBindingService(request);
         lookAndFeelBindingService.removeBinding(binding);
-        response.sendRedirect(redirectURL);
+        objectMapper.writeValue(response, success());
     }
 
     @ResourceMapping(value = "applyBinding")

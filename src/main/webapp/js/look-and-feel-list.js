@@ -30,12 +30,12 @@
 
         function resetBinding() {
             scope.state = messageService.showMessage('ts-theme-is-being-applied', ThemesSwitcher.state.WAITING);
-            service.resetBinding();
+            service.resetBinding().then(onBindingChanged, onRequestFailed)
         }
 
         function applyBinding() {
             scope.state = messageService.showMessage('ts-theme-is-being-applied', ThemesSwitcher.state.WAITING);
-            service.applyBinding().then(onBindingApplied, onRequestFailed)
+            service.applyBinding().then(onBindingChanged, onRequestFailed)
         }
 
         function isLocked() {
@@ -54,7 +54,7 @@
             }
         }
 
-        function onBindingApplied(response) {
+        function onBindingChanged(response) {
             if (response.data.status == ThemesSwitcher.state.ERROR) {
                 scope.state = messageService.showMessage(response.data.body['error'], ThemesSwitcher.state.ERROR);
             } else {
@@ -104,7 +104,7 @@
         }
 
         function resetBinding() {
-            window.location = config.resetBindingUrl;
+            return http.post(config.resetBindingUrl);
         }
 
         function applyBinding() {
