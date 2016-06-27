@@ -65,12 +65,28 @@
     if (!window.ThemesSwitcher.models) {
         window.ThemesSwitcher.models = {};
 
+        window.ThemesSwitcher.models.JsonApiResponse = JsonApiResponse;
         window.ThemesSwitcher.models.BaseModel = BaseModel;
         window.ThemesSwitcher.models.LookAndFeelOption = LookAndFeelOption;
         window.ThemesSwitcher.models.Theme = Theme;
         window.ThemesSwitcher.models.LookAndFeelBinding = LookAndFeelBinding;
         window.ThemesSwitcher.models.LookAndFeel = LookAndFeel;
 
+        function JsonApiResponse(response) {
+            var body = response.data.body;
+            var state = response.data.status;
+
+            this.isSucceed = function () {
+                return state == ThemesSwitcher.state.SUCCESS;
+            };
+            this.getError = function () {
+                return body.error;
+            };
+            this.get = function (key) {
+                return body[key];
+            }
+
+        }
 
         /** @constructor */
         function BaseModel() {
@@ -154,7 +170,11 @@
 
 (function () {
     angular.module('ts-main', [])
-        .service('configurationService', ['$http', ConfigurationService]);
+        .service('configurationService', ['$http', ConfigurationService])
+        .service('httpInterceptor', [HttpInterceptor])
+        .config(['$httpProvider', function ($httpProvider) {
+            $httpProvider.interceptors.push('httpInterceptor');
+        }]);
 
     function ConfigurationService(http) {
         this.getPaginatorConfig = getPaginatorConfig;
@@ -171,8 +191,29 @@
         function setUserConfig(key, value) {
             return http.post(ThemesSwitcher.staticUrl.setUserConfig, {key: key, value: value});
         }
-
     }
+
+    function HttpInterceptor() {
+        this.response = function (r) {
+            if (isJsonApiResponse(r)) {
+                return new ThemesSwitcher.models.JsonApiResponse(r);
+            } else {
+                return r;
+            }
+        };
+
+        function isJsonApiResponse(r) {
+            if (r.data.status != null) {
+                for (var key in ThemesSwitcher.state) {
+                    if (r.data.status == ThemesSwitcher.state[key]) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
 
 })();
 

@@ -1,5 +1,5 @@
 (function () {
-    angular.module('ts-lookAndFeelList', ['ts-message'])
+    angular.module('ts-lookAndFeelList', ['ts-message', 'ts-main'])
         .controller('lookAndFeelListController', ['$scope', 'lookAndFeelListService', 'ts-messageService', LookAndFeelListController])
         .service('lookAndFeelListService', ['$http', 'config', LookAndFeelListService]);
 
@@ -30,12 +30,12 @@
 
         function resetBinding() {
             scope.state = messageService.showMessage('ts-theme-is-being-applied', ThemesSwitcher.state.WAITING);
-            service.resetBinding();
+            service.resetBinding().then(onBindingChanged, onRequestFailed)
         }
 
         function applyBinding() {
             scope.state = messageService.showMessage('ts-theme-is-being-applied', ThemesSwitcher.state.WAITING);
-            service.applyBinding().then(onBindingApplied, onRequestFailed)
+            service.applyBinding().then(onBindingChanged, onRequestFailed)
         }
 
         function isLocked() {
@@ -46,19 +46,23 @@
             scope.state = messageService.showErrorMessage();
         }
 
-        function onInitLookAndFeels() {
-            if (service.isNoData()) {
-                scope.state = messageService.showMessage('ts-no-themes-found', ThemesSwitcher.state.WARNING);
+        function onInitLookAndFeels(response) {
+            if (response.isSucceed()) {
+                if (service.isNoData()) {
+                    scope.state = messageService.showMessage('ts-no-themes-found', ThemesSwitcher.state.WARNING);
+                } else {
+                    scope.state = messageService.hideMessage(ThemesSwitcher.state.SUCCESS);
+                }
             } else {
-                scope.state = messageService.hideMessage(ThemesSwitcher.state.SUCCESS);
+                scope.state = messageService.showResponseErrorMessage(response);
             }
         }
 
-        function onBindingApplied(response) {
-            if (response.data.status == ThemesSwitcher.state.ERROR) {
-                scope.state = messageService.showMessage(response.data.body['error'], ThemesSwitcher.state.ERROR);
-            } else {
+        function onBindingChanged(response) {
+            if (response.isSucceed()) {
                 window.location.reload();
+            } else {
+                scope.state = messageService.showResponseErrorMessage(response);
             }
         }
 
@@ -104,7 +108,7 @@
         }
 
         function resetBinding() {
-            window.location = config.resetBindingUrl;
+            return http.post(config.resetBindingUrl);
         }
 
         function applyBinding() {
@@ -131,15 +135,17 @@
         }
 
         function initLookAndFeels(response) {
-            var lookAndFeels = response.data.body['lookAndFeels'];
+            if (response.isSucceed()) {
+                var lookAndFeels = response.get(['lookAndFeels']);
 
-            var result = [];
-            angular.forEach(lookAndFeels, function (v) {
-                result.push(new ThemesSwitcher.models.Theme().fromObject(v));
-            });
-            models.setLookAndFeels(result);
-            if (!isNoData()) {
-                markPortalDefaultTheme();
+                var result = [];
+                angular.forEach(lookAndFeels, function (v) {
+                    result.push(new ThemesSwitcher.models.Theme().fromObject(v));
+                });
+                models.setLookAndFeels(result);
+                if (!isNoData()) {
+                    markPortalDefaultTheme();
+                }
             }
         }
 
@@ -162,7 +168,7 @@
         function markPortalDefaultColorScheme(theme, prefix) {
             for (var i = 0; i < theme.colorSchemes.length; i++) {
                 var cs = theme.colorSchemes[i];
-                if (theme.portalDefault === true) {
+                if (cs.portalDefault === true) {
                     cs.name += prefix;
                     return;
                 }

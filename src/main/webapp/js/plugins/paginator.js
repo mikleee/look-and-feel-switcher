@@ -81,7 +81,7 @@
             var url = requestUrl + '&' + ns + 'dir=' + me.sortOptions.dir + '&' + ns + 'field=' + me.sortOptions.key + '&' + ns + 'page=' + me.pageNo + '&' + ns + 'size=' + me.pageSize;
             var promise = http.get(url);
             promise.then(function (response) {
-                state = callback.success(response.data);
+                state = callback.success(response);
             }, function (response) {
                 if (callback.error) {
                     callback.error(response)

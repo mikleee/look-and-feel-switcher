@@ -67,7 +67,7 @@ public abstract class BaseController {
 
     void handleApplicationError(Exception e, ResourceResponse response) throws IOException {
         logger.error(e, e);
-        objectMapper.writeValue(response, error(e.getMessage()));
+        objectMapper.writeValue(response, error("ts-internal-server-error"));
     }
 
 }
