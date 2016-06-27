@@ -1,5 +1,5 @@
 (function () {
-    angular.module('ts-lookAndFeelList', ['ts-message'])
+    angular.module('ts-lookAndFeelList', ['ts-message', 'ts-main'])
         .controller('lookAndFeelListController', ['$scope', 'lookAndFeelListService', 'ts-messageService', LookAndFeelListController])
         .service('lookAndFeelListService', ['$http', 'config', LookAndFeelListService]);
 
@@ -46,19 +46,23 @@
             scope.state = messageService.showErrorMessage();
         }
 
-        function onInitLookAndFeels() {
-            if (service.isNoData()) {
-                scope.state = messageService.showMessage('ts-no-themes-found', ThemesSwitcher.state.WARNING);
+        function onInitLookAndFeels(response) {
+            if (response.isSucceed()) {
+                if (service.isNoData()) {
+                    scope.state = messageService.showMessage('ts-no-themes-found', ThemesSwitcher.state.WARNING);
+                } else {
+                    scope.state = messageService.hideMessage(ThemesSwitcher.state.SUCCESS);
+                }
             } else {
-                scope.state = messageService.hideMessage(ThemesSwitcher.state.SUCCESS);
+                scope.state = messageService.showResponseErrorMessage(response);
             }
         }
 
         function onBindingChanged(response) {
-            if (response.data.status == ThemesSwitcher.state.ERROR) {
-                scope.state = messageService.showMessage(response.data.body['error'], ThemesSwitcher.state.ERROR);
-            } else {
+            if (response.isSucceed()) {
                 window.location.reload();
+            } else {
+                scope.state = messageService.showResponseErrorMessage(response);
             }
         }
 
@@ -131,15 +135,17 @@
         }
 
         function initLookAndFeels(response) {
-            var lookAndFeels = response.data.body['lookAndFeels'];
+            if (response.isSucceed()) {
+                var lookAndFeels = response.get(['lookAndFeels']);
 
-            var result = [];
-            angular.forEach(lookAndFeels, function (v) {
-                result.push(new ThemesSwitcher.models.Theme().fromObject(v));
-            });
-            models.setLookAndFeels(result);
-            if (!isNoData()) {
-                markPortalDefaultTheme();
+                var result = [];
+                angular.forEach(lookAndFeels, function (v) {
+                    result.push(new ThemesSwitcher.models.Theme().fromObject(v));
+                });
+                models.setLookAndFeels(result);
+                if (!isNoData()) {
+                    markPortalDefaultTheme();
+                }
             }
         }
 

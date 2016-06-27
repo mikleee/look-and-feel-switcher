@@ -50,9 +50,9 @@
     <div class="ts-container ts-look-and-feel-list" ng-controller="lookAndFeelListController">
         <ts-global-message></ts-global-message>
 
-        <div>
+        <div ng-if="state == 'waiting' || models.lookAndFeels.length > 0">
             <h3><span><liferay-ui:message key="ts-select-theme"/></span><ts-spinner ng-show="isLocked()"></ts-spinner></h3>
-            <div class="ts-row">
+            <div class="ts-row" ng-if="models.lookAndFeels.length > 0">
                 <div class="ts-column look-and-feel-list-control">
                     <div>
                         <label for="${ns}themes"><liferay-ui:message key="ts-themes"/></label>
@@ -67,7 +67,7 @@
                     <ts-screenshot src="getScreenshotPath()" alt="<liferay-ui:message key="ts-screenshot-is-not-available"/>"></ts-screenshot>
                 </div>
             </div>
-            <div class="ts-row button-footer">
+            <div class="ts-row button-footer" ng-if="models.lookAndFeels.length > 0">
                 <button class="btn btn-primary" ng-disabled="isLocked()" ng-click="applyBinding()"><liferay-ui:message key="ts-apply"/></button>
                 <button class="btn btn-default" ng-disabled="isLocked()" ng-click="resetBinding()" ng-if="models.lookAndFeelBinding.id != null"><liferay-ui:message key="ts-reset-to-default"/></button>
             </div>

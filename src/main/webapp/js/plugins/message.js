@@ -19,6 +19,7 @@
         this.showMessage = showMessage;
         this.showSuccessMessage = showSuccessMessage;
         this.showErrorMessage = showErrorMessage;
+        this.showResponseErrorMessage = showResponseErrorMessage;
         this.hideMessage = hideMessage;
 
 
@@ -39,6 +40,10 @@
 
         function showErrorMessage() {
             return showMessage('ts-internal-server-error', ThemesSwitcher.state.ERROR);
+        }
+
+        function showResponseErrorMessage(response) {
+            return showMessage(response.getError(), ThemesSwitcher.state.ERROR);
         }
 
         function hideMessage(messageStatus) {

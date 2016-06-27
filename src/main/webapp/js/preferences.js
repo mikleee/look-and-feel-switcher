@@ -62,12 +62,12 @@
 
         function submitPermissions() {
             beforeRequest();
-            permissionService.submitPermissions().then(showSucceedMessage, onRequestFailed);
+            permissionService.submitPermissions().then(onPermissionsApplied, onRequestFailed);
         }
 
         function setDefaultPermissions() {
             beforeRequest();
-            permissionService.setDefaultPermissions().then(showSucceedMessage, onRequestFailed);
+            permissionService.setDefaultPermissions().then(onPermissionsApplied, onRequestFailed);
         }
 
         function beforeRequest() {
@@ -78,8 +78,13 @@
             state = ThemesSwitcher.state.SUCCESS;
         }
 
-        function showSucceedMessage() {
-            state = messageService.showSuccessMessage();
+        function onPermissionsApplied(response) {
+            if (response.isSucceed()) {
+                state = messageService.showSuccessMessage();
+            } else {
+                state = messageService.showResponseErrorMessage(response);
+            }
+
         }
 
         function onRequestFailed() {
@@ -113,8 +118,10 @@
             } else {
                 var deferred = $q.defer();
                 configurationService.getPaginatorConfig().then(function (response) {
-                    me.paginator.pageSizes = response.data.body.deltas;
-                    me.paginator.pageSize = response.data.body.delta;
+                    if (response.isSucceed()) {
+                        me.paginator.pageSizes = response.get('deltas');
+                        me.paginator.pageSize = response.get('delta');
+                    }
                     doFetchPermissions(activeLookAndFeel, callback).then(deferred.resolve, deferred.reject);
                 }, function () {
                     doFetchPermissions(activeLookAndFeel, callback).then(deferred.resolve, deferred.reject);
@@ -126,10 +133,14 @@
         function doFetchPermissions(activeLookAndFeel, callback) {
             var rConfig = {
                 ns: config.ns,
-                success: function (data) {
-                    callback.success();
-                    onPermissionsFetched(data);
-                    return {totalCount: data.body.totalCount, pageContent: me.resourcePermissions.permissions};
+                success: function (response) {
+                    if (response.isSucceed()) {
+                        callback.success();
+                        onPermissionsFetched(response);
+                        return {totalCount: response.get('totalCount'), pageContent: response.get('permissions')};
+                    } else {
+                        return {totalCount: 0, pageContent: []};
+                    }
                 },
                 error: callback.error,
                 before: callback.before
@@ -154,8 +165,8 @@
             configurationService.setUserConfig('SEARCH_CONTAINER_DELTA', pSize);
         }
 
-        function onPermissionsFetched(data) {
-            me.resourcePermissions = data.body['permissions'];
+        function onPermissionsFetched(response) {
+            me.resourcePermissions = response.get('permissions');
             initActionTogglers();
         }
 
@@ -242,7 +253,7 @@
 
 
 (function () {
-    angular.module('ts-preferencesAdministration', ['ts-message'])
+    angular.module('ts-preferencesAdministration', ['ts-message', 'ts-main'])
         .controller('preferencesAdministrationController', ['$scope', 'preferencesAdministrationService', 'ts-messageService', PreferencesAdministrationController])
         .service('preferencesAdministrationService', ['$http', 'config', PreferencesAdministrationService]);
 
@@ -271,12 +282,20 @@
             return service.removeAllBindings().then(onBindingsRemoved, onRequestFailed);
         }
 
-        function onStatFetched() {
-            state = messageService.hideMessage(ThemesSwitcher.state.SUCCESS);
+        function onStatFetched(response) {
+            if (response.isSucceed()) {
+                state = messageService.hideMessage(ThemesSwitcher.state.SUCCESS);
+            } else {
+                state = messageService.showResponseErrorMessage(response);
+            }
         }
 
-        function onBindingsRemoved() {
-            state = messageService.showMessage('ts-all-bindings-has-been-removed', ThemesSwitcher.state.SUCCESS);
+        function onBindingsRemoved(response) {
+            if (response.isSucceed()) {
+                state = messageService.showMessage('ts-all-bindings-has-been-removed', ThemesSwitcher.state.SUCCESS);
+            } else {
+                state = messageService.showResponseErrorMessage(response);
+            }
         }
 
         function onRequestFailed() {
@@ -308,13 +327,18 @@
         }
 
         function onStatFetched(response) {
-            stat.guest = response.data.body['guest'];
-            stat.user = response.data.body['user'];
+            updateData(response);
         }
 
         function onBindingsRemoved(response) {
-            stat.guest = response.data.body['guest'];
-            stat.user = response.data.body['user'];
+            updateData(response);
+        }
+
+        function updateData(response) {
+            if (response.isSucceed()) {
+                stat.guest = response.get('guest');
+                stat.user = response.get('user');
+            }
         }
 
     }
