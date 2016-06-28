@@ -1,5 +1,5 @@
 (function () {
-    angular.module('ts-lookAndFeelList', ['ts-message', 'ts-main'])
+    angular.module('ts-lookAndFeelList', ['ts-directives', 'ts-message', 'ts-main', 'ui.bootstrap', 'ngAnimate'])
         .controller('lookAndFeelListController', ['$scope', 'lookAndFeelListService', 'ts-messageService', LookAndFeelListController])
         .service('lookAndFeelListService', ['$http', 'config', LookAndFeelListService]);
 
@@ -11,6 +11,13 @@
      * @constructor
      */
     function LookAndFeelListController(scope, service, messageService) {
+        var arr = [];
+        for (var i = 112140; i <= 112155; i++) {
+            arr.push('https://addons.cdn.mozilla.net/user-media/previews/full/112/' + i + '.png');
+        }
+        scope.arr = arr;
+
+
         scope.models = service.getModels();
         scope.state = ThemesSwitcher.state.WAITING;
         scope.getScreenshotPath = getScreenshotPath;

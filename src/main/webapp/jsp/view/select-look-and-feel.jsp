@@ -45,13 +45,20 @@
 
 <c:set var="module" value="selectLookAndFeel${ns}"/>
 
-
 <div id="${module}" ng-cloak>
     <div class="ts-container ts-look-and-feel-list" ng-controller="lookAndFeelListController">
+        <uib-carousel active="0" interval="10000" template-url="${crouselTemplateUrl}">
+            <uib-slide ng-repeat="slide in models.currentTheme.colorSchemes" index="$index" actual="slide">
+                <img ng-src="{{slide.screenShotPath}}" style="height: 130px; margin:auto;">
+            </uib-slide>
+        </uib-carousel>
+
         <ts-global-message></ts-global-message>
 
         <div ng-if="state == 'waiting' || models.lookAndFeels.length > 0">
-            <h3><span><liferay-ui:message key="ts-select-theme"/></span><ts-spinner ng-show="isLocked()"></ts-spinner></h3>
+            <h3><span><liferay-ui:message key="ts-select-theme"/></span>
+                <ts-spinner ng-show="isLocked()"></ts-spinner>
+            </h3>
             <div class="ts-row" ng-if="models.lookAndFeels.length > 0">
                 <div class="ts-column look-and-feel-list-control">
                     <div>
@@ -85,7 +92,282 @@
         };
 
         angular.module('ts-lookAndFeelList').constant('config', config);
-        angular.module('${module}', ['ts-directives', 'ts-lookAndFeelList', 'ui.bootstrap']);
+        angular.module('${module}', ['ts-lookAndFeelList']);
         angular.bootstrap(document.getElementById('${module}'), ['${module}']);
     })();
 </script>
+
+<style>
+
+    .aui .ts-carousel .carousel-control {
+        background: none;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    .aui .ts-carousel .carousel-control:hover {
+        color: inherit;
+    }
+
+    .aui .ts-carousel .carousel-indicators {
+        position: static;
+        z-index: 5;
+        list-style: none;
+
+        margin: auto;
+    }
+
+    .aui .ts-carousel .carousel-indicators li {
+        border: 1px solid;
+        cursor: pointer;
+        display: inline-block;
+        float: none;
+    }
+
+    .aui .ts-carousel .carousel-indicators li.active {
+        background-color: #50a2f5;
+    }
+
+    .aui .ts-carousel .carousel-indicators li:hover {
+        background-color: rgba(80, 162, 245, 0.53);
+    }
+
+    /*.aui .ts-container .carousel {*/
+    /*position: relative;*/
+    /*}*/
+
+    /*.aui .ts-container .carousel-inner {*/
+    /*position: relative;*/
+    /*width: 100%;*/
+    /*overflow: hidden;*/
+    /*}*/
+
+    /*.aui .ts-container .carousel-control {*/
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*bottom: 0;*/
+    /*left: 0;*/
+    /*font-size: 20px;*/
+    /*color: inherit;*/
+    /*text-align: center;*/
+    /*text-shadow: 0 1px 2px rgba(0, 0, 0, .6);*/
+    /*filter: alpha(opacity=50);*/
+    /*opacity: .5;*/
+    /*height: 100%;*/
+    /*margin: 0;*/
+    /*width: auto;*/
+    /*padding: 0 1em;*/
+    /*border: none;*/
+    /*border-radius: 0;*/
+    /*background: none;*/
+    /*}*/
+
+    /*.aui .ts-container .carousel-control.left {*/
+
+    /*}*/
+
+    /*.aui .ts-container .carousel-control.right {*/
+    /*right: 0;*/
+    /*left: auto;*/
+    /*}*/
+
+    /*.aui .ts-container .glyphicon-chevron-left:before {*/
+    /*content: "<";*/
+    /*}*/
+
+    /*.aui .ts-container .glyphicon-chevron-right:before {*/
+    /*content: ">";*/
+    /*}*/
+
+    /*.aui .ts-container .sr-only {*/
+    /*position: absolute;*/
+    /*width: 1px;*/
+    /*height: 1px;*/
+    /*padding: 0;*/
+    /*margin: -1px;*/
+    /*overflow: hidden;*/
+    /*clip: rect(0, 0, 0, 0);*/
+    /*border: 0;*/
+    /*}*/
+
+    /*.aui .ts-container .carousel-indicators {*/
+    /*position: absolute;*/
+    /*bottom: 10px;*/
+    /*left: 50%;*/
+    /*z-index: 15;*/
+    /*width: 60%;*/
+    /*padding-left: 0;*/
+    /*margin-left: -30%;*/
+    /*text-align: center;*/
+    /*list-style: none;*/
+    /*}*/
+
+    /*.aui .ts-container .carousel-indicators li {*/
+    /*display: inline-block;*/
+    /*width: 10px;*/
+    /*height: 10px;*/
+    /*margin: 1px;*/
+    /*text-indent: -999px;*/
+    /*cursor: pointer;*/
+    /*!*background-color: #000 \9;*!*/
+    /*!*background-color: rgba(0, 0, 0, 0);*!*/
+    /*border: 1px solid;*/
+    /*border-color: inherit;*/
+    /*border-radius: 10px;*/
+    /*float: none;*/
+    /*}*/
+
+    /*.aui .ts-container .carousel-indicators .active {*/
+    /*width: 12px;*/
+    /*height: 12px;*/
+    /*margin: 0;*/
+    /*background-color: #fff;*/
+    /*}*/
+
+    /*.ts-carousel-content {*/
+    /*position: relative;*/
+    /*}*/
+
+    /*.ts-carousel-indicators {*/
+    /*position: absolute;*/
+    /*bottom: 10px;*/
+    /*left: 50%;*/
+    /*z-index: 15;*/
+    /*width: 60%;*/
+    /*padding-left: 0;*/
+    /*margin-left: -30%;*/
+    /*text-align: center;*/
+    /*list-style: none;*/
+    /*}*/
+
+    /*.ts-carousel-indicators li {*/
+    /*display: inline-block;*/
+    /*width: 10px;*/
+    /*height: 10px;*/
+    /*margin: 1px;*/
+    /*text-indent: -999px;*/
+    /*cursor: pointer;*/
+    /*!*background-color: #000 \9;*!*/
+    /*!*background-color: rgba(0, 0, 0, 0);*!*/
+    /*border: 1px solid;*/
+    /*border-color: inherit;*/
+    /*border-radius: 10px;*/
+    /*float: none;*/
+    /*}*/
+
+    /*.ts-carousel-indicators .active {*/
+    /*width: 12px;*/
+    /*height: 12px;*/
+    /*margin: 0;*/
+    /*background-color: #fff;*/
+    /*}*/
+
+    .ts-carousel {
+        display: table;
+        width: 100%;
+        text-align: center;
+        position: relative;
+    }
+
+    .ts-carousel-elements {
+        display: table-row;
+    }
+
+    .ts-carousel-elements > .ts-carousel-control,
+    .ts-carousel-elements > .ts-carousel-content {
+        display: table-cell;
+    }
+
+    .ts-carousel-control {
+        padding: 0 5px;
+        /*-webkit-transition: .4s ease-in-out;*/
+        /*-moz-transition: .4s ease-in-out;*/
+        /*-o-transition: .4s ease-in-out;*/
+        transition: background .4s ease-in-out;
+    }
+
+    .ts-carousel-control.ts-left {
+        text-align: left;
+
+    }
+
+    .ts-carousel-control.ts-left:hover {
+        background-image: linear-gradient(to right, rgba(0, 0, 0, .5) 0, rgba(0, 0, 0, .0001) 100%);
+        border-bottom-left-radius: 10px;
+        border-top-left-radius: 10px;
+    }
+
+    .ts-carousel-control.ts-right {
+        text-align: right;
+    }
+
+    .ts-carousel-control.ts-right:hover {
+        background-image: linear-gradient(to left, rgba(0, 0, 0, .5) 0, rgba(0, 0, 0, .0001) 100%);
+        border-bottom-right-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .ts-carousel-control > .ts-carousel-control-label {
+        vertical-align: middle;
+        cursor: pointer;
+        color: inherit;
+    }
+
+    .ts-carousel-slide {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .ts-carousel-slide > .item {
+        position: relative;
+        display: none;
+        -webkit-transition: .6s ease-in-out left;
+        -o-transition: .6s ease-in-out left;
+        transition: .6s ease-in-out left;
+    }
+
+    .ts-carousel-slide > .item.active {
+        display: block;
+        left: 0;
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0)
+    }
+
+    .ts-carousel-slide,
+    .ts-carousel-indicators {
+        display: block;
+        margin: auto;
+    }
+
+    .ts-sr-only {
+        display: none;
+    }
+
+    .ts-carousel-indicators > .ts-carousel-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin: 1px;
+        text-indent: -999px;
+        cursor: pointer;
+        border: 1px solid;
+        border-color: inherit;
+        border-radius: 50%;
+        -webkit-transition: .2s ease-in-out;
+        -moz-transition: .2s ease-in-out;
+        -o-transition: .2s ease-in-out;
+        transition: .2s ease-in-out;
+    }
+
+    .ts-carousel-indicators > .ts-carousel-indicator.active {
+        background-color: #50a2f5;
+    }
+
+    .ts-carousel-indicators > .ts-carousel-indicator:hover {
+        background-color: rgba(80, 162, 245, 0.53);
+    }
+</style>
+
+
+</style>

@@ -15,6 +15,9 @@
 <portlet:resourceURL var="screenshotTemplateUrl" id="getTemplate">
     <portlet:param name="template" value="/directives/screenshot"/>
 </portlet:resourceURL>
+<portlet:resourceURL var="crouselTemplateUrl" id="getTemplate">
+    <portlet:param name="template" value="/directives/carousel"/>
+</portlet:resourceURL>
 
 
 <script>
