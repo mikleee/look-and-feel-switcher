@@ -137,7 +137,7 @@
                     if (response.isSucceed()) {
                         callback.success();
                         onPermissionsFetched(response);
-                        return {totalCount: response.get('totalCount'), pageContent: response.get('permissions')};
+                        return {totalCount: response.get('totalCount'), pageContent: response.get('permissions').permissions};
                     } else {
                         return {totalCount: 0, pageContent: []};
                     }
