@@ -47,9 +47,23 @@
 
 <div id="${module}" ng-cloak>
     <div class="ts-container ts-look-and-feel-list" ng-controller="lookAndFeelListController">
-        <uib-carousel active="0" interval="10000" template-url="${crouselTemplateUrl}">
+
+        <uib-carousel active="0" interval="0" template-url="${crouselTemplateUrl}">
+            <uib-slide ng-repeat="slide in models.lookAndFeels" index="$index" actual="slide">
+                <label>{{slide.name}}</label>
+                <img class="ts-screenshot"
+                     ng-src="{{slide.screenShotPath}}"
+                     ng-click="models.currentTheme = slide"
+                     ng-class="{'ts-active-screen-shot':slide.id == models.currentTheme.id}">
+            </uib-slide>
+        </uib-carousel>
+        <uib-carousel active="0" interval="0" template-url="${crouselTemplateUrl}" ng-if="models.currentTheme.hasColorSchemes()">
             <uib-slide ng-repeat="slide in models.currentTheme.colorSchemes" index="$index" actual="slide">
-                <img ng-src="{{slide.screenShotPath}}" style="height: 130px; margin:auto;">
+                <label>{{slide.name}}</label>
+                <img class="ts-screenshot"
+                     ng-src="{{slide.screenShotPath}}"
+                     ng-click="models.currentColorScheme = slide"
+                     ng-class="{'ts-active-screen-shot':slide.id == models.currentColorScheme.id}">
             </uib-slide>
         </uib-carousel>
 

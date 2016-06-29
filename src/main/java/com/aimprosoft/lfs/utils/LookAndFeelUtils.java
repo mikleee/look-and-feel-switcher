@@ -22,15 +22,13 @@ public class LookAndFeelUtils {
     private final static String THUMBNAIL_NAME = "thumbnail.png";
 
     public static String getScreenShotPath(Theme theme) {
-        String dirFsPath = getImagesDirFsPath(theme);
         String imagesPath = theme.getContextPath() + theme.getImagesPath();
-        return concatPath(imagesPath, defineImageToShow(dirFsPath));
+        return concatPath(imagesPath, THUMBNAIL_NAME);
     }
 
     public static String getScreenShotPath(ColorScheme colorScheme, Theme theme) {
-        String dirFsPath = getImagesDirFsPath(colorScheme, theme);
         String imagesPath = theme.getContextPath() + colorScheme.getColorSchemeThumbnailPath();
-        return concatPath(imagesPath, defineImageToShow(dirFsPath));
+        return concatPath(imagesPath, THUMBNAIL_NAME);
     }
 
     private static String getImagesDirFsPath(Theme theme) {

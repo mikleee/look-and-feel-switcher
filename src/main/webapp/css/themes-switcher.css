@@ -101,3 +101,17 @@ div.ts-locker.ts-locked {
     z-index: 20;
     opacity: 0.3;
 }
+
+div.ts-container img.ts-screenshot {
+    border-radius: 4px;
+    border: 1px solid rgba(211, 211, 211, 0.5);
+    height: 130px;
+    margin: auto;
+    cursor: pointer;
+    transition: 1000ms ease-out;
+}
+
+div.ts-container img.ts-screenshot:hover,
+div.ts-container img.ts-screenshot.ts-active-screen-shot {
+    box-shadow: 0 0 10px #dddddd;
+}
