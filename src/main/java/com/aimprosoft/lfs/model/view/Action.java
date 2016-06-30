@@ -50,10 +50,7 @@ public class Action implements Cloneable {
         if (!(o instanceof Action)) return false;
 
         Action action = (Action) o;
-
-        if (getPermitted() != action.getPermitted()) return false;
         return !(getName() != null ? !getName().equals(action.getName()) : action.getName() != null);
-
     }
 
     @Override

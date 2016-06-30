@@ -9,10 +9,12 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.ResourceAction;
 import com.liferay.portal.model.ResourcePermission;
 import com.liferay.portal.model.User;
+import com.liferay.portal.model.UserGroupRole;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.service.ResourceActionLocalServiceUtil;
 import com.liferay.portal.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.service.RoleLocalServiceUtil;
+import com.liferay.portal.service.UserGroupRoleLocalServiceUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -55,21 +57,24 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
 
     @Override
     public List<Action> getAllowedActions(LookAndFeel lookAndFeel, User user) throws ApplicationException {
-        List<Action> allActions = getLookAndFeelActions();
-        List<Action> result = new ArrayList<Action>();
+        List<Action> actions = getLookAndFeelActions();
+        List<Role> roles = getUserRoles(user);
 
-        for (Role role : getUserRoles(user)) {
-            for (Action action : allActions) {
-                if (result.size() == allActions.size()) {
-                    return result;
-                } else if (!result.contains(action)) {
-                    action.setPermitted(hasPermission(lookAndFeel.getCompanyId(), role, lookAndFeel.getId().toString(), action));
-                    result.add(action);
-                }
-            }
+        for (Action action : actions) {
+            boolean isPermitted = isPermitted(lookAndFeel, roles, action);
+            action.setPermitted(isPermitted);
         }
 
-        return result;
+        return actions;
+    }
+
+    private boolean isPermitted(LookAndFeel lookAndFeel, List<Role> roles, Action action) throws ApplicationException {
+        for (Role role : roles) {
+            if (isPermitted(lookAndFeel.getCompanyId(), role, lookAndFeel.getId().toString(), action)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -113,9 +118,9 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
         List<Action> actions = getLookAndFeelActions();
         for (Role role : roles) {
             RolePermission rolePermission = new RolePermission(role);
-            for (Action item : getLookAndFeelActions()) {
+            for (Action item : actions) {
                 Action action = item.clone();
-                boolean permitted = hasPermission(companyId, role, String.valueOf(lookAndFeelId), action);
+                boolean permitted = isPermitted(companyId, role, String.valueOf(lookAndFeelId), action);
                 action.setPermitted(permitted);
                 rolePermission.put(action);
             }
@@ -205,6 +210,18 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
     }
 
     private List<Role> getUserRoles(User user) throws ApplicationException {
+        List<Role> result = new ArrayList<Role>();
+
+        List<Role> regularRoles = getRegularRoles(user);
+        List<Role> groupRoles = getGroupRoles(user);
+
+        result.addAll(regularRoles);
+        result.addAll(groupRoles);
+
+        return result;
+    }
+
+    private List<Role> getRegularRoles(User user) throws ApplicationException {
         try {
             List<Role> result = new ArrayList<Role>();
             for (com.liferay.portal.model.Role role : user.getRoles()) {
@@ -216,7 +233,19 @@ public class LookAndFeelPermissionServiceImpl implements LookAndFeelPermissionSe
         }
     }
 
-    private boolean hasPermission(long companyId, Role role, String resourceId, Action action) throws ApplicationException {
+    private List<Role> getGroupRoles(User user) throws ApplicationException {
+        try {
+            List<Role> result = new ArrayList<Role>();
+            for (UserGroupRole userGroupRole : UserGroupRoleLocalServiceUtil.getUserGroupRoles(user.getUserId())) {
+                result.add(new Role(userGroupRole.getRole()));
+            }
+            return result;
+        } catch (Exception e) {
+            throw new ApplicationException();
+        }
+    }
+
+    private boolean isPermitted(long companyId, Role role, String resourceId, Action action) throws ApplicationException {
         ResourcePermission resourcePermission = fetchResourcePermission(companyId, role, resourceId);
         return resourcePermission != null && resourcePermission.hasActionId(action.getName());
     }
