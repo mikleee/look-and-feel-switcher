@@ -42,12 +42,8 @@ div.ts-spinner {
 /*          SCREENSHOT
 /***************************************/
 
-img.ts-screen-shot {
-    border: 1px #DDD solid;
-    border-radius: 3px;
-    max-height: 200px;
-    max-width: 100%;
-    box-shadow: 0 0 10px rgb(221, 221, 221);
+.aui img.img-polaroid.ts-screenshot {
+    max-height: 130px;
 }
 
 /***************************************/

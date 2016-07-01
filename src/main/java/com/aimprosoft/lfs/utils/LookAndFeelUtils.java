@@ -53,12 +53,12 @@ public class LookAndFeelUtils {
     }
 
     private static String defineImageToShow(String root) {
-        String screenShot = concatPath(root, SCREENSHOT_NAME);
+        String screenShot = concatPath(root, THUMBNAIL_NAME);
         if (new File(screenShot).exists()) {
-            return SCREENSHOT_NAME;
-        } else {
-            LOGGER.trace("No screenshot found by path " + screenShot + ". returning the thumbnail " + concatPath(root, THUMBNAIL_NAME));
             return THUMBNAIL_NAME;
+        } else {
+            LOGGER.trace("No thumbnail found by path " + screenShot + ". returning the screenshot " + concatPath(root, SCREENSHOT_NAME));
+            return SCREENSHOT_NAME;
         }
     }
 
