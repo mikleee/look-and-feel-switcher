@@ -7,8 +7,7 @@
 }
 
 .ts-dropdown-container .ts-dropdown {
-    width: 220px;
-    max-width: 90%;
+    min-width: 200px;
 }
 
 .ts-dropdown-container .ts-dropdown button {
@@ -17,7 +16,7 @@
 }
 
 .ts-dropdown-container .ts-dropdown.open ul {
-    width: 100%;
+    min-width: 100%;
 }
 
 .ts-dropdown-container .ts-dropdown ul li {

@@ -1,5 +1,4 @@
 <div ng-controller="preferencesPermissionsController">
-
     <div class="ts-row">
         <div ng-controller="lookAndFeelListController" class="ts-column look-and-feel-list-control">
             <div ng-if="state == 'waiting' || models.lookAndFeels.length > 0">

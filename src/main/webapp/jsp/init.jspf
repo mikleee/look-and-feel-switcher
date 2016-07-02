@@ -8,21 +8,11 @@
 <c:set var="ns"><portlet:namespace/></c:set>
 <portlet:renderURL var="startPage"/>
 
-<%-- static URLs --%>
-<portlet:resourceURL var="paginatorTemplateUrl" id="getTemplate">
-    <portlet:param name="template" value="/directives/paginator"/>
-</portlet:resourceURL>
-<portlet:resourceURL var="dropdownTemplateUrl" id="getTemplate">
-    <portlet:param name="template" value="/directives/dropdown"/>
-</portlet:resourceURL>
-
 
 <script>
     (function () {
         if (!ThemesSwitcher.staticUrl) {
             ThemesSwitcher.staticUrl = {
-                paginatorTemplate: '${paginatorTemplateUrl}',
-                dropdownTemplate: '${dropdownTemplateUrl}',
                 paginatorConfig: '<portlet:resourceURL  id="getPaginatorConfig"/>',
                 setUserConfig: '<portlet:resourceURL  id="setUserConfig"/>'
             };

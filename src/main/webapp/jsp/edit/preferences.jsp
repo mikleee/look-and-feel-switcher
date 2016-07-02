@@ -17,16 +17,19 @@
 <c:set var="module" value="lookAndFeelPreferences${ns}"/>
 
 
-<div id="${module}" class="aui" ng-cloak>
+<div id="${module}" ng-cloak>
+    <%@ include file="../directives/dropdown.jspf" %>
+    <%@ include file="../directives/paginator.jspf" %>
+
     <div class="ts-container">
         <div ng-controller="preferencesController">
             <div>
                 <ul class="nav nav-tabs">
                     <li class="tab" ng-class="{active : tab == 'permissions'}" ng-click="setTab('permissions')">
-                        <a href="javascript:void(0)"><liferay-ui:message key="ts-permissions"/></a>
+                        <a><liferay-ui:message key="ts-permissions"/></a>
                     </li>
                     <li class="tab" ng-class="{active : tab == 'administration'}" ng-click="setTab('administration')">
-                        <a href="javascript:void(0)"><liferay-ui:message key="ts-administration"/></a>
+                        <a><liferay-ui:message key="ts-administration"/></a>
                     </li>
                 </ul>
             </div>

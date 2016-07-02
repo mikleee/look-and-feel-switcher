@@ -202,7 +202,7 @@
             scope: {
                 paginator: '=paginatorService'
             },
-            templateUrl: ThemesSwitcher.staticUrl.paginatorTemplate,
+            templateUrl: 'paginator.template',
             link: link
         };
 

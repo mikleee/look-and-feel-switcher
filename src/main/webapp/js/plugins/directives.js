@@ -77,7 +77,7 @@
                 itemTitle: '@'
             },
             controller: 'tsDropdownController',
-            templateUrl: ThemesSwitcher.staticUrl.dropdownTemplate
+            templateUrl: 'dropdown.template'
         };
     }
 
