@@ -12,8 +12,8 @@
 <portlet:resourceURL var="paginatorTemplateUrl" id="getTemplate">
     <portlet:param name="template" value="/directives/paginator"/>
 </portlet:resourceURL>
-<portlet:resourceURL var="screenshotTemplateUrl" id="getTemplate">
-    <portlet:param name="template" value="/directives/screenshot"/>
+<portlet:resourceURL var="dropdownTemplateUrl" id="getTemplate">
+    <portlet:param name="template" value="/directives/dropdown"/>
 </portlet:resourceURL>
 
 
@@ -22,7 +22,7 @@
         if (!ThemesSwitcher.staticUrl) {
             ThemesSwitcher.staticUrl = {
                 paginatorTemplate: '${paginatorTemplateUrl}',
-                screenshotTemplate: '${screenshotTemplateUrl}',
+                dropdownTemplate: '${dropdownTemplateUrl}',
                 paginatorConfig: '<portlet:resourceURL  id="getPaginatorConfig"/>',
                 setUserConfig: '<portlet:resourceURL  id="setUserConfig"/>'
             };

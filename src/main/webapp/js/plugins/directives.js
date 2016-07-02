@@ -2,6 +2,8 @@
     angular.module('ts-directives', ['ui.bootstrap'])
         .directive('tsScreenshot', [Screenshot])
         .controller('tsScreenshotController', ['$scope', ScreenshotController])
+        .directive('tsDropdown', [Dropdown])
+        .controller('tsDropdownController', ['$scope', '$parse', DropdownController])
         .directive('tsSpinner', [Spinner])
         .directive('tsLockedOn', [LockedOn]);
 
@@ -37,7 +39,7 @@
             var loadingMessage = $('<ts-spinner ng-show="state == 0">');
             var errorMessage = $('<img ng-show="state == -1" title="{{errorTitle()}}">').attr('src', ThemesSwitcher.getThemeImage('/application/forbidden_action.png'));
 
-            var root = $('<span class="ts-screenshot">').append(screenshot).append(loadingMessage).append(errorMessage);
+            var root = $('<div class="ts-screenshot">').append(screenshot).append(loadingMessage).append(errorMessage);
             return root[0].outerHTML;
         }
     }
@@ -62,6 +64,33 @@
                     $('<img>').attr('src', ThemesSwitcher.getThemeImage('/aui/loading_indicator.gif'))
                 );
             return root[0].outerHTML;
+        }
+    }
+
+    function Dropdown() {
+        return {
+            restrict: 'E',
+            scope: {
+                items: "=",
+                model: '=',
+                label: '@',
+                itemTitle: '@'
+            },
+            controller: 'tsDropdownController',
+            templateUrl: ThemesSwitcher.staticUrl.dropdownTemplate
+        };
+    }
+
+    function DropdownController(scope, parse) {
+        scope.getTitle = getTitle;
+        scope.select = select;
+
+        function getTitle(o) {
+            return parse(scope.itemTitle)(o);
+        }
+
+        function select(item) {
+            return scope.model = item;
         }
     }
 

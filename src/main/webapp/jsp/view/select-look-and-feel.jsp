@@ -51,22 +51,31 @@
         <ts-global-message></ts-global-message>
 
         <div ng-if="state == 'waiting' || models.lookAndFeels.length > 0">
-            <h3><span><liferay-ui:message key="ts-select-theme"/></span><ts-spinner ng-show="isLocked()"></ts-spinner></h3>
+            <h3><span><liferay-ui:message key="ts-select-theme"/></span>
+                <ts-spinner ng-show="isLocked()"></ts-spinner>
+            </h3>
+
             <div class="ts-row" ng-if="models.lookAndFeels.length > 0">
                 <div class="ts-column look-and-feel-list-control">
-                    <div>
-                        <label for="${ns}themes"><liferay-ui:message key="ts-themes"/></label>
-                        <select id="${ns}themes" class="ts-select" ng-disabled="isLocked()" ng-options="theme as theme.name for theme in models.lookAndFeels track by theme.id" ng-model="models.currentTheme"></select>
-                    </div>
-                    <div ng-if="models.currentTheme && models.currentTheme.hasColorSchemes()">
-                        <label for="${ns}color-schemes"><liferay-ui:message key="ts-color-schemes"/></label>
-                        <select id="${ns}color-schemes" class="ts-select" ng-disabled="isLocked()" ng-options="cs as cs.name for cs in models.currentTheme.colorSchemes track by cs.id" ng-model="models.currentColorScheme"></select>
-                    </div>
+                    <ts-dropdown
+                            label="<liferay-ui:message key="ts-themes"/>"
+                            items="models.lookAndFeels"
+                            model="models.currentTheme"
+                            item-title="name">
+                    </ts-dropdown>
+                    <ts-dropdown
+                            ng-if="models.currentTheme && models.currentTheme.hasColorSchemes()"
+                            label="<liferay-ui:message key="ts-color-schemes"/>"
+                            items="models.currentTheme.colorSchemes"
+                            model="models.currentColorScheme"
+                            item-title="name">
+                    </ts-dropdown>
                 </div>
                 <div class="ts-column">
                     <ts-screenshot src="getScreenshotPath()" alt="<liferay-ui:message key="ts-screenshot-is-not-available"/>"></ts-screenshot>
                 </div>
             </div>
+
             <div class="ts-row button-footer" ng-if="models.lookAndFeels.length > 0">
                 <button class="btn btn-primary" ng-disabled="isLocked()" ng-click="applyBinding()"><liferay-ui:message key="ts-apply"/></button>
                 <button class="btn btn-default" ng-disabled="isLocked()" ng-click="resetBinding()" ng-if="models.lookAndFeelBinding.id != null"><liferay-ui:message key="ts-reset-to-default"/></button>

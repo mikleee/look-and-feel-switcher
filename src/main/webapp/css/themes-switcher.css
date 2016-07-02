@@ -38,7 +38,6 @@ div.ts-container label {
 }
 
 div.ts-container h3 {
-    /*color: #8D8D8D;*/
     font-size: 20px;
     font-weight: normal;
 }
@@ -53,24 +52,6 @@ div.ts-container .ts-toggle-all-actions {
     margin: 0 0 0 1em;
     vertical-align: middle;
     font-weight: inherit;
-}
-
-div.ts-container select.ts-select {
-    width: 220px;
-    max-width: 90%;
-    transition: border 1s;
-}
-
-div.ts-container option.ts-bind-option {
-    background-color: #DDD;
-}
-
-div.ts-container option.ts-default-option {
-    background-color: #8add8d;
-}
-
-div.ts-container .ts-display-none {
-    display: none;
 }
 
 /* animations */
