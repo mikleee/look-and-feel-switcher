@@ -30,7 +30,7 @@ public class LookAndFeelUtils {
     public static String getScreenShotPath(ColorScheme colorScheme, Theme theme) {
         String dirFsPath = getImagesDirFsPath(colorScheme, theme);
         String imagesPath = theme.getContextPath() + colorScheme.getColorSchemeThumbnailPath();
-        return concatPath(imagesPath, defineImageToShow(dirFsPath));
+        return concatSrcPath(imagesPath, defineImageToShow(dirFsPath));
     }
 
     private static String getImagesDirFsPath(Theme theme) {
