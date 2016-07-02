@@ -42,7 +42,11 @@ div.ts-spinner {
 /*          SCREENSHOT
 /***************************************/
 
-.aui img.img-polaroid.ts-screenshot {
+.aui .ts-screenshot {
+    display: inline-block;
+}
+
+.aui .ts-screenshot img.img-polaroid {
     max-height: 130px;
 }
 

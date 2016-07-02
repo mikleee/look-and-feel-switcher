@@ -24,7 +24,7 @@ public class LookAndFeelUtils {
     public static String getScreenShotPath(Theme theme) {
         String dirFsPath = getImagesDirFsPath(theme);
         String imagesPath = theme.getContextPath() + theme.getImagesPath();
-        return concatPath(imagesPath, defineImageToShow(dirFsPath));
+        return concatSrcPath(imagesPath, defineImageToShow(dirFsPath));
     }
 
     public static String getScreenShotPath(ColorScheme colorScheme, Theme theme) {
@@ -46,28 +46,36 @@ public class LookAndFeelUtils {
     private static String getImagesDirFsPath(Theme theme, String imagesPath) {
         String root = PortalUtil.getPortalWebDir();
         if (theme.isWARFile()) {
-            return root.replaceAll(concatPath("", "ROOT", ""), concatPath(theme.getContextPath(), imagesPath));
+            return root.replaceAll(concatFsPath("", "ROOT", ""), concatFsPath(theme.getContextPath(), imagesPath));
         } else {
             return root + imagesPath;
         }
     }
 
     private static String defineImageToShow(String root) {
-        String screenShot = concatPath(root, THUMBNAIL_NAME);
+        String screenShot = concatFsPath(root, THUMBNAIL_NAME);
         if (new File(screenShot).exists()) {
             return THUMBNAIL_NAME;
         } else {
-            LOGGER.trace("No thumbnail found by path " + screenShot + ". returning the screenshot " + concatPath(root, SCREENSHOT_NAME));
+            LOGGER.trace("No thumbnail found by path " + screenShot + ". returning the screenshot " + concatFsPath(root, SCREENSHOT_NAME));
             return SCREENSHOT_NAME;
         }
     }
 
-    private static String concatPath(String... parts) {
+    private static String concatFsPath(String... parts) {
+        return concatPath(getFileSeparator(), parts);
+    }
+
+    private static String concatSrcPath(String... parts) {
+        return concatPath("/", parts);
+    }
+
+    private static String concatPath(String delimiter, String... parts) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             result.append(parts[i]);
             if (i != parts.length - 1) {
-                result.append(getFileSeparator());
+                result.append(delimiter);
             }
         }
         return result.toString();

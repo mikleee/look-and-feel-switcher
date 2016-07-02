@@ -12,7 +12,9 @@
             WAITING: 'waiting',
             WARNING: 'warning'
         };
-
+        window.ThemesSwitcher.getThemeImage = function (path) {
+            return Liferay.ThemeDisplay.getPathThemeImages() + path;
+        };
 
         function MessageService() {
             var cache = [];

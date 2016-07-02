@@ -1,6 +1,7 @@
 (function () {
     angular.module('ts-directives', ['ui.bootstrap'])
         .directive('tsScreenshot', [Screenshot])
+        .controller('tsScreenshotController', ['$scope', ScreenshotController])
         .directive('tsSpinner', [Spinner])
         .directive('tsLockedOn', [LockedOn]);
 
@@ -9,22 +10,41 @@
         return {
             restrict: 'E',
             scope: {
-                src: '=',
-                alt: '@'
+                src: '='
             },
+            controller: 'tsScreenshotController',
             link: link,
-            templateUrl: ThemesSwitcher.staticUrl.screenshotTemplate
+            template: template
         };
 
         function link(scope, element) {
-            scope.scrState = 'loading';
-            var img = element.find('img');
-            img.on('error', function () {
-                scope.scrState = 'failed';
-            });
-            img.on('load', function () {
-                scope.scrState = 'success';
-            })
+            scope.state = 0;
+            var img = element.find('img')[0];
+            img.onerror = applyState;
+            img.onload = applyState;
+
+            function applyState(event) {
+                scope.$apply(function () {
+                    scope.state = event.type == 'load' ? 1 : -1;
+                });
+            }
+        }
+
+        function template() {
+            var $ = angular.element;
+
+            var screenshot = $('<img id="ts-screenshot-{{$id}}" ng-src="{{src}}" ng-show="state == 1" class="img-polaroid theme-screenshot">');
+            var loadingMessage = $('<ts-spinner ng-show="state == 0">');
+            var errorMessage = $('<img ng-show="state == -1" title="{{errorTitle()}}">').attr('src', ThemesSwitcher.getThemeImage('/application/forbidden_action.png'));
+
+            var root = $('<span class="ts-screenshot">').append(screenshot).append(loadingMessage).append(errorMessage);
+            return root[0].outerHTML;
+        }
+    }
+
+    function ScreenshotController(scope) {
+        scope.errorTitle = function () {
+            return scope.alt || ThemesSwitcher.getMessage('ts-screenshot-is-not-available');
         }
     }
 
@@ -39,7 +59,7 @@
             var $ = angular.element;
             var root = $('<div class="ts-spinner">')
                 .append(
-                    $('<img>').attr('src', Liferay.ThemeDisplay.getPathThemeImages() + '/aui/loading_indicator.gif')
+                    $('<img>').attr('src', ThemesSwitcher.getThemeImage('/aui/loading_indicator.gif'))
                 );
             return root[0].outerHTML;
         }
