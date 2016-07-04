@@ -54,6 +54,10 @@ div.ts-container .ts-toggle-all-actions {
     font-weight: inherit;
 }
 
+div.ts-container ul.nav.nav-tabs li:not(.active) {
+    cursor: pointer;
+}
+
 /* animations */
 
 @keyframes ts-locker {
