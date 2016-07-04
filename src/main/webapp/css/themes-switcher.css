@@ -58,6 +58,11 @@ div.ts-container ul.nav.nav-tabs li:not(.active) {
     cursor: pointer;
 }
 
+div.ts-container span.badge {
+    white-space: normal;
+}
+
+
 /* animations */
 
 @keyframes ts-locker {

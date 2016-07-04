@@ -10,7 +10,7 @@
     <artifactId>themes-switcher-portlet</artifactId>
     <packaging>war</packaging>
     <name>themes-switcher</name>
-    <version>1.0.0.1</version>
+    <version>1.0.0.3</version>
 
 
     <properties>
@@ -27,7 +27,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
-                    <outputDirectory>${deploy.dir}/deploy</outputDirectory>
+                    <outputDirectory>${deploy.dir}/deploy2</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>

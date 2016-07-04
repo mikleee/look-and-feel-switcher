@@ -27,6 +27,10 @@
     float: right;
 }
 
+.ts-dropdown-container .ts-dropdown button .dropdown-title {
+    float: left;
+}
+
 /***************************************/
 /*          MESSAGE
 /***************************************/
