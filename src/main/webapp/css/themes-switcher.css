@@ -58,7 +58,7 @@ div.ts-container ul.nav.nav-tabs li:not(.active) {
     cursor: pointer;
 }
 
-div.ts-container span.badge {
+div.ts-container span.label {
     white-space: normal;
 }
 

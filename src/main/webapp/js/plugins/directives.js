@@ -26,9 +26,8 @@
             img.onload = applyState;
 
             function applyState(event) {
-                scope.$apply(function () {
-                    scope.state = event.type == 'load' ? 1 : -1;
-                });
+                scope.state = event.type == 'load' ? 1 : -1;
+                scope.$digest();
             }
         }
 
